@@ -17,3 +17,6 @@ if __name__ == '__main__':
     from wsgiref.simple_server import make_server
     httpd = make_server(ip, port, zapp.application)
     httpd.serve_forever()
+else:
+    from django.core.wsgi import get_wsgi_application
+    application = get_wsgi_application()
