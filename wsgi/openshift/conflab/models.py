@@ -42,7 +42,7 @@ class Event(models.Model):
     event_end = models.DateTimeField()
     room = models.ForeignKey(Room)
     topic = models.CharField(max_length=256)
-    desc = models.TextField()
+    description = models.TextField()
     lang = models.CharField(max_length=6)
     slide_url = models.URLField(max_length=512)
     video_url = models.URLField(max_length=512, blank=True)
