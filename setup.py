@@ -9,7 +9,7 @@ packages = ['Django<=1.6',
             'static3',  # If you want serve the static files in the same server
             # 'mysql-connector-python',
             # 'pymongo',
-            # 'psycopg2',
+             'psycopg2',
            ]
 
 if 'REDISCLOUD_URL' in os.environ and 'REDISCLOUD_PORT' in os.environ and 'REDISCLOUD_PASSWORD' in os.environ:
