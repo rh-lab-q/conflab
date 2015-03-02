@@ -48,7 +48,7 @@ class Event(models.Model):
     video_url = models.URLField(max_length=512, blank=True)
     event_url = models.URLField(max_length=512)
     speaker = models.ManyToManyField(User, related_name='usr+')
-    volunteer = models.ManyToManyField(User, related_name='vol+')
+    volunteer = models.ManyToManyField(User, related_name='vol+', blank=True)
     def __str__(self):
         return self.topic
 
