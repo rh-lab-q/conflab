@@ -6,7 +6,7 @@ from django.db import models
 class Room(models.Model):
     s_name = models.CharField(max_length=16)
     name = models.CharField(max_length=64, blank=True)
-    desc = models.TextField(blank=True)
+    description = models.TextField(blank=True)
     color = models.CharField(max_length=8)
     #conf = models.ForeignKey(Conf)
     def __str__(self):
