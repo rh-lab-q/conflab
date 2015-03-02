@@ -1,4 +1,4 @@
-"
+"""
 Django settings for openshift project.
 
 For more information on this file, see
