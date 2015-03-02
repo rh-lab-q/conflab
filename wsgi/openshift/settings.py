@@ -99,7 +99,7 @@ if ON_OPENSHIFT:
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'python',
             'USER': 'adminsuqsgwl',
-            'PASSWORD': '1akaKP6YsQlp'
+            'PASSWORD': '1akaKP6YsQlp',
             'HOST': '127.4.28.2',
             'PORT': '5432',
         }
