@@ -1,4 +1,4 @@
-"""
+"
 Django settings for openshift project.
 
 For more information on this file, see
@@ -96,8 +96,12 @@ TEMPLATE_DIRS = (
 if ON_OPENSHIFT:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'db.sqlite3'),
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'python',
+            'USER': 'adminsuqsgwl',
+            'PASSWORD': '1akaKP6YsQlp'
+            'HOST': '127.4.28.2',
+            'PORT': '5432',
         }
     }
 else:
