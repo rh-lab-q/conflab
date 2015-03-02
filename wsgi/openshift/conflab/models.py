@@ -26,8 +26,6 @@ class User(models.Model):
     linkedin = models.URLField(max_length=512)
     bio = models.TextField()
 
-
-
 class EventType(models.Model):
     type_name = models.CharField(max_length=256)
 
