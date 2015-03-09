@@ -2,9 +2,11 @@ from django.db import models
 
 class Conf(models.Model):
     name = models.CharField(max_length=256)
-    conf_start = models.DateTimeField(blank=True)
-    conf_end = models.DateTimeField(blank=True)
-    
+    conf_start = models.DateTimeField(blank=True, null=True)
+    conf_end = models.DateTimeField(blank=True, null=True)
+    def __str__(self):
+        return self.name
+
 class Room(models.Model):
     s_name = models.CharField(max_length=16)
     name = models.CharField(max_length=64, blank=True)
@@ -40,8 +42,8 @@ class EventType(models.Model):
 class Event(models.Model):
     conf = models.ForeignKey(Conf)
     e_type = models.ForeignKey(EventType)
-    event_start = models.DateTimeField(blank=True)
-    event_end = models.DateTimeField(blank=True)
+    event_start = models.DateTimeField(blank=True, null=True)
+    event_end = models.DateTimeField(blank=True, null=True)
     room = models.ForeignKey(Room, blank=True)
     topic = models.CharField(max_length=256)
     description = models.TextField()
