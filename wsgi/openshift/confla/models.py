@@ -10,7 +10,7 @@ class Conference(models.Model):
     def __str__(self):
         return self.name
     def is_Current(self):
-        return self.conf_end > timezone.now()
+        return (self.conf_end == self.conf_start != None) and (self.conf_end > timezone.now())
 
 class Room(models.Model):
     s_name = models.CharField(max_length=16)
