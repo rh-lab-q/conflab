@@ -1,0 +1,46 @@
+/*
+ * @file: main.css
+ * @author: Stanislav Laznicka <slaz@seznam.cz>
+ *
+ */
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#header {
+    background: white;
+    border-bottom: 1pt solid #B5B5B5;
+    padding: 0.5em;
+}
+
+#main {
+    padding: 0.5em;
+}
+
+#logo {
+    float: left;
+}
+
+#menu {
+    float: right;
+    text-align: right;
+    width: auto;
+}
+
+#menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#menu li {
+    display: inline;
+    padding-left: 1em;
+    float: left;
+}
+
+#menu li a {
+    display: block;
+}

@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Confla - Conference schedule made easy{% endblock%}</title>
+    <meta charset="UTF-8" />   
+
+    <title>{% block title %}Confla - Conference schedule made easy{% endblock%}</title>    
+    
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'confla/main.css' %}" />
 </head>
 
 <body>
+    <div id="header">
+        <div id="logo">Logo</div>
+        <div id="menu">
+            <ul>
+                <li><a href="{% url 'confla:about' %}">About</a></li>
+                <li><a href="{% url 'confla:schedule' %}">Schedule</a></li>
+            </ul>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
     <div id="main">
-        {% block main %}
-            Welcome to Confla system.  Not much to be seen around yet.
+        <div id="content">
+        {% block content %}
+            Welcome to Confla system. Not much to be seen around yet.
         {% endblock %}
+        </div>
     </div>
 </body>
 </html>

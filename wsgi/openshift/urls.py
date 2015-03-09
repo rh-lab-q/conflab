@@ -7,8 +7,8 @@ from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    url(r'^$', include('confla.urls', namespace='confla')),
+    # Examples:)
+    url(r'^', include('confla.urls', namespace='confla')),
     # url(r'^$', 'openshift.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     
