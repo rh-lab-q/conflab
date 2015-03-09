@@ -39,9 +39,9 @@ class User(models.Model):
     def __str__(self):
         return self.username
     def is_Speaker(self):
-        return Event.objects.filter(speaker=self.username) != [] 
+        return len(Event.objects.filter(speaker=self.username)) != 0 
     def is_Reviewer(self):
-        return Paper.objects.filter(reviewer=self.username) != [] 
+        return len(Paper.objects.filter(reviewer=self.username)) != 0 
     
 
 class EventType(models.Model):

@@ -14,7 +14,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'name', 'is_Speaker', 'is_Reviewer')
 
 class PaperAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title')
+    list_display = ('title', 'user')
 
 class ConfAdmin(admin.ModelAdmin):
     list_display = ('name', 'conf_start', 'conf_end', 'is_Current')
