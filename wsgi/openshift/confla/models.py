@@ -42,7 +42,7 @@ class Event(models.Model):
     e_type = models.ForeignKey(EventType)
     event_start = models.DateTimeField(blank=True)
     event_end = models.DateTimeField(blank=True)
-    room = models.ForeignKey(Room)
+    room = models.ForeignKey(Room, blank=True)
     topic = models.CharField(max_length=256)
     description = models.TextField()
     lang = models.CharField(max_length=6)
