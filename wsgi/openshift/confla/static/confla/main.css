@@ -12,11 +12,7 @@ body {
 #header {
     background: white;
     border-bottom: 1pt solid #B5B5B5;
-    padding: 0.5em;
-}
-
-#main {
-    padding: 0.5em;
+    padding: 1em 1.5em;
 }
 
 #logo {
@@ -43,4 +39,18 @@ body {
 
 #menu li a {
     display: block;
+}
+
+#main {
+    padding: 0.5em;
+    width: 100%;
+    position: relative;
+    text-align: center;
+}
+
+#content {
+    width: 66%;
+    text-align: justify;
+    margin: auto;
+    margin-top: 1.5em;
 }
