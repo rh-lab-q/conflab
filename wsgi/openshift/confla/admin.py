@@ -1,5 +1,5 @@
 from django.contrib import admin
-from conflab.models import *
+from confla.models import *
 # Register your models here.
 
 class EventAdmin(admin.ModelAdmin):
