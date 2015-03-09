@@ -19,3 +19,9 @@ class AboutView(generic.TemplateView):
 
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/schedule.html'
+
+class LoginView(generic.TemplateView):
+    template_name = 'confla/login.html'
+
+class UserView(generic.TemplateView):
+    template_name = 'confla/base.html'

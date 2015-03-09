@@ -12,7 +12,6 @@ body {
 #header {
     background: white;
     border-bottom: 1pt solid #B5B5B5;
-    padding: 1em 1.5em;
 }
 
 #logo {
@@ -23,6 +22,7 @@ body {
     float: right;
     text-align: right;
     width: auto;
+    padding-right: 1em;
 }
 
 #menu ul {
@@ -33,12 +33,17 @@ body {
 
 #menu li {
     display: inline;
-    padding-left: 1em;
     float: left;
+    display: block;
+    padding: 1em 1em;
+}
+
+#menu li:hover {
+    background-color: blue;
 }
 
 #menu li a {
-    display: block;
+    text-decoration: none;
 }
 
 #main {
