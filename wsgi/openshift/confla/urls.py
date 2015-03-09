@@ -8,5 +8,5 @@ urlpatterns = patterns('',
         url(r'^sched/$', views.ScheduleView.as_view(), name='schedule'),
         url(r'^login/$', views.LoginView.as_view(), name='login'),
         url(r'^users/$', views.UserView.as_view(), name='users'), # warning - placeholder!
-        #url(r'^(?P<username>\w+)/(?P<password>\w+)/$', views.check_psswd, name='loginx'),
+        url(r'^process/$', views.check_login, name='loginx'),
 )
