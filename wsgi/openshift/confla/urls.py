@@ -6,4 +6,5 @@ urlpatterns = patterns('',
         url(r'^$', views.AboutView.as_view(), name='index'),
         url(r'^about/$', views.AboutView.as_view(), name='about'),
         url(r'^sched/$', views.ScheduleView.as_view(), name='schedule'),
+        url(r'^(?P<username>\w+)/(?P<password>\w+)/$', views.check_psswd, name='login')
 )
