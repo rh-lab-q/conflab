@@ -3,7 +3,7 @@ from confla.models import *
 # Register your models here.
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('event_start', 'topic', 'is_Scheduled')
+    list_display = ('topic', 'event_start', 'length', 'is_Scheduled')
     #list_filter = ['event_start']
 
 class RoomAdmin(admin.ModelAdmin):

@@ -1,4 +1,5 @@
 import datetime
+
 from django.db import models
 from django.utils import timezone
 
@@ -36,13 +37,18 @@ class User(models.Model):
     google = models.URLField(max_length=512, blank=True)
     linkedin = models.URLField(max_length=512, blank=True)
     bio = models.TextField (blank=True)
+
     def __str__(self):
         return self.username
+
     def is_Speaker(self):
         return len(Event.objects.filter(speaker=self.username)) != 0 
+
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0 
-    
+
+    def is_Volunteer(self):
+        return len(Paper.objects.filter(volunteer=self.username)) != 0     
 
 class EventType(models.Model):
     type_name = models.CharField(max_length=256)
@@ -65,6 +71,12 @@ class Event(models.Model):
     volunteer = models.ManyToManyField(User, related_name='vol+', blank=True)
     def __str__(self):
         return self.topic
+
+    # event length in minutes
+    def length(self):
+        if (self.event_start != None) and (self.event_end != None):
+            return round((self.event_end - self.event_start).seconds / 60)
+
     def is_Scheduled(self):
         return (self.event_start != None) and (self.event_end != None) 
 
