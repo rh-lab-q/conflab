@@ -8,10 +8,23 @@ class Conference(models.Model):
     conf_start = models.DateTimeField(blank=True, null=True)
     conf_end = models.DateTimeField(blank=True, null=True)
     datetime.timedelta(days=1)
+
     def __str__(self):
         return self.name
+
     def is_Current(self):
-        return (self.conf_end == self.conf_start != None) and (self.conf_end > timezone.now())
+        return (self.conf_end and self.conf_start) and (self.conf_end > timezone.now())
+
+    # gets events in a conference, filter by speaker, room, type
+    def get_Events(self, speaker_id=None, room_id=None, type_id=None):
+        event_set = Event.objects.filter(conf=self.id)
+        if speaker_id:
+            event_set = event_set.filter(speaker=speaker_id)
+        if room_id:
+            event_set = event_set.filter(room=room_id)
+        if type_id:
+            event_set = event_set.filter(e_type=type_id)
+        return event_set
 
 class Room(models.Model):
     s_name = models.CharField(max_length=16)
@@ -19,6 +32,7 @@ class Room(models.Model):
     description = models.TextField(blank=True)
     color = models.CharField(max_length=8)
     conf = models.ForeignKey(Conference)
+
     def __str__(self):
         return self.s_name
 
@@ -52,6 +66,7 @@ class User(models.Model):
 
 class EventType(models.Model):
     type_name = models.CharField(max_length=256)
+
     def __str__(self):
         return self.type_name
 
@@ -69,6 +84,7 @@ class Event(models.Model):
     event_url = models.URLField(max_length=512)
     speaker = models.ManyToManyField(User, related_name='usr+')
     volunteer = models.ManyToManyField(User, related_name='vol+', blank=True)
+
     def __str__(self):
         return self.topic
 
@@ -87,5 +103,6 @@ class Paper(models.Model):
     #source = models.FileField()
     accept = models.NullBooleanField()
     reviewer = models.ManyToManyField(User, related_name='rev+')
+
     def __str__(self):
         return self.title
