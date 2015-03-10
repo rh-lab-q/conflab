@@ -1,7 +1,43 @@
 #loginform {
     text-align: center;
     margin: auto;
+    margin-top: 10%;
+    padding: 0;
+    border: solid 2pt #093;
+    width: 200pt;
+    background: #65E65E;
 }
 
 #loginform form {
+    text-align: left;
+    margin: auto;
+    padding: 1em 0;
+    width: 200pt;
+    display: inline-block;
+    background: #F7F7F7;
+    border-top: 2pt solid #093;
+}
+
+#loginform ul {
+    list-style: none;
+}
+
+#loginform ul li {
+    padding-bottom: 3pt;
+}
+
+#loginform input[type="text"] {
+    width: 80%;
+}
+
+#loginform input[type="password"] {
+    width: 80%;
+}
+
+#loginform input[type="submit"] {
+    margin: auto;
+}
+
+#loginform h1 {
+    font-size: 14pt;
 }
