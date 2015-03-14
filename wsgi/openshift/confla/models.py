@@ -41,7 +41,6 @@ class User(models.Model):
     name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
     password = models.CharField(max_length=256)
-    email = models.EmailField(max_length=256)
     #avatar = models.ImageField()
     company = models.CharField(max_length=256, blank=True)
     position = models.CharField(max_length=256, blank=True)
@@ -61,8 +60,35 @@ class User(models.Model):
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0 
 
-    def is_Volunteer(self):
-        return len(Paper.objects.filter(volunteer=self.username)) != 0     
+#    def is_Volunteer(self):
+#        return len(Paper.objects.filter(volunteer=self.username)) != 0     
+
+class VolunteerBlock(models.Model):
+    name =  models.CharField(max_length=256)
+    start = models.DateTimeField(blank=True, null=True)
+    end = models.DateTimeField(blank=True, null=True)
+
+class Volunteer(models.Model):
+    user = models.OneToOneField(User, primary_key=True)
+    block = models.ManyToManyField(VolunteerBlock, related_name='block+')
+
+    def __str__(self):
+        return self.user
+
+class Email(models.Model):
+    user = models.ForeignKey(User)
+    email = models.EmailField(max_length=256)
+    active = models.BooleanField(default=False)
+    token = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.email
+
+class EventTag(models.Model):
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
 
 class EventType(models.Model):
     type_name = models.CharField(max_length=256)
@@ -83,7 +109,7 @@ class Event(models.Model):
     video_url = models.URLField(max_length=512, blank=True)
     event_url = models.URLField(max_length=512)
     speaker = models.ManyToManyField(User, related_name='usr+')
-    volunteer = models.ManyToManyField(User, related_name='vol+', blank=True)
+    tags = models.ManyToManyField(EventTag, related_name='tag+')
 
     def __str__(self):
         return self.topic
