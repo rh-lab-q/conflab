@@ -67,13 +67,17 @@ class VolunteerBlock(models.Model):
     name =  models.CharField(max_length=256)
     start = models.DateTimeField(blank=True, null=True)
     end = models.DateTimeField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.name
+
 
 class Volunteer(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     block = models.ManyToManyField(VolunteerBlock, related_name='block+')
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 class Email(models.Model):
     user = models.ForeignKey(User)
