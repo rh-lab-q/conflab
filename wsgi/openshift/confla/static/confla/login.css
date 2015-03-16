@@ -3,6 +3,7 @@
     margin: auto;
     margin-top: 10%;
     padding: 0;
+    padding-bottom: 1em;
     border: solid 2pt #B5B5B5;
     width: 200pt;
     background:white;
@@ -41,8 +42,6 @@
 }
 
 .error {
+    margin-top: 0.5em;
     color: red;
-    margin:auto;
-    margin-bottom: 10pt;
-    text-align: center
 }

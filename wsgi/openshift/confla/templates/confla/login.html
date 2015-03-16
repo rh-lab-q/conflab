@@ -5,7 +5,7 @@
 
 {% block content %}
 <div id="loginform"><h1>User Login</h1>
-    <form action="{% url 'confla:loginx' %}" method="post">
+    <form action="{% url 'confla:process_login' %}" method="post">
         {% csrf_token %}
         <ul>
             <li><label for="login">Username:</label></li>
@@ -14,7 +14,8 @@
             <li><input type="password" name="password" id="password" /></li>
             <li><input type="submit" value="Log in"/></li>
         </ul>
-        {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
     </form>
+    <a href="#">Not registered yet?</a>
+    {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
 </div>
 {% endblock %}
