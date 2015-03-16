@@ -3,19 +3,19 @@
     margin: auto;
     margin-top: 10%;
     padding: 0;
-    border: solid 2pt #093;
+    border: solid 2pt #B5B5B5;
     width: 200pt;
-    background: #65E65E;
+    background:white;
 }
 
 #loginform form {
     text-align: left;
     margin: auto;
-    padding: 1em 0;
-    width: 200pt;
+    padding: 0;
+    width: 100%;
     display: inline-block;
-    background: #F7F7F7;
-    border-top: 2pt solid #093;
+    background: white;
+    border-top: 2pt solid #B5B5B53;
 }
 
 #loginform ul {
@@ -23,7 +23,7 @@
 }
 
 #loginform ul li {
-    padding-bottom: 3pt;
+    padding-bottom: 5pt;
 }
 
 #loginform input[type="text"] {
