@@ -7,5 +7,3 @@
 if [ ! -d $OPENSHIFT_DATA_DIR/media ]; then
     mkdir $OPENSHIFT_DATA_DIR/media
 fi
-
-ln -sf $OPENSHIFT_DATA_DIR/media $OPENSHIFT_REPO_DIR/wsgi/static/media
