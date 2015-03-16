@@ -12,7 +12,7 @@ class Conference(models.Model):
         return self.name
 
     def is_Current(self):
-        return (self.conf_end and self.conf_start) and (self.conf_end > timezone.now())
+        return (self.end_date and self.start_date) and (self.end_date > timezone.now())
 
     # gets events in a conference, filter by speaker, room, type
     def get_Events(self, speaker_id=None, room_id=None, type_id=None):
