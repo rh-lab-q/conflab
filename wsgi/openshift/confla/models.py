@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
+from confla.utils import * 
+
 class Conference(models.Model):
     name = models.CharField(max_length=256)
     start_date = models.DateTimeField(blank=True, null=True)
@@ -38,7 +40,7 @@ class Room(models.Model):
 class ConflaUser(AbstractUser):
     name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
-    #picture = models.ImageField(upload_to='avatars/')
+    picture = models.ImageField(upload_to=user_rename_and_return_path('avatars/'))
     company = models.CharField(max_length=256, blank=True)
     position = models.CharField(max_length=256, blank=True)
     web = models.URLField(max_length=512, blank=True)
@@ -130,7 +132,7 @@ class Paper(models.Model):
     user = models.ForeignKey(ConflaUser)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
-    #source = models.FileField()
+    source = models.FileField(upload_to=paper_rename_and_return_path('papers/'))
     accepted = models.NullBooleanField()
     reviewer = models.ManyToManyField(ConflaUser, related_name='rev+')
 
