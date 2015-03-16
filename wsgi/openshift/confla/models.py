@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
 class Conference(models.Model):
@@ -34,8 +35,8 @@ class Room(models.Model):
     def __str__(self):
         return self.shortname
 
-class User(models.Model):
-    username = models.CharField(max_length=32, primary_key=True) 
+class ConflaUser(AbstractUser):
+    # username = models.CharField(max_length=32, primary_key=True)
     name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
     sha1 = models.CharField(max_length=256)
@@ -54,31 +55,31 @@ class User(models.Model):
         return self.username
 
     def is_Speaker(self):
-        return len(Event.objects.filter(speaker=self.username)) != 0 
+        return len(Event.objects.filter(speaker=self.username)) != 0
 
     def is_Reviewer(self):
-        return len(Paper.objects.filter(reviewer=self.username)) != 0 
+        return len(Paper.objects.filter(reviewer=self.username)) != 0
 
 class VolunteerBlock(models.Model):
     name =  models.CharField(max_length=256)
     description = models.TextField(blank=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    room_id = models.ForeignKey(Room, blank=True, null=True)    
+    room_id = models.ForeignKey(Room, blank=True, null=True)
     max_volunteers = models.IntegerField()
 
     def __str__(self):
         return self.name
 
 class Volunteer(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
+    user = models.OneToOneField(ConflaUser, primary_key=True)
     volunteer_block_id = models.ManyToManyField(VolunteerBlock, related_name='block+')
 
     def __str__(self):
         return self.user.username
 
-class Email(models.Model):
-    user = models.ForeignKey(User)
+class EmailAdress(models.Model):
+    user = models.ForeignKey(ConflaUser)
     address = models.EmailField(max_length=256)
     is_active = models.BooleanField(default=False)
     activation_token = models.CharField(max_length=256, blank=True, null=True)
@@ -106,14 +107,14 @@ class Event(models.Model):
     lang = models.CharField(max_length=6)
     slides = models.URLField(max_length=512)
     video = models.URLField(max_length=512, blank=True)
-    speaker = models.ManyToManyField(User, related_name='usr+')
+    speaker = models.ManyToManyField(ConflaUser, related_name='usr+')
     tags = models.ManyToManyField(EventTag, related_name='tag+', blank=True, null=True)
 
     def __str__(self):
         return self.topic
 
     #def is_Scheduled(self):
-    #    return (self.event_start != None) and (self.event_end != None) 
+    #    return (self.event_start != None) and (self.event_end != None)
 
 class Timeslot(models.Model):
     start_time = models.DateTimeField()
@@ -128,12 +129,12 @@ class Timeslot(models.Model):
             return round((self.end_time - self.start_time).seconds / 60)
 
 class Paper(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(ConflaUser)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
     #source = models.FileField()
     accepted = models.NullBooleanField()
-    reviewer = models.ManyToManyField(User, related_name='rev+')
+    reviewer = models.ManyToManyField(ConflaUser, related_name='rev+')
 
     def __str__(self):
         return self.title

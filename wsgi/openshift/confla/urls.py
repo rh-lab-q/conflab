@@ -7,6 +7,7 @@ urlpatterns = patterns('',
         url(r'^about/$', views.AboutView.as_view(), name='about'),
         url(r'^sched/$', views.ScheduleView.as_view(), name='schedule'),
         url(r'^login/$', views.LoginView.as_view(), name='login'),
-        url(r'^users/$', views.UserView.as_view(), name='users'), # warning - placeholder!
+        url(r'^logout/$', views.LoginView.logout, name='logout'),
         url(r'^process/$', views.LoginView.check_login, name='loginx'),
+        url(r'^users/$', views.UserView.as_view(), name='users'),
 )
