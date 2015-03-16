@@ -26,11 +26,9 @@
     padding-bottom: 5pt;
 }
 
-#loginform input[type="text"] {
-    width: 80%;
-}
-
-#loginform input[type="password"] {
+#loginform input[type="text"],
+#loginform input[type="password"]
+{
     width: 80%;
 }
 
@@ -40,4 +38,11 @@
 
 #loginform h1 {
     font-size: 14pt;
+}
+
+.error {
+    color: red;
+    margin:auto;
+    margin-bottom: 10pt;
+    text-align: center
 }

@@ -13,4 +13,5 @@ urlpatterns = patterns('',
         url(r'^process/$', views.LoginView.check_login, name='loginx'),
         url(r'^users/$', views.UserView.as_view(), name='users'),
 )
+
 urlpatterns += static(settings.MEDIA_ROOT, document_root=settings.MEDIA_URL)

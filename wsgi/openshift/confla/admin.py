@@ -11,7 +11,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ('id', 'shortname')
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'name', 'is_Speaker', 'is_Reviewer')
+    list_display = ('username', 'name')
 
 class PaperAdmin(admin.ModelAdmin):
     list_display = ('title', 'user')
@@ -23,12 +23,12 @@ class TimeslotAdmin(admin.ModelAdmin):
     list_display = ('id', 'start_time', 'end_time')
 
 admin.site.register(Room, RoomAdmin)
-admin.site.register(User, UserAdmin)
+admin.site.register(ConflaUser, UserAdmin)
 admin.site.register(EventType)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Paper, PaperAdmin)
 admin.site.register(Conference, ConfAdmin)
-admin.site.register(Email)
+admin.site.register(EmailAdress)
 admin.site.register(EventTag)
 admin.site.register(Volunteer)
 admin.site.register(VolunteerBlock)

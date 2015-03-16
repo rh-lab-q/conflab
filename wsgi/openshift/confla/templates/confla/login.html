@@ -14,6 +14,7 @@
             <li><input type="password" name="password" id="password" /></li>
             <li><input type="submit" value="Log in"/></li>
         </ul>
+        {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
     </form>
 </div>
 {% endblock %}

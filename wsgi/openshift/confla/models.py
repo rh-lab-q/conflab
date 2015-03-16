@@ -36,10 +36,8 @@ class Room(models.Model):
         return self.shortname
 
 class ConflaUser(AbstractUser):
-    # username = models.CharField(max_length=32, primary_key=True)
     name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
-    sha1 = models.CharField(max_length=256)
     #picture = models.ImageField(upload_to='avatars/')
     company = models.CharField(max_length=256, blank=True)
     position = models.CharField(max_length=256, blank=True)
