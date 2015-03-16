@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, url
+from django.conf.urls.static import static
+from django.conf import settings
 
 from confla import views
 
@@ -10,3 +12,4 @@ urlpatterns = patterns('',
         url(r'^users/$', views.UserView.as_view(), name='users'), # warning - placeholder!
         url(r'^process/$', views.LoginView.check_login, name='loginx'),
 )
+urlpatterns += static(settings.MEDIA_ROOT, document_root=settings.MEDIA_URL)
