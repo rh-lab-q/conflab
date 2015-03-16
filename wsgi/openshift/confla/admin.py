@@ -3,12 +3,12 @@ from confla.models import *
 # Register your models here.
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('topic', 'event_start', 'length', 'is_Scheduled')
+    list_display = ('id', 'topic')
     #list_filter = ['event_start']
 
 class RoomAdmin(admin.ModelAdmin):
     #ordering = ('id', 's_name')
-    list_display = ('id', 's_name')
+    list_display = ('id', 'shortname')
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'name', 'is_Speaker', 'is_Reviewer')
@@ -17,8 +17,10 @@ class PaperAdmin(admin.ModelAdmin):
     list_display = ('title', 'user')
 
 class ConfAdmin(admin.ModelAdmin):
-    list_display = ('name', 'conf_start', 'conf_end', 'is_Current')
+    list_display = ('name', 'start_date', 'end_date', 'is_Current')
 
+class TimeslotAdmin(admin.ModelAdmin):
+    list_display = ('id', 'start_time', 'end_time')
 
 admin.site.register(Room, RoomAdmin)
 admin.site.register(User, UserAdmin)
@@ -30,3 +32,4 @@ admin.site.register(Email)
 admin.site.register(EventTag)
 admin.site.register(Volunteer)
 admin.site.register(VolunteerBlock)
+admin.site.register(Timeslot, TimeslotAdmin)

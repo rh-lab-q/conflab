@@ -48,6 +48,7 @@ class User(models.Model):
     google_plus = models.URLField(max_length=512, blank=True)
     linkedin = models.URLField(max_length=512, blank=True)
     bio = models.TextField (blank=True)
+    schedule = models.ManyToManyField('Event', related_name='sched+', blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -80,7 +81,7 @@ class Email(models.Model):
     user = models.ForeignKey(User)
     address = models.EmailField(max_length=256)
     is_active = models.BooleanField(default=False)
-    activation_token = models.CharField(max_length=256)
+    activation_token = models.CharField(max_length=256, blank=True, null=True)
 
     def __str__(self):
         return self.address
@@ -106,7 +107,7 @@ class Event(models.Model):
     slides = models.URLField(max_length=512)
     video = models.URLField(max_length=512, blank=True)
     speaker = models.ManyToManyField(User, related_name='usr+')
-    tags = models.ManyToManyField(EventTag, related_name='tag+')
+    tags = models.ManyToManyField(EventTag, related_name='tag+', blank=True, null=True)
 
     def __str__(self):
         return self.topic
@@ -125,8 +126,6 @@ class Timeslot(models.Model):
     def length(self):
         if self.start_time and self.end_time:
             return round((self.end_time - self.start_time).seconds / 60)
-
-   
 
 class Paper(models.Model):
     user = models.ForeignKey(User)
