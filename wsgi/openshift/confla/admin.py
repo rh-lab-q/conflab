@@ -11,7 +11,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ('id', 'shortname')
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'name')
+    list_display = ('username', 'first_name', 'last_name')
 
 class PaperAdmin(admin.ModelAdmin):
     list_display = ('title', 'user')

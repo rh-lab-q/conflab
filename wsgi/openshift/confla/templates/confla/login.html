@@ -15,7 +15,7 @@
             <li><input type="submit" value="Log in"/></li>
         </ul>
     </form>
-    <a href="#">Not registered yet?</a>
+    <a href="{% url 'confla:register' %}">Not registered yet?</a>
     {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
 </div>
 {% endblock %}

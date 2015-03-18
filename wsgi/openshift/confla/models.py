@@ -1,10 +1,8 @@
-import datetime
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
-from confla.utils import * 
+from confla.utils import *
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
@@ -38,7 +36,7 @@ class Room(models.Model):
         return self.shortname
 
 class ConflaUser(AbstractUser):
-    name = models.CharField(max_length=32)
+    # name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
     picture = models.ImageField(upload_to=user_rename_and_return_path('avatars/'))
     company = models.CharField(max_length=256, blank=True)
@@ -107,6 +105,7 @@ class Event(models.Model):
     lang = models.CharField(max_length=6)
     slides = models.URLField(max_length=512)
     video = models.URLField(max_length=512, blank=True)
+    google_doc_url = models.URLField(max_length=512)
     speaker = models.ManyToManyField(ConflaUser, related_name='usr+')
     tags = models.ManyToManyField(EventTag, related_name='tag+', blank=True, null=True)
 

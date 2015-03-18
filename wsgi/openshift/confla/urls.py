@@ -12,5 +12,7 @@ urlpatterns = patterns('',
         url(r'^logout/$', views.LoginView.logout, name='logout'),
         url(r'^process/$', views.LoginView.check_login, name='process_login'),
         url(r'^users/$', views.UserView.as_view(), name='users'),
+        url(r'^register/$', views.RegisterView.user_register, name='register'),
+        url(r'^thanks/$', views.RegisterView.as_view(), name='thanks'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
