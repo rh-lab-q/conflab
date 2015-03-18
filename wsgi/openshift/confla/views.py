@@ -50,8 +50,6 @@ class RegisterView(generic.TemplateView):
         if request.method == 'POST': # the form was submitted
             form = RegisterForm(request.POST)
             if form.is_valid():
-                form.cleaned_data['password'] = make_password(form.cleaned_data['password'])
-                print(form.cleaned_data['password'])
                 form.save()
                 return HttpResponseRedirect(reverse('confla:thanks'))
         else:
