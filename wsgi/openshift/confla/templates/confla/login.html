@@ -14,6 +14,7 @@
             <li><input type="password" name="password" id="password" /></li>
             <li><input type="submit" value="Log in"/></li>
         </ul>
+        <input type=hidden name="next" value="{{ request.GET.next }}">
     </form>
     <a href="{% url 'confla:register' %}">Not registered yet?</a>
     {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}

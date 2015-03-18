@@ -38,7 +38,8 @@ class Room(models.Model):
 class ConflaUser(AbstractUser):
     # name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
-    picture = models.ImageField(upload_to=user_rename_and_return_path('avatars/'))
+    picture = models.ImageField(upload_to=user_rename_and_return_path('avatars/'),
+                                blank=True, null=True)
     company = models.CharField(max_length=256, blank=True)
     position = models.CharField(max_length=256, blank=True)
     web = models.URLField(max_length=512, blank=True)
@@ -131,7 +132,8 @@ class Paper(models.Model):
     user = models.ForeignKey(ConflaUser)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
-    source = models.FileField(upload_to=paper_rename_and_return_path('papers/'))
+    source = models.FileField(upload_to=paper_rename_and_return_path('papers/'),
+                                blank=True, null=True)
     accepted = models.NullBooleanField()
     reviewer = models.ManyToManyField(ConflaUser, related_name='rev+')
 

@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
 from confla.models import ConflaUser
@@ -16,32 +18,54 @@ class ScheduleView(generic.TemplateView):
 
 class LoginView(generic.TemplateView):
     template_name = 'confla/login.html'
+
+    def my_view(request):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('confla:users'))
+        else:
+            return render(request, LoginView.template_name)
+
     #TODO: OpenSSL,  or some other crypto for POST
-    def check_login(request):
+    def auth_and_login(request):
         if not(request.method == "POST"):
             return HttpResponseRedirect(reverse('confla:login'))
+
+        if request.POST['next'] is not "":
+            redirect = request.POST['next']
+        else:
+            redirect = reverse('confla:users')
+
         try:
-            user = ConflaUser.objects.get(username=request.POST['login'])
-            if check_password(request.POST['password'], user.password):
-                request.session['user'] = user.username
+            user = authenticate(username=request.POST['login'],
+                                password=request.POST['password'])
+            if user:
+                if user.is_active:
+                    login(request, user)
+                else:
+                    #disabled account
+                    return render(request, 'confla/login.html', {
+                                    'error_message': "Your account is disabled."})
             else:
+                #invalid login
                 raise ConflaUser.DoesNotExist
+
         except (KeyError, ConflaUser.DoesNotExist):
             return render(request, 'confla/login.html', {
                          'error_message': "Wrong username/password."})
+
         else:
-            return HttpResponseRedirect(reverse('confla:users'))
+            return HttpResponseRedirect(redirect)
 
     def logout(request):
-        try:
-            del request.session['user']
-        except KeyError:
-            pass
+        logout(request)
         return HttpResponseRedirect(reverse('confla:login'))
-
 
 class UserView(generic.TemplateView):
     template_name = 'confla/base.html'
+
+    @login_required(login_url='/login/')
+    def my_view(request):
+        return render(request, UserView.template_name)
 
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'

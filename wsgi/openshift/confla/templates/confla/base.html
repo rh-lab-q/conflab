@@ -17,7 +17,11 @@
             <ul>
                 <li><a href="{% url 'confla:about' %}">About</a></li>
                 <li><a href="{% url 'confla:schedule' %}">Schedule</a></li>
-                <li><a href="{% url 'confla:login' %}">Login</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'confla:logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'confla:login' %}">Login</a></li>
+                {% endif %}
             </ul>
         </div>
         <div style="clear: both;"></div>

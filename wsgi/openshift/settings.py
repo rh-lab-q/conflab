@@ -94,6 +94,16 @@ TEMPLATE_DIRS = (
      os.path.join(BASE_DIR,'templates'),
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    "django.contrib.auth.context_processors.auth"
+    )
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 if ON_OPENSHIFT:
