@@ -42,3 +42,15 @@ class RegisterForm(forms.ModelForm):
         if(commit):
             user.save()
         return user
+
+class ProfileForm(forms.ModelForm):
+        class Meta:
+            model = ConflaUser
+            fields = ['username', 'first_name',
+                'last_name', 'email', 'phone', 'company', 'position',
+                'web', 'facebook', 'twitter', 'google_plus', 'linkedin',
+                'bio'
+                ]
+            widgets = {
+                'password' : forms.PasswordInput(),
+            }

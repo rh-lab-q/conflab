@@ -18,6 +18,7 @@
                 <li><a href="{% url 'confla:about' %}">About</a></li>
                 <li><a href="{% url 'confla:schedule' %}">Schedule</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'confla:profile' %}">Profile</a></li>
                     <li><a href="{% url 'confla:logout' %}">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'confla:login' %}">Login</a></li>
