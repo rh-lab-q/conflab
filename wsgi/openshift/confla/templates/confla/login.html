@@ -1,22 +1,21 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
-{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/login.css' %}" />{%endblock %}
 {% block title %}Login to !!CONFERENCE_NAME!!{% endblock %}
-
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/login.css' %}" />
+{% endblock %}
 {% block content %}
-<div id="loginform"><h1>User Login</h1>
-    <form action="{% url 'confla:process_login' %}" method="post">
+    <form class="form-signin" action="{% url 'confla:process_login' %}" method="post">
+        <h2 class="form-signin-heading">User Login</h2>
         {% csrf_token %}
-        <ul>
-            <li><label for="login">Username:</label></li>
-            <li><input type="text" name="login" id="login" /></li>
-            <li><label for="password">Password:</label></li>
-            <li><input type="password" name="password" id="password" /></li>
-            <li><input type="submit" value="Log in"/></li>
-        </ul>
         <input type=hidden name="next" value="{{ request.GET.next }}">
+        <label for="login" class="sr-only">Username</label>
+        <input type="text" name="login" id="login" class="form-control"
+            placeholder="Username" required autofocus/>
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" name="password" id="password" placeholder="Password"
+            class="form-control" required/>
+        <button class="btw btn-lg btn-primary btn-block" type="submit">Log in</button>
+        <div class="register_prompt"><a href="{% url 'confla:register' %}">Not registered yet?</a></div>
+        {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
     </form>
-    <a href="{% url 'confla:register' %}">Not registered yet?</a>
-    {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
-</div>
 {% endblock %}
