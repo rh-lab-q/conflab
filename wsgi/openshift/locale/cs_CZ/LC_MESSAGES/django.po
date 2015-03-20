@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-20 10:01+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: confla/views.py:48
+msgid "Your account is disabled."
+msgstr "Vas ucet neni aktivni"
+
+#: confla/views.py:55
+msgid "Wrong username/password."
+msgstr "Chybne uzivatelske jmeno nebo heslo"
+
+#: confla/templates/confla/base.html:19
+msgid "About"
+msgstr "O konferenci"
+
+#: confla/templates/confla/base.html:20
+msgid "Schedule"
+msgstr "Program"
+
+#: confla/templates/confla/base.html:22
+msgid "Profile"
+msgstr "Profil"
+
+#: confla/templates/confla/base.html:23
+msgid "Logout"
+msgstr "Odhlasit se"
+
+#: confla/templates/confla/base.html:25
+msgid "Login"
+msgstr "Prihlasit se"
+
+#: confla/templates/confla/base.html:34
+msgid "Welcome to Confla system. Not much to be seen around yet."
+msgstr "Vitejte v Confla systemu. Zatim tu nic moc neni"
+
+#: confla/templates/confla/login.html:8
+msgid "User Login"
+msgstr "Prihlaseni"
+
+#: confla/templates/confla/login.html:20
+msgid "Not registered yet?"
+msgstr "Nova registrace"
+
+#: confla/templates/confla/login.html:22
+msgid "You must be logged in!"
+msgstr "Musite byt prihlasen!"
+
+#: templates/admin/base_site.html:4
+msgid "Conflab Administration"
+msgstr "Admin sekce"
+
+#: templates/admin/base_site.html:7
+msgid "Conflab Administration Panel"
+msgstr ""
+
+#: templates/admin/index.html:20
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: templates/admin/index.html:21
+#, python-format
+msgid "%(name)s"
+msgstr ""
+
+#: templates/admin/index.html:33
+msgid "Add"
+msgstr ""
+
+#: templates/admin/index.html:39
+msgid "Change"
+msgstr ""
+
+#: templates/admin/index.html:49
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: templates/admin/index.html:57
+msgid "Recent Actions"
+msgstr ""
+
+#: templates/admin/index.html:58
+msgid "My Actions"
+msgstr ""
+
+#: templates/admin/index.html:62
+msgid "None available"
+msgstr ""
+
+#: templates/admin/index.html:76
+msgid "Unknown content"
+msgstr ""
