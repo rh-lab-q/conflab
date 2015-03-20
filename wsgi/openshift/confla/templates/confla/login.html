@@ -1,10 +1,11 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/login.css' %}" />{%endblock %}
 {% block title %}Login to !!CONFERENCE_NAME!!{% endblock %}
 
 {% block content %}
-<div id="loginform"><h1>User Login</h1>
+<div id="loginform"><h1>{% trans "User Login" %}</h1>
     <form action="{% url 'confla:process_login' %}" method="post">
         {% csrf_token %}
         <ul>
@@ -16,7 +17,8 @@
         </ul>
         <input type=hidden name="next" value="{{ request.GET.next }}">
     </form>
-    <a href="{% url 'confla:register' %}">Not registered yet?</a>
+    <a href="{% url 'confla:register' %}">{% trans "Not registered yet?" %}</a>
     {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
+    {% if request.GET.next %}<div class="error">{% trans "You must be logged in!" %}</div>{% endif %}
 </div>
 {% endblock %}

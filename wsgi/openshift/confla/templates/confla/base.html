@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
@@ -15,13 +16,13 @@
         <div id="logo"><a href="{% url 'confla:index' %}">Logo</a></div>
         <div id="menu">
             <ul>
-                <li><a href="{% url 'confla:about' %}">About</a></li>
-                <li><a href="{% url 'confla:schedule' %}">Schedule</a></li>
+                <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
+                <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'confla:profile' %}">Profile</a></li>
-                    <li><a href="{% url 'confla:logout' %}">Logout</a></li>
+                    <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
+                    <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
                 {% else %}
-                    <li><a href="{% url 'confla:login' %}">Login</a></li>
+                    <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -30,7 +31,7 @@
     <div id="main">
         <div id="content">
         {% block content %}
-            Welcome to Confla system. Not much to be seen around yet.
+            {% trans "Welcome to Confla system. Not much to be seen around yet." %}
         {% endblock %}
         </div>
     </div>

@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -16,5 +16,7 @@ urlpatterns = patterns('',
         url(r'^register/$', views.RegisterView.user_register, name='register'),
         url(r'^thanks/$', views.RegisterView.as_view(), name='thanks'),
        # url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
+
+        url(r'^i18n/', include('django.conf.urls.i18n')),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

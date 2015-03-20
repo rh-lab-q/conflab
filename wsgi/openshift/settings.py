@@ -149,3 +149,4 @@ else:
     MEDIA_ROOT = os.path.join(os.path.expanduser('~'), 'media')
 
 MEDIA_URL = '/media/'
+LOGIN_URL = '/login/'
