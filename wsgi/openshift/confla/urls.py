@@ -15,6 +15,6 @@ urlpatterns = patterns('',
         url(r'profile/$', views.UserView.view_profile, name='profile'),
         url(r'^register/$', views.RegisterView.user_register, name='register'),
         url(r'^thanks/$', views.RegisterView.as_view(), name='thanks'),
-        url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
+       # url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

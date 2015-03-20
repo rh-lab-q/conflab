@@ -67,26 +67,21 @@ class UserView(generic.TemplateView):
     def my_view(request):
         return render(request, UserView.template_name)
 
+    @login_required(login_url='/login/')
     def view_profile(request):
-        if(request.user.is_authenticated()):
-            if request.method == 'POST':
-                form = ProfileForm(data=request.POST, instance=request.user)
-                if form.is_valid():
-                    user = form.save(commit=False)
-                    user.save()
-                    # TODO: make own "Your changes have been saved." page
-                    return HttpResponseRedirect(reverse('confla:thanks'))
-            else:
-                    form = ProfileForm(instance=request.user)
+        if request.method == 'POST':
+            form = ProfileForm(data=request.POST, instance=request.user)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.save()
+                # TODO: make own "Your changes have been saved." page
+                return HttpResponseRedirect(reverse('confla:thanks'))
         else:
-            return HttpResponseRedirect(reverse('confla:notlogged'))
+                form = ProfileForm(instance=request.user)
 
         return render(request, 'confla/profile.html',{
             'form' : form,
             })
-
-    def not_logged(request):
-        return render(request, 'confla/notlogged.html')
 
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'
