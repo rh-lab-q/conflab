@@ -17,6 +17,6 @@ urlpatterns = patterns('',
         url(r'^thanks/$', views.RegisterView.as_view(), name='thanks'),
        # url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
 
-        url(r'^i18n/', include('django.conf.urls.i18n')),
+        url(r'^i18n/', include('django.conf.urls.i18n'), name='set_language'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
