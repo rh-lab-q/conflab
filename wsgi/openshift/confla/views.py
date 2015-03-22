@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 from confla.models import ConflaUser
-from confla.forms import RegisterForm, ProfileForm
+from confla.forms import RegisterForm, ProfileForm, AuthForm
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
@@ -24,7 +24,9 @@ class LoginView(generic.TemplateView):
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('confla:users'))
         else:
-            return render(request, LoginView.template_name)
+            return render(request, 'confla/login.html', {
+            'form' : AuthForm(),
+        })
 
     #TODO: OpenSSL,  or some other crypto for POST
     def auth_and_login(request):
@@ -37,7 +39,7 @@ class LoginView(generic.TemplateView):
             redirect = reverse('confla:users')
 
         try:
-            user = authenticate(username=request.POST['login'],
+            user = authenticate(username=request.POST['username'],
                                 password=request.POST['password'])
             if user:
                 if user.is_active:
@@ -45,14 +47,16 @@ class LoginView(generic.TemplateView):
                 else:
                     #disabled account
                     return render(request, 'confla/login.html', {
-                                    'error_message': _("Your account is disabled.")})
+                                    'error_message': _("Your account is disabled."),
+                                    'form' : AuthForm()})
             else:
                 #invalid login
                 raise ConflaUser.DoesNotExist
 
         except (KeyError, ConflaUser.DoesNotExist):
             return render(request, 'confla/login.html', {
-                         'error_message': _("Wrong username/password.")})
+                         'error_message': _("Wrong username/password."),
+                         'form' : AuthForm()})
 
         else:
             # all is OK, redirect the logged in user to the user site

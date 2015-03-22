@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import imp
 
+from django.utils.translation import ugettext_lazy as _
+
 ON_OPENSHIFT = False
 if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
@@ -130,6 +132,10 @@ else:
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'cs'#'en-us'
+LANGUAGES = (
+    ('cs', _('Czech')),
+    ('en', _('English')),
+)
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR), 'locale',

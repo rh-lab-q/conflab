@@ -36,6 +36,21 @@
                     {% else %}
                     <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
                     {% endif %}
+                    </li>
+                    <li>
+                        <form class="navbar-form" action="{% url 'confla:set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}" />
+                            <select class="form-control" onchange="this.form.submit();" name="language">
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                                {{ language.name_local }}
+                            </option>
+                            {% endfor %}
+                            </select>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>

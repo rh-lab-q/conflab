@@ -9,12 +9,10 @@
         <h2 class="form-signin-heading">{% trans "User Login" %}</h2>
         {% csrf_token %}
         <input type=hidden name="next" value="{{ request.GET.next }}">
-        <label for="login" class="sr-only">Username</label>
-        <input type="text" name="login" id="login" class="form-control"
-            placeholder="Username" required autofocus/>
+        <label for="id_username" class="sr-only">Username</label>
+        {{ form.username }}
         <label for="password" class="sr-only">Password</label>
-        <input type="password" name="password" id="password" placeholder="Password"
-            class="form-control" required/>
+        {{ form.password }}
         <button class="btw btn-lg btn-primary btn-block" type="submit">Log in</button>
         <div class="register_prompt"><a href="{% url 'confla:register' %}">Not registered yet?</a></div>
         {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
