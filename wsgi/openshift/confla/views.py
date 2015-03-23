@@ -104,3 +104,21 @@ class RegisterView(generic.TemplateView):
         return render(request, 'confla/register.html', {
             'form' : form,
         })
+
+    def send_paper(request):
+        if request.method == 'POST':
+            user_form = RegisterForm(request.POST)
+            paper_form = PaperForm(request.POST)
+            if user_form.is_valid() and paper_form.is_valid():
+                user = user_form.save()
+                paper_form.cleaned_data['user'] = user.id
+                paper_form.save()
+                return HttpResponseRedirect(reverse('confla:thanks'))
+            else:
+                user_form = RegisterForm()
+                paper_form = PaperForm()
+
+            return render(request, 'confla/register.html', {
+                'user_form' : user_form,
+                'paper_form' : paper_form,
+            })

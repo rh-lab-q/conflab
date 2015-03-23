@@ -77,15 +77,6 @@ class Volunteer(models.Model):
     def __str__(self):
         return self.user.username
 
-class EmailAdress(models.Model):
-    user = models.ForeignKey(ConflaUser)
-    address = models.EmailField(max_length=256)
-    is_active = models.BooleanField(default=False)
-    activation_token = models.CharField(max_length=256, blank=True, null=True)
-
-    def __str__(self):
-        return self.address
-
 class EventTag(models.Model):
     name = models.CharField(max_length=256)
 
@@ -104,9 +95,9 @@ class Event(models.Model):
     topic = models.CharField(max_length=256)
     description = models.TextField()
     lang = models.CharField(max_length=6)
-    slides = models.URLField(max_length=512)
+    slides = models.URLField(max_length=512, blank=True)
     video = models.URLField(max_length=512, blank=True)
-    google_doc_url = models.URLField(max_length=512)
+    google_doc_url = models.URLField(max_length=512, blank=True)
     speaker = models.ManyToManyField(ConflaUser, related_name='usr+')
     tags = models.ManyToManyField(EventTag, related_name='tag+', blank=True, null=True)
 
@@ -133,9 +124,10 @@ class Paper(models.Model):
     title = models.CharField(max_length=256)
     abstract = models.TextField()
     source = models.FileField(upload_to=paper_rename_and_return_path('papers/'),
-                                blank=True, null=True)
+                                blank=True, null=True,
+                                validators=[validate_papers])
     accepted = models.NullBooleanField()
-    reviewer = models.ManyToManyField(ConflaUser, related_name='rev+')
+    reviewer = models.ManyToManyField(ConflaUser, related_name='rev+', blank=True, null=True)
 
     def __str__(self):
         return self.title

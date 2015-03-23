@@ -27,6 +27,9 @@
                 <a class="navbar-brand" href="{% url 'confla:index' %}">Logo</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#"><strong>{% trans "Send us your speech" %}</strong></a></li>
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
                     <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
@@ -36,7 +39,6 @@
                     {% else %}
                     <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
                     {% endif %}
-                    </li>
                     <li>
                         <form class="navbar-form" action="{% url 'confla:set_language' %}" method="post">
                             {% csrf_token %}
