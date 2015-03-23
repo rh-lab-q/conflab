@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 
-from confla.models import ConflaUser
+from confla.models import ConflaUser, Paper
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
@@ -9,9 +9,8 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = ConflaUser
-        fields = ['username','password', 'confirm_password', 'first_name', 'last_name', 'email', #'phone', 'company', 'position',
-            # 'web', 'facebook', 'twitter', 'google_plus', 'linkedin',
-            # 'bio'
+        fields = ['username','password', 'confirm_password',
+            'first_name', 'last_name', 'email',
             ]
         widgets = {
             'password' : forms.PasswordInput(),
@@ -19,6 +18,9 @@ class RegisterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields.keys():
+            self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
 
         self.fields['email'].required = True
         self.fields['confirm_password'].required = False
@@ -38,23 +40,38 @@ class RegisterForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
+        """
+        Overrides the default save() method so that it stores the password in
+        hashed form.
+        """
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password'])
         if(commit):
             user.save()
         return user
 
+class PaperForm(forms.ModelForm):
+    class Meta:
+        model = Paper
+        fields = ['title', 'abstract', 'source']
+
 class ProfileForm(forms.ModelForm):
-        class Meta:
-            model = ConflaUser
-            fields = ['username', 'first_name',
-                'last_name', 'email', 'phone', 'company', 'position',
-                'web', 'facebook', 'twitter', 'google_plus', 'linkedin',
-                'bio'
-                ]
-            widgets = {
-                'password' : forms.PasswordInput(),
-            }
+    class Meta:
+        model = ConflaUser
+        fields = ['username', 'first_name',
+            'last_name', 'email', 'phone', 'company', 'position',
+            'web', 'facebook', 'twitter', 'google_plus', 'linkedin',
+            'bio'
+            ]
+        widgets = {
+            'password' : forms.PasswordInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields.keys():
+            self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
 
 class AuthForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
