@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 10:01+0100\n"
+"POT-Creation-Date: 2015-03-23 11:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,49 +17,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: confla/views.py:48
+#: settings.py:136
+msgid "Czech"
+msgstr "Čeština"
+
+#: settings.py:137
+msgid "English"
+msgstr "Angličtina"
+
+#: confla/forms.py:63
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: confla/forms.py:68
+msgid "Password"
+msgstr "Heslo"
+
+#: confla/utils.py:11
+msgid "Unsupported file type. File must be a pdf or ... file."
+msgstr "Nepodporovaný typ souboru. Soubor musí být typu pdf nebo ..."
+
+#: confla/views.py:50
 msgid "Your account is disabled."
-msgstr "Vas ucet neni aktivni"
+msgstr "Váš účet není aktivní."
 
-#: confla/views.py:55
+#: confla/views.py:58
 msgid "Wrong username/password."
-msgstr "Chybne uzivatelske jmeno nebo heslo"
+msgstr "Chybné uživatelské jméno nebo heslo."
 
-#: confla/templates/confla/base.html:19
+#: confla/templates/confla/base.html:31
 msgid "About"
 msgstr "O konferenci"
 
-#: confla/templates/confla/base.html:20
+#: confla/templates/confla/base.html:32
 msgid "Schedule"
 msgstr "Program"
 
-#: confla/templates/confla/base.html:22
+#: confla/templates/confla/base.html:34
 msgid "Profile"
 msgstr "Profil"
 
-#: confla/templates/confla/base.html:23
+#: confla/templates/confla/base.html:35
 msgid "Logout"
-msgstr "Odhlasit se"
+msgstr "Odhlásit se"
 
-#: confla/templates/confla/base.html:25
+#: confla/templates/confla/base.html:37
 msgid "Login"
-msgstr "Prihlasit se"
+msgstr "Přihlášení"
 
-#: confla/templates/confla/base.html:34
-msgid "Welcome to Confla system. Not much to be seen around yet."
-msgstr "Vitejte v Confla systemu. Zatim tu nic moc neni"
-
-#: confla/templates/confla/login.html:8
+#: confla/templates/confla/login.html:9
 msgid "User Login"
-msgstr "Prihlaseni"
+msgstr "Přihlášení"
+
+#: confla/templates/confla/login.html:16
+msgid "Log in"
+msgstr "Přihlásit se"
+
+#: confla/templates/confla/login.html:17
+msgid "Not registered yet?"
+msgstr "Nová registrace"
 
 #: confla/templates/confla/login.html:20
-msgid "Not registered yet?"
-msgstr "Nova registrace"
-
-#: confla/templates/confla/login.html:22
 msgid "You must be logged in!"
-msgstr "Musite byt prihlasen!"
+msgstr "Musíte se přihlásit"
 
 #: templates/admin/base_site.html:4
 msgid "Conflab Administration"
@@ -106,3 +126,6 @@ msgstr ""
 #: templates/admin/index.html:76
 msgid "Unknown content"
 msgstr ""
+
+#~ msgid "Welcome to Confla system. Not much to be seen around yet."
+#~ msgstr "Vitejte v Confla systemu. Zatim tu nic moc neni"
