@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 from confla.models import ConflaUser
-from confla.forms import RegisterForm, ProfileForm, AuthForm
+from confla.forms import *
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
@@ -89,6 +89,22 @@ class UserView(generic.TemplateView):
             'form' : form,
             })
 
+    @login_required
+    def send_paper(request):
+        if request.method == 'POST':
+            paper_form = PaperForm(request.POST)
+            if paper_form.is_valid():
+                paper = paper_form.save(commit=False)
+                paper.user_id = request.user.id
+                paper.save()
+                return HttpResponseRedirect(reverse('confla:thanks'))
+        else:
+            paper_form = PaperForm()
+
+        return render(request, 'confla/reg_speech.html', {
+            'paper_form': paper_form,
+        })
+
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'
 
@@ -111,14 +127,15 @@ class RegisterView(generic.TemplateView):
             paper_form = PaperForm(request.POST)
             if user_form.is_valid() and paper_form.is_valid():
                 user = user_form.save()
-                paper_form.cleaned_data['user'] = user.id
-                paper_form.save()
+                paper = paper_form.save(commit=False)
+                paper.user_id = user.id;
+                paper.save()
                 return HttpResponseRedirect(reverse('confla:thanks'))
-            else:
-                user_form = RegisterForm()
-                paper_form = PaperForm()
+        else:
+            user_form = RegisterForm()
+            paper_form = PaperForm()
 
-            return render(request, 'confla/register.html', {
-                'user_form' : user_form,
-                'paper_form' : paper_form,
-            })
+        return render(request, 'confla/reg_speech.html', {
+            'user_form': user_form,
+            'paper_form': paper_form,
+        })

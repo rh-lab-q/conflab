@@ -1,4 +1,7 @@
 {% extends "confla/base.html" %}
+{% load staticfiles %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
+{% endblock %}
 
 {% block content %}
 <form action="{% url 'confla:register' %}" method="post">{% csrf_token %}

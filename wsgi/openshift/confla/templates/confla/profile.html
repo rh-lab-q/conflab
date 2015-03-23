@@ -1,10 +1,10 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
-{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/profile.css' %}" />
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
 {% endblock %}
 
 {% block content %}
-<form class="profile-form" action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
+<form action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit changes" />
 </form>

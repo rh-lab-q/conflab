@@ -56,6 +56,14 @@ class PaperForm(forms.ModelForm):
         model = Paper
         fields = ['title', 'abstract', 'source']
 
+    def __init__(self, *args, **kwargs):
+        super(PaperForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields.keys():
+            if key == 'source':
+                continue;
+            self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = ConflaUser

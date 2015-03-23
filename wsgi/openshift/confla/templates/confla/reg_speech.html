@@ -1,0 +1,12 @@
+{% extends 'confla/base.html' %}
+{% load staticfiles %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
+{% endblock %}
+{% block content %}
+<form action="{% if not user.is_authenticated %}{% url 'confla:reg_speech' %}
+    {% else %}{% url 'confla:user_reg_speech' %}{% endif %}" method="post">{% csrf_token %}
+    {% if not user.is_authenticated %}{{ user_form.as_p }}{% endif %}
+    {{ paper_form.as_p}}
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}
