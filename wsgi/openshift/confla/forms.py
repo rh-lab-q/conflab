@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import ugettext as _
 
 from confla.models import ConflaUser
 
@@ -59,12 +60,12 @@ class ProfileForm(forms.ModelForm):
 class AuthForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'placeholder': 'Username',
+        self.fields['username'].widget.attrs.update({'placeholder': _('Username'),
                                                      'class' : 'form-control',
                                                      'required' : 'required',
                                                      'autofocus' : 'autofocus',
         })
-        self.fields['password'].widget.attrs.update({'placeholder': 'Password',
+        self.fields['password'].widget.attrs.update({'placeholder': _('Password'),
                                                      'class' : 'form-control',
                                                      'required' : 'required',
         })
