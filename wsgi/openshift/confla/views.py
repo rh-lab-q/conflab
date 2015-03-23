@@ -101,7 +101,7 @@ class UserView(generic.TemplateView):
         else:
             paper_form = PaperForm()
 
-        return render(request, 'confla/reg_speech.html', {
+        return render(request, 'confla/reg_talk.html', {
             'paper_form': paper_form,
         })
 
@@ -135,7 +135,7 @@ class RegisterView(generic.TemplateView):
             user_form = RegisterForm()
             paper_form = PaperForm()
 
-        return render(request, 'confla/reg_speech.html', {
+        return render(request, 'confla/reg_talk.html', {
             'user_form': user_form,
             'paper_form': paper_form,
         })
