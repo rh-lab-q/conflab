@@ -1,5 +1,28 @@
 {% extends "confla/base.html" %}
-
+{% load confla_filters %}
 {% block title %}Schedule{% endblock %}
 
-{% block content%}Here will be a beautiful conference schedule{% endblock %}
+{% block content%}
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Time</th>
+                {% for r in room_list %}
+                <th>{{ r.shortname }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    <tbody>
+        {% for t in time_list %}
+            <tr>
+            <td>{{t}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}

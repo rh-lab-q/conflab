@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
@@ -8,12 +10,24 @@ class Conference(models.Model):
     name = models.CharField(max_length=256)
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
+#    days = models.IntegerField()
 
     def __str__(self):
         return self.name
 
-    def is_Current(self):
-        return (self.end_date and self.start_date) and (self.end_date > timezone.now())
+    def get_delta_list(self):
+        def delta_func(start, end, delta):
+            current = start
+            while current < end:
+                yield current
+                current += delta
+
+        delta_list = [x.time().strftime("%H:%M") for x in delta_func(self.start_date,
+                                                                     self.end_date,
+                                                                     timedelta(minutes=10))]
+        return delta_list
+#    def is_Current(self):
+#        return (self.end_date and self.start_date) and (self.end_date > timezone.now())
 
     # gets events in a conference, filter by speaker, room, type
     def get_Events(self, speaker_id=None, room_id=None, type_id=None):
@@ -114,7 +128,17 @@ class Timeslot(models.Model):
     event_id = models.ForeignKey(Event, blank=True, null=True)
     conf_id = models.ForeignKey(Conference)
 
+    @property
+    def get_start_time(self):
+        return self.start_time.time().strftime("%H:%M")
+
+    @property
+    def get_end_time(self):
+        return self.end_time.time().strftime("%H:%M")
+
+
     # event length in minutes
+    @property
     def length(self):
         if self.start_time and self.end_time:
             return round((self.end_time - self.start_time).seconds / 60)
