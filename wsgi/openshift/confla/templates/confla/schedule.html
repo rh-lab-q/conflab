@@ -17,7 +17,16 @@
     <tbody>
         {% for t in time_list %}
             <tr>
-            <td>{{t}}</td>
+                <td>{{t}}</td>
+                {% for r in room_list %}
+                {% with s=r|get_slot:t %}
+                {% if s %}
+                <td align=center rowspan={{ s.length|div:10 }}>Timeslot {{t}}<br/>Room {{r.shortname}}</td>
+                {% elif r|is_free:t %}
+                <td></td>
+                {% endif %}
+                {% endwith %}
+                {% endfor %}
             </tr>
         {% endfor %}
     </tbody>
