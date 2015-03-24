@@ -1,11 +1,12 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
 {% endblock %}
 
 {% block content %}
 <form action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit changes" />
+    <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
 </form>
 {% endblock %}

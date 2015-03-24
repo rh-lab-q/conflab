@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-24 10:34+0100\n"
+"POT-Creation-Date: 2015-03-24 12:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,6 +84,10 @@ msgstr "Nová registrace"
 #: confla/templates/confla/login.html:19
 msgid "You must be logged in!"
 msgstr "Musíte se přihlásit"
+
+#: confla/templates/confla/profile.html:10
+msgid "Submit changes"
+msgstr "Potvrdit změny"
 
 #: templates/admin/base_site.html:4
 msgid "Conflab Administration"

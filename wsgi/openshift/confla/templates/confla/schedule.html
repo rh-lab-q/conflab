@@ -1,11 +1,58 @@
 {% extends "confla/base.html" %}
+{% load staticfiles %}
 {% load confla_filters %}
 {% block title %}Schedule{% endblock %}
+{% block extrastyles %}
+    <style>
+        .drag {
+            position: absolute;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            background: yellow;
+            padding: 10pt;
+            width: 300pt;
+            height: 61pt;
+            z-index: 2;
+        }
+        th {
+            text-align: center;
+        }
+        .table {
+            width: auto;
+            /* already in bootstrap - border-spacing: 0; */
+            border-collapse: 0;
+        }
+        tr th:first-child,
+        tr td:first-child {
+            width: 50pt;
+            border-right: 1pt solid #ddd;
+            text-align: center;
+        }
+        tr {
+            padding: 0;
+            margin: 0;
+            border-spacing: 0;
+        }
+        .table > tbody > tr > td {
+            padding: 0;
+            height: 20pt;
+            font-size: 10pt;
+            line-height: 20pt;
+            }
+        td {
+            position: relative;
+            width: 300pt;
+            margin: 0;
+        }
 
+    </style>
+    <script type="text/javascript" src="{% static 'redips/redips-drag-min.js' %}"></script>
+{% endblock %}
+{% block bodyattr %}onload="REDIPS.drag.init()"{% endblock %}
 {% block content%}
-
-<div class="container">
-    <table class="table table-bordered">
+    <div id="drag">
+    <table class="table" onload="REDIPS.drag.init()">
         <thead>
             <tr>
                 <th>Time</th>
@@ -19,19 +66,18 @@
             <tr>
                 <td>{{t}}</td>
                 {% for r in room_list %}
-                {% with s=r|get_slot:t %}
+                <td>{% with s=r|get_slot:t %}
                 {% if s %}
-                <td align=center rowspan={{ s.length|div:10 }}>Timeslot {{t}}<br/>Room {{r.shortname}}</td>
-                {% elif r|is_free:t %}
-                <td></td>
-                {% endif %}
-                {% endwith %}
+                <div class="drag">
+                    Timeslot {{t}}<br/>Room {{r.shortname}}
+                </div>{% endif %}{% endwith %}
+                </td>
                 {% endfor %}
             </tr>
         {% endfor %}
     </tbody>
   </table>
-</div>
+  </div>
 
 
 {% endblock %}

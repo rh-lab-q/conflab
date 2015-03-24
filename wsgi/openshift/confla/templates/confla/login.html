@@ -13,7 +13,7 @@
         {{ form.username }}
         <label for="password" class="sr-only">{% trans Password %}</label>
         {{ form.password }}
-        <button class="btw btn-lg btn-primary btn-block" type="submit">{% trans "Log in" %}</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Log in" %}</button>
         <div class="register_prompt"><a href="{% url 'confla:register' %}">{%trans "Not registered yet?" %}</a></div>
         {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
         {% if request.GET.next %}<div class="error">{% trans "You must be logged in!" %}</div>{% endif %}
