@@ -17,7 +17,7 @@ class PaperAdmin(admin.ModelAdmin):
     list_display = ('title', 'user')
 
 class ConfAdmin(admin.ModelAdmin):
-    list_display = ('name', 'start_date', 'end_date', 'is_Current')
+    list_display = ('name', 'start_date', 'end_date')
 
 class TimeslotAdmin(admin.ModelAdmin):
     list_display = ('id', 'start_time', 'end_time')

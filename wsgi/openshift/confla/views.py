@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
-from confla.models import ConflaUser
+from confla.models import ConflaUser, Conference, Room, Timeslot
 from confla.forms import *
 
 class AboutView(generic.TemplateView):
@@ -16,6 +16,15 @@ class AboutView(generic.TemplateView):
 
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/schedule.html'
+
+    def my_view(request):
+        #TODO: Need to make proper conference getter
+        conf = Conference.objects.all()[0]
+        return render(request, ScheduleView.template_name,
+                       { 'time_list' : conf.get_delta_list(),
+                         'room_list' : Room.objects.all(),
+                         'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
+                    })
 
 class LoginView(generic.TemplateView):
     template_name = 'confla/login.html'
