@@ -11,7 +11,7 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = ConflaUser
         fields = ['username','password', 'confirm_password',
-            'first_name', 'last_name', 'email',
+            'email', 'first_name', 'last_name',
             ]
         widgets = {
             'password' : forms.PasswordInput(),
