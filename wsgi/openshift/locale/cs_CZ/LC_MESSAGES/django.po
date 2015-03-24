@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-23 11:25+0100\n"
+"POT-Creation-Date: 2015-03-24 10:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,11 +25,11 @@ msgstr "Čeština"
 msgid "English"
 msgstr "Angličtina"
 
-#: confla/forms.py:63
+#: confla/forms.py:88
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: confla/forms.py:68
+#: confla/forms.py:93
 msgid "Password"
 msgstr "Heslo"
 
@@ -37,31 +37,35 @@ msgstr "Heslo"
 msgid "Unsupported file type. File must be a pdf or ... file."
 msgstr "Nepodporovaný typ souboru. Soubor musí být typu pdf nebo ..."
 
-#: confla/views.py:50
+#: confla/views.py:59
 msgid "Your account is disabled."
 msgstr "Váš účet není aktivní."
 
-#: confla/views.py:58
+#: confla/views.py:67
 msgid "Wrong username/password."
 msgstr "Chybné uživatelské jméno nebo heslo."
 
 #: confla/templates/confla/base.html:31
+msgid "Send us your talk"
+msgstr "Zašlete nám svůj výtvor"
+
+#: confla/templates/confla/base.html:34
 msgid "About"
 msgstr "O konferenci"
 
-#: confla/templates/confla/base.html:32
+#: confla/templates/confla/base.html:35
 msgid "Schedule"
 msgstr "Program"
 
-#: confla/templates/confla/base.html:34
+#: confla/templates/confla/base.html:37
 msgid "Profile"
 msgstr "Profil"
 
-#: confla/templates/confla/base.html:35
+#: confla/templates/confla/base.html:38
 msgid "Logout"
 msgstr "Odhlásit se"
 
-#: confla/templates/confla/base.html:37
+#: confla/templates/confla/base.html:40
 msgid "Login"
 msgstr "Přihlášení"
 
@@ -77,7 +81,7 @@ msgstr "Přihlásit se"
 msgid "Not registered yet?"
 msgstr "Nová registrace"
 
-#: confla/templates/confla/login.html:20
+#: confla/templates/confla/login.html:19
 msgid "You must be logged in!"
 msgstr "Musíte se přihlásit"
 
