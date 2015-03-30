@@ -35,6 +35,9 @@
                     <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
+                    {% if perms.confla.can_volunteer %}
+                    <li><a href="{% url 'confla:volunteer' %}">{% trans "Volunteer" %}</a></li>
+                    {% endif %}
                     <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
                     {% else %}
                     <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>

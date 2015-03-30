@@ -73,6 +73,11 @@ class ConflaUser(AbstractUser):
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0
 
+    class Meta:
+        permissions = (
+            ("can_volunteer", "Is a volunteer in a Conference"),
+        )
+
 class VolunteerBlock(models.Model):
     name =  models.CharField(max_length=256)
     description = models.TextField(blank=True)
@@ -90,7 +95,6 @@ class Volunteer(models.Model):
 
     def __str__(self):
         return self.user.username
-
 class EventTag(models.Model):
     name = models.CharField(max_length=256)
 

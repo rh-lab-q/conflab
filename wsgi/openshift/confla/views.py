@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
@@ -13,6 +13,14 @@ from confla.forms import *
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
+
+class VolunteerView(generic.TemplateView):
+    template_name = 'confla/volunteer.html'
+
+    @permission_required('confla.can_volunteer', raise_exception=True)
+    def my_view(request):
+        return render(request, VolunteerView.template_name)
+
 
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/schedule.html'
