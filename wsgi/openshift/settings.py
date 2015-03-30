@@ -131,7 +131,7 @@ else:
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'cs'#'en-us'
+LANGUAGE_CODE = 'en-us'
 LANGUAGES = (
     ('cs', _('Czech')),
     ('en', _('English')),
@@ -161,3 +161,6 @@ else:
 
 MEDIA_URL = '/media/'
 LOGIN_URL = '/login/'
+
+# Timeslot difference for schedules
+TIMEDELTA = 10 #minutes

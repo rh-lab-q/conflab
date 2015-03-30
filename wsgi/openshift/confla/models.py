@@ -1,30 +1,34 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from django.conf import settings
 
 from confla.utils import *
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
-    start_date = models.DateTimeField(blank=True, null=True)
-    end_date = models.DateTimeField(blank=True, null=True)
-#    days = models.IntegerField()
+    start_time = models.TimeField(blank=True, null=True)
+    end_time = models.TimeField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
+    # Returns a list of times during a day for a defined timedelta
     def get_delta_list(self):
         def delta_func(start, end, delta):
             current = start
             while current < end:
                 yield current
-                current += delta
+                current = (datetime.combine(date.today(), current) + delta).time()
 
-        delta_list = [x.time().strftime("%H:%M") for x in delta_func(self.start_date,
-                                                                     self.end_date,
-                                                                     timedelta(minutes=10))]
+        mins = settings.TIMEDELTA
+        delta_list = [x.strftime("%H:%M") for x in delta_func(self.start_time,
+                                                                self.end_time,
+                                                                timedelta(minutes=mins))]
         return delta_list
 #    def is_Current(self):
 #        return (self.end_date and self.start_date) and (self.end_date > timezone.now())
@@ -44,7 +48,8 @@ class Room(models.Model):
     shortname = models.CharField(max_length=16)
     name = models.CharField(max_length=64, blank=True)
     description = models.TextField(blank=True)
-    color = models.CharField(max_length=8)
+    color = models.CharField(max_length=8, blank=True)
+    conf_id = models.ForeignKey(Conference)
 
     def __str__(self):
         return self.shortname
@@ -95,6 +100,16 @@ class Volunteer(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class EmailAdress(models.Model):
+    user = models.ForeignKey(ConflaUser)
+    address = models.EmailField(max_length=256)
+    is_active = models.BooleanField(default=False)
+    activation_token = models.CharField(max_length=256, blank=True, null=True)
+
+    def __str__(self):
+        return self.address
+
 class EventTag(models.Model):
     name = models.CharField(max_length=256)
 
@@ -129,7 +144,7 @@ class Timeslot(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     room_id = models.ForeignKey(Room, blank=True, null=True)
-    event_id = models.ForeignKey(Event, blank=True, null=True)
+    event_id = models.OneToOneField(Event, blank=True, null=True)
     conf_id = models.ForeignKey(Conference)
 
     @property
