@@ -9,17 +9,4 @@
     {{ form.as_p }}
     <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
 </form>
-{% if error_message %} <p>{{ error_message }}</a> {% endif %}
-<ul>
-{% for email in email_list %}
-    <form action="{% url 'confla:user_delete_email' %}" method="post">{% csrf_token %}
-    <li>{% if email.is_primary %}Primary: {% endif%}{{ email.address }}
-    <input type="hidden" name="id" value="{{email.id}}" /> <a href="javascript:void(0);" onclick="$(this).closest('form').submit();">[X]</a></li>
-</form>
-{% endfor %}
-</ul>
-<form action="{% url 'confla:user_add_email' %}" method="post">{% csrf_token %}
-    {{ email_form.as_p }}
-    <button class="btn btn-default" type="submit">{% trans "Submit" %}</button>
-</form>
 {% endblock %}

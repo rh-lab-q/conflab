@@ -218,3 +218,15 @@ class RegisterView(generic.TemplateView):
             'user_form': user_form,
             'paper_form': paper_form,
         })
+
+class TimetableView(generic.TemplateView):
+    template_name = "confla/timetable.html"
+
+    def view_timetable(request):
+        #TODO: Needs certain permissions to be displayed
+        conf = Conference.objects.all()[0]
+        return render(request, TimetableView.template_name,
+                       { 'time_list' : conf.get_delta_list(),
+                         'room_list' : Room.objects.all(),
+                         'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
+                    })

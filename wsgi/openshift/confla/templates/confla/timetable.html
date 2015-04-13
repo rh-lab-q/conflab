@@ -1,0 +1,38 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load confla_filters %}
+{% block title %}Timetable{% endblock %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+{% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            {% for r in room_list %}
+            <th>{{ r.shortname }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+<tbody>
+    {% for t in time_list %}
+        <tr>
+            <td>{{t}}</td>
+            {% for r in room_list %}
+            <td>{% with s=r|get_slot:t %}
+            <div class="wrap">
+            {% if s %}
+                Timeslot {{t}}<br/>Room {{r.shortname}}
+            {% endif %}</div>{% endwith %}
+            </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</tbody>
+</table>
+{% endblock %}
+
+{% block extrascripts %}<script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
+{% endblock %}

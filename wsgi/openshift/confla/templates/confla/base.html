@@ -10,6 +10,7 @@
     <title>{% block title %}Confla - Conference schedule made easy{% endblock%}</title>
 
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.min.css' %}" />
     {% block extrastyles %}{% endblock %}
 </head>
 
@@ -35,6 +36,9 @@
                     <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
+                    {# TODO:if perms.confla.is_organizer #}
+                    <li><a href="{% url 'confla:timetable' %}">{% trans "Timetable" %}</a></li>
+                    {# TODO:endif #}
                     {% if perms.confla.can_volunteer %}
                     <li><a href="{% url 'confla:volunteer' %}">{% trans "Volunteer" %}</a></li>
                     {% endif %}
@@ -68,7 +72,9 @@
 </div>
   <!-- Bootstrap core JavaScript
   ================================================== -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="{% static 'jquery/jquery-1.11.2.min.js' %}"></script>
+  <script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.min.js' %}"></script>
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  {% block extrascripts %}{% endblock %}
 </body>
 </html>
