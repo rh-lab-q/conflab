@@ -103,7 +103,7 @@ class Volunteer(models.Model):
 
 class EmailAdress(models.Model):
     user = models.ForeignKey(ConflaUser)
-    address = models.EmailField(max_length=256)
+    address = models.EmailField(max_length=256, unique=True)
     is_active = models.BooleanField(default=False)
     activation_token = models.CharField(max_length=256, blank=True, null=True)
 

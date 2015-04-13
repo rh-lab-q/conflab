@@ -6,9 +6,10 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 
-from confla.models import ConflaUser, Conference, Room, Timeslot
+from confla.models import ConflaUser, Conference, Room, Timeslot, EmailAdress
 from confla.forms import *
 
 class AboutView(generic.TemplateView):
@@ -129,7 +130,24 @@ class RegisterView(generic.TemplateView):
         if request.method == 'POST': # the form was submitted
             form = RegisterForm(request.POST)
             if form.is_valid():
-                form.save()
+                user = form.save()
+                email = EmailAdress()
+                email.user = user
+                email.address = user.email
+                try:
+                    email.full_clean()
+                except ValidationError as e:
+                    user.delete()
+                    errors = []
+                    for key in e.args[0]:
+                        errors += e.args[0][key]
+                    form.errors['__all__'] = form.error_class(errors)
+                    return render(request, 'confla/register.html', {
+                         'error_message': _("Email already exists."),
+                         'form' : form})
+                else:
+                    email.save()
+
                 return HttpResponseRedirect(reverse('confla:thanks'))
         else:
             form = RegisterForm()
