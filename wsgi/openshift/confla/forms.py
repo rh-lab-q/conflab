@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
 
-from confla.models import ConflaUser, Paper
+from confla.models import ConflaUser, Paper, EmailAdress
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
@@ -51,6 +51,14 @@ class RegisterForm(forms.ModelForm):
             user.save()
         return user
 
+class EmailForm(forms.ModelForm):
+    class Meta:
+        model = EmailAdress
+        fields = ['address']
+
+    def __init__(self, *args, **kwargs):
+        super(EmailForm, self).__init__(*args, **kwargs)
+
 class PaperForm(forms.ModelForm):
     class Meta:
         model = Paper
@@ -67,7 +75,7 @@ class PaperForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = ConflaUser
-        fields = ['first_name', 'last_name', 'email', 'phone',
+        fields = ['first_name', 'last_name', 'phone',
                   'company', 'position', 'web', 'facebook',
                   'twitter', 'google_plus', 'linkedin', 'bio'
             ]

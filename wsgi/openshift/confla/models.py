@@ -110,6 +110,10 @@ class EmailAdress(models.Model):
     def __str__(self):
         return self.address
 
+    @property
+    def is_primary(self):
+        return self.user.email == self.address
+
 class EventTag(models.Model):
     name = models.CharField(max_length=256)
 

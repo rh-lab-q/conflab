@@ -92,6 +92,48 @@ class UserView(generic.TemplateView):
         return render(request, UserView.template_name)
 
     @login_required
+    def add_email(request):
+        if request.method == 'POST':
+            form = EmailForm(request.POST)
+            user = request.user
+            email = EmailAdress()
+            email.user = user
+            email.address = request.POST['address']
+            try:
+                email.full_clean()
+            except ValidationError as e:
+                user_form = ProfileForm(instance=request.user)
+                return render(request, 'confla/profile.html', {
+                     'email_form' : form,
+                     'email_list' : EmailAdress.objects.filter(user=request.user),
+                     'form' : user_form,
+                    })
+            else:
+                email.save()
+            return HttpResponseRedirect(reverse('confla:profile'))
+        else:
+            return HttpResponseRedirect(reverse('confla:profile'))
+
+    @login_required
+    def delete_email(request):
+        if request.method == 'POST' and 'id' in request.POST:
+            email = EmailAdress.objects.get(id=request.POST['id'])
+            if email.is_primary:
+                return render(request, 'confla/profile.html',{
+                            'form' : ProfileForm(instance=request.user),
+                            'email_list' : EmailAdress.objects.filter(user=request.user),
+                            'email_form' : EmailForm(),
+                            'error_message' : _("Cannot remove primary email."),
+                })
+            else:
+                email.delete()
+            return HttpResponseRedirect(reverse('confla:profile'))
+        else:
+            return HttpResponseRedirect(reverse('confla:profile'))
+
+
+
+    @login_required
     def view_profile(request):
         if request.method == 'POST':
             form = ProfileForm(data=request.POST, instance=request.user)
@@ -102,9 +144,12 @@ class UserView(generic.TemplateView):
                 return HttpResponseRedirect(reverse('confla:thanks'))
         else:
                 form = ProfileForm(instance=request.user)
+                email_form = EmailForm()
 
         return render(request, 'confla/profile.html',{
             'form' : form,
+            'email_list' : EmailAdress.objects.filter(user=request.user),
+            'email_form' : email_form,
             })
 
     @login_required
@@ -143,7 +188,6 @@ class RegisterView(generic.TemplateView):
                         errors += e.args[0][key]
                     form.errors['__all__'] = form.error_class(errors)
                     return render(request, 'confla/register.html', {
-                         'error_message': _("Email already exists."),
                          'form' : form})
                 else:
                     email.save()
