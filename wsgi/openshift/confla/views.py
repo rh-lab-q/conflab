@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -31,7 +33,7 @@ class ScheduleView(generic.TemplateView):
         conf = Conference.objects.all()[0]
         return render(request, ScheduleView.template_name,
                        { 'time_list' : conf.get_delta_list(),
-                         'room_list' : Room.objects.all(),
+                         'room_list' : conf.rooms.all(),
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
 
@@ -231,3 +233,6 @@ class TimetableView(generic.TemplateView):
                          'room_list' : Room.objects.all(),
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
+
+    def json_to_timetable(request):
+       pass
