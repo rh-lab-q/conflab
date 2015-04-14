@@ -36,6 +36,37 @@ function countEndtime(tr_array, rownumber) {
     return endtime_text;
 }
 
+function timetableToJson(selector) {
+    var cols = $(selector + " thead tr th").map(function() {
+        return $(this).text()
+    });
+    var tableObject = $(selector + " tbody tr").map(function(i) {
+        var row = {};
+        $(this).find('td').each(function(i) {
+            if(i > 0) {// omitting the first time-column
+                if($(this).text().match(/[a-z]/i)) {// there is actually some text in the cell
+                    var rowName = cols[i];
+                    var cell = {};
+                    // The numbers 10 and 8 are the lenght of "Starts at: ", "Ends at: "
+                    cell["start"] = $($(this).find("span.start")).text().slice(11,16);
+                    cell["end"] = $($(this).find("span.end")).text().slice(9,14);
+                    row[rowName] = cell;
+                }
+            }
+        });
+        return row;
+    }).get()
+
+    for(i = 0; i < tableObject.length; i++) {
+        if(Object.getOwnPropertyNames(tableObject[i]).length === 0) {
+            tableObject.splice(i, 1);
+            i--;
+        }
+    }
+
+    return JSON.stringify(tableObject);
+}
+
 $(document).ready(function() {
     var timeslotCount = 0;
 
@@ -69,7 +100,7 @@ $(document).ready(function() {
         remove.className="removesign";
         $(remove).append('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
         $(elem).append(remove);
-        $(elem).append('<span class="start">Starts at:' + timestart + '</span>');
+        $(elem).append('<span class="start">Starts at: ' + timestart + '</span>');
         var endspan = document.createElement('span');
         endspan.className = "end";
         $(endspan).append("Ends at:" + countEndtime(tr_array, row+1));
