@@ -229,6 +229,7 @@ class TimetableView(generic.TemplateView):
         if(request.method == 'POST'):
             print request.POST)
         #TODO: Needs certain permissions to be displayed
+        #TODO: Proper conference getter
         conf = Conference.objects.all()[0]
         return render(request, TimetableView.template_name,
                        { 'time_list' : conf.get_delta_list(),
