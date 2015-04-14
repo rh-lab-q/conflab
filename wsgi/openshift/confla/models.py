@@ -81,6 +81,7 @@ class ConflaUser(AbstractUser):
     class Meta:
         permissions = (
             ("can_volunteer", "Is a volunteer in a Conference"),
+            ("can_organize", "Is an organizer in a Conference"),
         )
 
 class VolunteerBlock(models.Model):
