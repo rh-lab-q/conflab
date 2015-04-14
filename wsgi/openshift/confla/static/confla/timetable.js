@@ -67,6 +67,13 @@ function timetableToJson(selector) {
     return JSON.stringify(tableObject);
 }
 
+function timetableSubmit(selector) {
+    var toSend = timetableToJson(selector);
+    $.post("saveTable/", {
+        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        data: toSend});
+}
+
 $(document).ready(function() {
     var timeslotCount = 0;
 

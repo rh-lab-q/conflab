@@ -6,7 +6,13 @@
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
 {% endblock %}
 
+{% block extranav %}
+<div style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
+    <button type="button" class="btn btn-success" onclick="timetableSubmit('.table')">Save</button>
+</div>
+{% endblock %}
 {% block content %}
+{% csrf_token %}
 <table class="table">
     <thead>
         <tr>

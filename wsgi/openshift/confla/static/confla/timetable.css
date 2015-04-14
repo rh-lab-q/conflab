@@ -61,7 +61,7 @@ td {
     top: 0;
     left: 0;
     padding: 0;
-    padding-left: 5px;
+    padding-left: 10px;
     padding-right: 5px;
     margin: 0;
     background: #eee;
@@ -86,4 +86,10 @@ td {
 .start, .end {
     float: left;
     clear: left;
+}
+
+/* Thicken jQuery-UI resizable handle */
+.ui-resizable-s {
+    bottom: 0;
+    height: 7px;
 }

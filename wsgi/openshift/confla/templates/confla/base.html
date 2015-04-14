@@ -15,56 +15,57 @@
 </head>
 
 <body {% block bodyattr %}{% endblock %}>
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle=collapse
-                    data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'confla:index' %}">Logo</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Send us your talk" %}</strong></a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
-                    <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
-                    {% if user.is_authenticated %}
-                    <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
-                    {% if perms.confla.can_organize %}
-                    <li><a href="{% url 'confla:timetable' %}">{% trans "Timetable" %}</a></li>
-                    {% endif %}
-                    {% if perms.confla.can_volunteer %}
-                    <li><a href="{% url 'confla:volunteer' %}">{% trans "Volunteer" %}</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
-                    {% else %}
-                    <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
-                    {% endif %}
-                    <li>
-                        <form class="navbar-form" action="{% url 'confla:set_language' %}" method="post">
-                            {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ redirect_to }}" />
-                            <select class="form-control" onchange="this.form.submit();" name="language">
-                            {% get_language_info_list for LANGUAGES as languages %}
-                            {% for language in languages %}
-                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
-                                {{ language.name_local }}
-                            </option>
-                            {% endfor %}
-                            </select>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle=collapse
+                data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'confla:index' %}">Logo</a>
         </div>
-    </nav>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Send us your talk" %}</strong></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
+                <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
+                {% if user.is_authenticated %}
+                {% if perms.confla.can_organize %}
+                <li><a href="{% url 'confla:timetable' %}">{% trans "Timetable" %}</a></li>
+                {% endif %}
+                <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
+                {% if perms.confla.can_volunteer %}
+                <li><a href="{% url 'confla:volunteer' %}">{% trans "Volunteer" %}</a></li>
+                {% endif %}
+                <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
+                {% else %}
+                <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
+                {% endif %}
+                <li>
+                    <form class="navbar-form" action="{% url 'confla:set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}" />
+                        <select class="form-control" onchange="this.form.submit();" name="language">
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                            {{ language.name_local }}
+                        </option>
+                        {% endfor %}
+                        </select>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
+{% block extranav %}{% endblock %}
 <div class="container">
     {% block content %}
     Welcome to Confla system. Not much to be seen around yet.
