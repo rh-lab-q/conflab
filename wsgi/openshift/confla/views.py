@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -10,6 +11,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 
 from confla.models import ConflaUser, Conference, Room, Timeslot, EmailAdress
 from confla.forms import *
@@ -226,13 +228,39 @@ class TimetableView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
-        #TODO: Needs certain permissions to be displayed
-        conf = Conference.objects.all()[0]
+        #TODO: Proper conference getter
+        conf = Conference.objects.all()[0].id
         return render(request, TimetableView.template_name,
                        { 'time_list' : conf.get_delta_list(),
                          'room_list' : Room.objects.all(),
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
 
-    def json_to_timetable(request):
-       pass
+    def json_to_timeslots():
+        test = '[{"Room1" : {"start_time" : "10:10", "end_time" : "10:20"}}]'
+         #TODO: Proper conference getter
+        conf = Conference.objects.all()[0]
+        json_obj = json.loads(test)
+
+        # Remove all timeslots from db
+        for slot in Timeslot.objects.all():
+            slot.delete()
+
+        # Create new timeslots from JSON
+        for row in json_obj:
+            # row: one row in the timeslot table
+            # key: room shortname, also dictionary key for timeslots
+            for key in row:
+                newslot = Timeslot()
+                newslot.room = Room.objects.get(shortname=key)
+                newslot.conf_id = conf
+                # Has to be like this or else django complains!
+                start = datetime.strptime(row[key]['start_time'], "%H:%M")
+                end = datetime.strptime(row[key]['end_time'], "%H:%M")
+                newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                            second=0, microsecond=0)
+                newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                            second=0, microsecond=0)
+                newslot.full_clean()
+                # Add slot to db
+                newslot.save()
