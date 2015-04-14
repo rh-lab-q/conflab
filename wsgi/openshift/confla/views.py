@@ -236,6 +236,32 @@ class TimetableView(generic.TemplateView):
                          'room_list' : Room.objects.all(),
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
+def json_to_timeslots():
+        test = '[{"Room1" : {"start_time" : "10:10", "end_time" : "10:20"}}]'
+         #TODO: Proper conference getter
+        conf = Conference.objects.all()[0]
+        json_obj = json.loads(test)
 
-    def json_to_timetable(request):
-       pass
+        # Remove all timeslots from db
+        for slot in Timeslot.objects.all():
+            slot.delete()
+
+        # Create new timeslots from JSON
+        for row in json_obj:
+            # row: one row in the timeslot table
+            # key: room shortname, also dictionary key for timeslots
+            for key in row:
+                newslot = Timeslot()
+                newslot.room = Room.objects.get(shortname=key)
+                newslot.conf_id = conf
+                # Has to be like this or else django complains!
+                start = datetime.strptime(row[key]['start_time'], "%H:%M")
+                end = datetime.strptime(row[key]['end_time'], "%H:%M")
+                newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                            second=0, microsecond=0)
+                newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                            second=0, microsecond=0)
+                newslot.full_clean()
+                # Add slot to db
+                newslot.save()
+
