@@ -49,7 +49,7 @@ $(document).ready(function() {
 
     $("td").on("dblclick", ".wrap", function() {
         var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
-        var timestart = $(this).parent().parent().text();
+        var timestart = $($(this).parent().parent().children('td')[0]).text();
         // Array of all rows in a table
         var tr_array = $(this).parent().parent().parent().find('tr');
 
