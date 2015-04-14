@@ -13,6 +13,7 @@ class Conference(models.Model):
     end_time = models.TimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
+    rooms = models.ManyToManyField('Room', related_name='room+')
 
     def __str__(self):
         return self.name
@@ -49,7 +50,6 @@ class Room(models.Model):
     name = models.CharField(max_length=64, blank=True)
     description = models.TextField(blank=True)
     color = models.CharField(max_length=8, blank=True)
-    conf_id = models.ForeignKey(Conference)
 
     def __str__(self):
         return self.shortname
