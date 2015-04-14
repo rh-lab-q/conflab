@@ -227,7 +227,7 @@ class TimetableView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
         if(request.method == 'POST'):
-            print(request.POST)
+            print request.POST)
         #TODO: Needs certain permissions to be displayed
         conf = Conference.objects.all()[0]
         return render(request, TimetableView.template_name,
