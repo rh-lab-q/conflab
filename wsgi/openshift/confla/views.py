@@ -229,7 +229,7 @@ class TimetableView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
         #TODO: Proper conference getter
-        conf = Conference.objects.all()[0].id
+        conf = Conference.objects.all()[0]
         return render(request, TimetableView.template_name,
                        { 'time_list' : conf.get_delta_list(),
                          'room_list' : Room.objects.all(),
