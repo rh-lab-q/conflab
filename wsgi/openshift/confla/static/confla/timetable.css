@@ -65,6 +65,7 @@ td {
     padding-right: 5px;
     margin: 0;
     background: #eee;
+    overflow: hidden;
     z-index: 100;
 }
 .wrap {
@@ -80,4 +81,9 @@ td {
     margin-right: 5px;
     float: right;
     cursor: pointer;
+}
+
+.start, .end {
+    float: left;
+    clear: left;
 }
