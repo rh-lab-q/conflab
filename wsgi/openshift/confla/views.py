@@ -222,6 +222,7 @@ class RegisterView(generic.TemplateView):
 class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
 
+    @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
         #TODO: Needs certain permissions to be displayed
         conf = Conference.objects.all()[0]
