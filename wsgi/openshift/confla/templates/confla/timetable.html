@@ -27,10 +27,18 @@
         <tr>
             <td>{{t}}</td>
             {% for r in room_list %}
-            <td>
-            <div class="wrap">
-            </div>
-            </td>
+                <td>
+                <div class="wrap">
+                {% comment %}
+                {% "with s=r|get_slot:t" %}
+                {% if s %}
+                    If a timeslot has been found in the db for the given time
+                    Need to make a proper timeslot div here
+                {% endif %}
+                {% endwith %}
+                {% endcomment %}
+                </div>
+                </td>
             {% endfor %}
         </tr>
     {% endfor %}
