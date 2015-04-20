@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 
 from django.shortcuts import get_object_or_404
@@ -10,6 +11,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 
 from confla.models import ConflaUser, Conference, Room, Timeslot, EmailAdress
 from confla.forms import *
@@ -227,7 +229,7 @@ class TimetableView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
         if(request.method == 'POST'):
-            print(request.POST)
+            TimetableView.json_to_timeslots(request.POST['data'])
         #TODO: Needs certain permissions to be displayed
         #TODO: Proper conference getter
         conf = Conference.objects.all()[0]
@@ -236,14 +238,16 @@ class TimetableView(generic.TemplateView):
                          'room_list' : Room.objects.all(),
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
-def json_to_timeslots():
-        test = '[{"Room1" : {"start_time" : "10:10", "end_time" : "10:20"}}]'
-         #TODO: Proper conference getter
+
+    def json_to_timeslots(json_string):
+        # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
+        # TODO: Proper conference getter
+        print(json_string)
         conf = Conference.objects.all()[0]
-        json_obj = json.loads(test)
+        json_obj = json.loads(json_string)
 
         # Remove all timeslots from db
-        for slot in Timeslot.objects.all():
+        for slot in Timeslot.objects.filter(conf_id=conf):
             slot.delete()
 
         # Create new timeslots from JSON
@@ -252,11 +256,11 @@ def json_to_timeslots():
             # key: room shortname, also dictionary key for timeslots
             for key in row:
                 newslot = Timeslot()
-                newslot.room = Room.objects.get(shortname=key)
+                newslot.room_id = Room.objects.get(shortname=key)
                 newslot.conf_id = conf
                 # Has to be like this or else django complains!
-                start = datetime.strptime(row[key]['start_time'], "%H:%M")
-                end = datetime.strptime(row[key]['end_time'], "%H:%M")
+                start = datetime.strptime(row[key]['start'], "%H:%M")
+                end = datetime.strptime(row[key]['end'], "%H:%M")
                 newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
                                                             second=0, microsecond=0)
                 newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
