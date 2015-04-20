@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned
 
 from confla.utils import *
 
@@ -14,9 +15,19 @@ class Conference(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     rooms = models.ManyToManyField('Room', related_name='room+')
+    timedelta = models.IntegerField()
+    active = models.BooleanField()
 
     def __str__(self):
         return self.name
+
+    # Returns the active conference
+    def get_active():
+        try:
+            return Conference.objects.get(active=True)
+        except MultipleObjectsReturned as e:
+            # There is more than one active conference
+            raise e
 
     # Returns a list of times during a day for a defined timedelta
     def get_delta_list(self):
@@ -26,13 +37,11 @@ class Conference(models.Model):
                 yield current
                 current = (datetime.combine(date.today(), current) + delta).time()
 
-        mins = settings.TIMEDELTA
+        mins = self.timedelta
         delta_list = [x.strftime("%H:%M") for x in delta_func(self.start_time,
                                                                 self.end_time,
                                                                 timedelta(minutes=mins))]
         return delta_list
-#    def is_Current(self):
-#        return (self.end_date and self.start_date) and (self.end_date > timezone.now())
 
     # gets events in a conference, filter by speaker, room, type
     def get_Events(self, speaker_id=None, room_id=None, type_id=None):
@@ -44,6 +53,7 @@ class Conference(models.Model):
         if type_id:
             event_set = event_set.filter(e_type=type_id)
         return event_set
+
 
 class Room(models.Model):
     shortname = models.CharField(max_length=16)
@@ -62,6 +72,7 @@ class ConflaUser(AbstractUser):
     company = models.CharField(max_length=256, blank=True)
     position = models.CharField(max_length=256, blank=True)
     web = models.URLField(max_length=512, blank=True)
+    github = models.URLField(max_length=512, blank=True)
     facebook = models.URLField(max_length=512, blank=True)
     twitter = models.URLField(max_length=512, blank=True)
     google_plus = models.URLField(max_length=512, blank=True)
@@ -117,6 +128,7 @@ class EmailAdress(models.Model):
 
 class EventTag(models.Model):
     name = models.CharField(max_length=256)
+    color = models.CharField(max_length=8, blank=True)
 
     def __str__(self):
         return self.name
@@ -168,6 +180,7 @@ class Timeslot(models.Model):
             return round((self.end_time - self.start_time).seconds / 60)
 
 class Paper(models.Model):
+    conf_id = models.ForeignKey(Conference)
     user = models.ForeignKey(ConflaUser)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
@@ -176,6 +189,17 @@ class Paper(models.Model):
                                 validators=[validate_papers])
     accepted = models.NullBooleanField()
     reviewer = models.ManyToManyField(ConflaUser, related_name='rev+', blank=True, null=True)
+    review_notes = models.TextField()
 
     def __str__(self):
         return self.title
+
+class Photo(models.Model):
+    conf_id = models.ForeignKey(Conference)
+    author = models.CharField(max_length=256)
+    picture = models.ImageField(upload_to='photos/')
+
+class Page(models.Model):
+    conf_id = models.ForeignKey(Conference)
+    title = models.CharField(max_length=256)
+    abstract = models.TextField()

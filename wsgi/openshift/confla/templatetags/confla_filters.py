@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django import template
 
-from confla.models import Timeslot
+from confla.models import Timeslot, Conference
 
 
 
@@ -19,7 +19,7 @@ def div(value, arg):
 
 @register.filter
 def get_slot(value, arg):
-    slots = Timeslot.objects.filter(room_id=value.id)
+    slots = Timeslot.objects.filter(room_id=value['room'], conf_id=value['conf'])
     for s in slots:
         if s.get_start_time == arg:
             return s
@@ -27,7 +27,7 @@ def get_slot(value, arg):
 
 @register.filter
 def is_free(value, arg):
-    slots = Timeslot.objects.filter(room_id=value.id)
+    slots = Timeslot.objects.filter(room_id=value['room'], conf_id=value['conf'])
     time = datetime.strptime(arg, "%H:%M")
     for s in slots:
         if datetime.strptime(s.get_start_time, "%H:%M") < time and datetime.strptime(s.get_end_time, "%H:%M") > time:

@@ -14,7 +14,7 @@
             <tr>
                 <th>Time</th>
                 {% for r in room_list %}
-                <th>{{ r.shortname }}</th>
+                <th>{{ r.room.shortname }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -23,12 +23,13 @@
             <tr>
                 <td>{{t}}</td>
                 {% for r in room_list %}
-                <td>{% with s=r|get_slot:t %}
+                {% with s=r|get_slot:t %}
                 {% if s %}
-                <div class="drag">
-                    Timeslot {{t}}<br/>Room {{r.shortname}}
-                </div>{% endif %}{% endwith %}
-                </td>
+                <td align=center rowspan={{ s.length|div:10 }}>Timeslot {{t}}<br/>Room {{r.room.shortname}}</td>
+                {% elif r|is_free:t %}
+                <td></td>
+                {% endif %}
+                {% endwith %}
                 {% endfor %}
             </tr>
         {% endfor %}
