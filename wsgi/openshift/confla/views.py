@@ -242,7 +242,6 @@ class TimetableView(generic.TemplateView):
     def json_to_timeslots(json_string):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
         # TODO: Proper conference getter
-        print(json_string)
         conf = Conference.objects.all()[0]
         json_obj = json.loads(json_string)
 
