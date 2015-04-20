@@ -1,0 +1,18 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'confla:timetable' %}" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    {{ formset }}
+    <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
+</form>
+{% if error_message %} <p>{{ error_message }}</a> {% endif %}
+{% endblock %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="{% static 'confla/datetime.js' %}"></script>
+{% endblock %}

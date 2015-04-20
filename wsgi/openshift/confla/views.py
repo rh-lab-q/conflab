@@ -133,8 +133,6 @@ class UserView(generic.TemplateView):
         else:
             return HttpResponseRedirect(reverse('confla:profile'))
 
-
-
     @login_required
     def view_profile(request):
         if request.method == 'POST':
@@ -226,16 +224,34 @@ class TimetableView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
-        if(request.method == 'POST'):
-            print(request.POST)
+        if len(Conference.objects.all()) == 0:
+            conf = Conference()
+            RoomsFormSet = forms.models.inlineformset_factory(Conference, Room)
+            if request.method == 'POST': # the form was submitted
+                form = ConfCreateForm(request.POST, instance=conf)
+                roomset = RoomsFormSet(request.POST, instance=conf)
+                if form.is_valid() and roomset.is_valid():
+                    form.save()
+                    return HttpResponseRedirect(reverse('confla:thanks'))
+            else:
+                form = ConfCreateForm(instance=conf)
+                roomset = RoomsFormSet(instance=conf)
+
+            return render(request, 'confla/newconf.html', {
+                'form' : form, 'formset': roomset,
+            })
+        else:
+            conf = Conference.objects.all()[0]
+            if(request.method == 'POST'):
+                print(request.POST)
         #TODO: Needs certain permissions to be displayed
         #TODO: Proper conference getter
-        conf = Conference.objects.all()[0]
-        return render(request, TimetableView.template_name,
-                       { 'time_list' : conf.get_delta_list(),
-                         'room_list' : Room.objects.all(),
-                         'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
-                    })
+
+            return render(request, TimetableView.template_name,
+                           { 'time_list' : conf.get_delta_list(),
+                             'room_list' : Room.objects.all(),
+                             'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
+                        })
 def json_to_timeslots():
         test = '[{"Room1" : {"start_time" : "10:10", "end_time" : "10:20"}}]'
          #TODO: Proper conference getter
@@ -264,4 +280,3 @@ def json_to_timeslots():
                 newslot.full_clean()
                 # Add slot to db
                 newslot.save()
-

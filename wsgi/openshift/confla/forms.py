@@ -2,7 +2,29 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
 
-from confla.models import ConflaUser, Paper, EmailAdress
+from confla.models import Conference, Room, ConflaUser, Paper, EmailAdress
+
+class ConfCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Conference
+        fields = ['name', 'start_date', 'end_date', 'start_time',
+            'end_time', 'rooms']
+
+        widgets = {
+            'rooms': forms.CheckboxSelectMultiple(),
+        }
+
+    rooms = forms.ModelMultipleChoiceField(queryset=Room.objects.all(), required = False)
+
+    def __init__(self, *args, **kwargs):
+        super(ConfCreateForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields.keys():
+            classes = 'form-control input-sm'
+            if key in ['start_date', 'end_date']:
+                classes += ' datepicker'
+            self.fields[key].widget.attrs.update({'class' : classes})
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,

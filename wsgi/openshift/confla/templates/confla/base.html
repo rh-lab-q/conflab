@@ -9,8 +9,8 @@
 
     <title>{% block title %}Confla - Conference schedule made easy{% endblock%}</title>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
     {% block extrastyles %}{% endblock %}
 </head>
 
@@ -29,7 +29,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Send us your talk" %}</strong></a></li>
+                <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Submit your talk" %}</strong></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
