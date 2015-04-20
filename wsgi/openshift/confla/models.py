@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned
 
 from confla.utils import *
 
@@ -19,6 +20,14 @@ class Conference(models.Model):
 
     def __str__(self):
         return self.name
+
+    # Returns the active conference
+    def get_active():
+        try:
+            return Conference.objects.get(active=True)
+        except MultipleObjectsReturned as e:
+            # There is more than one active conference
+            raise e
 
     # Returns a list of times during a day for a defined timedelta
     def get_delta_list(self):
@@ -44,6 +53,7 @@ class Conference(models.Model):
         if type_id:
             event_set = event_set.filter(e_type=type_id)
         return event_set
+
 
 class Room(models.Model):
     shortname = models.CharField(max_length=16)

@@ -31,11 +31,12 @@ class ScheduleView(generic.TemplateView):
     template_name = 'confla/schedule.html'
 
     def my_view(request):
-        #TODO: Need to make proper conference getter
-        conf = Conference.objects.all()[0]
+        #TODO: Add compatibility with archived conferences
+        conf = Conference.get_active()
         return render(request, ScheduleView.template_name,
                        { 'time_list' : conf.get_delta_list(),
-                         'room_list' : conf.rooms.all(),
+                         'room_list' : [{'conf' : conf,
+                                         'room' : x} for x in conf.rooms.all()],
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
 
@@ -231,8 +232,8 @@ class TimetableView(generic.TemplateView):
         if(request.method == 'POST'):
             TimetableView.json_to_timeslots(request.POST['data'])
         #TODO: Needs certain permissions to be displayed
-        #TODO: Proper conference getter
-        conf = Conference.objects.all()[0]
+        #TODO: Add compatibility with archived conferences
+        conf = Conference.get_active()
         return render(request, TimetableView.template_name,
                        { 'time_list' : conf.get_delta_list(),
                          'room_list' : Room.objects.all(),
@@ -241,8 +242,7 @@ class TimetableView(generic.TemplateView):
 
     def json_to_timeslots(json_string):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
-        # TODO: Proper conference getter
-        conf = Conference.objects.all()[0]
+        conf = Conference.get_active()
         json_obj = json.loads(json_string)
 
         # Remove all timeslots from db
