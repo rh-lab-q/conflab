@@ -5,9 +5,15 @@
 {% endblock %}
 
 {% block content %}
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="roomsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      </div>
+    </div>
+</div>
 <form action="{% url 'confla:timetable' %}" method="post">{% csrf_token %}
     {{ form.as_p }}
-    {{ formset }}
+    <a href="{% url 'confla:add_rooms' %}" data-toggle="modal" data-target="#modal" title="Add rooms" data-tooltip>Add rooms</a>
     <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
 </form>
 {% if error_message %} <p>{{ error_message }}</a> {% endif %}
@@ -15,4 +21,5 @@
 
 {% block extrascripts %}
     <script type="text/javascript" src="{% static 'confla/datetime.js' %}"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
 {% endblock %}
