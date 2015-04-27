@@ -8,7 +8,7 @@
 
 {% block extranav %}
 <div style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
-    <button type="button" class="btn btn-success" onclick="timetableSubmit('.table')">Save</button>
+    <button type="button" class="btn btn-success" onclick="timetableSubmit('.table'); window.location.href={% url 'confla:thanks' %}">Save</button>
 </div>
 {% endblock %}
 {% block content %}
@@ -18,7 +18,7 @@
         <tr>
             <th>Time</th>
             {% for r in room_list %}
-            <th>{{ r.shortname }}</th>
+            <th>{{ r.room.shortname }}</th>
             {% endfor %}
         </tr>
     </thead>
@@ -28,12 +28,10 @@
             <td>{{t}}</td>
             {% for r in room_list %}
                 <td>
-                <div class="wrap">
-                {% comment %}
-                {% "with s=r|get_slot:t" %}
+                <div class="wrap">{% comment %}
+                {% with s=r|get_slot:t %}
                 {% if s %}
-                    If a timeslot has been found in the db for the given time
-                    Need to make a proper timeslot div here
+                    Timeslot {{t}}
                 {% endif %}
                 {% endwith %}
                 {% endcomment %}
