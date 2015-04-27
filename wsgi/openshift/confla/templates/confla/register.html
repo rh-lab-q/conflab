@@ -1,11 +1,39 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'confla:register' %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-</form>
+<div class=container>
+    <form action="{% url 'confla:register' %}" method="post">{% csrf_token %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {% trans "Registration" %}
+                </div>
+                <div class="panel-body">
+                        {{ form.as_p }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {% trans "Social network sign up" %}
+                </div>
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            <input type="submit" value="Submit" />
+
+        </div>
+    </div>
+    </form>
+</div>
 {% endblock %}
