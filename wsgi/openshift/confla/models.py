@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.conf import settings
-from django.core.exceptions import MultipleObjectsReturned
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
 from confla.utils import *
 
@@ -15,7 +15,7 @@ class Conference(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     rooms = models.ManyToManyField('Room', related_name='room+')
-    timedelta = models.IntegerField(default=15)
+    timedelta = models.IntegerField()
     active = models.BooleanField()
 
     def __str__(self):
@@ -28,6 +28,8 @@ class Conference(models.Model):
         except MultipleObjectsReturned as e:
             # There is more than one active conference
             raise e
+        except ObjectDoesNotExist:
+            return None
 
     # Returns a list of times during a day for a defined timedelta
     def get_delta_list(self):

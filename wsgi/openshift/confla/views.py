@@ -34,6 +34,8 @@ class ScheduleView(generic.TemplateView):
     def my_view(request):
         #TODO: Add compatibility with archived conferences
         conf = Conference.get_active()
+        if not(conf):
+            return HttpResponse("Currently no conferences.")
         return render(request, ScheduleView.template_name,
                        { 'time_list' : conf.get_delta_list(),
                          'room_list' : [{'conf' : conf,
