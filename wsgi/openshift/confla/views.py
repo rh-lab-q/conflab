@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views import generic
@@ -222,26 +223,39 @@ class RegisterView(generic.TemplateView):
             'paper_form': paper_form,
         })
 
+class AddRoomsView(generic.TemplateView):
+    template_name="confla/add_rooms.html"
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def view_form(request):
+        if request.method == 'POST':
+            form = RoomCreateForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponse(render_to_string('confla/add_rooms_success.html'))
+        else:
+            form = RoomCreateForm()
+
+        return render(request, 'confla/add_rooms.html', {
+            'rooms_form' : form,
+        })
+
 class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
 
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
         if len(Conference.objects.all()) == 0:
-            conf = Conference()
-            RoomsFormSet = forms.models.inlineformset_factory(Conference, Room)
             if request.method == 'POST': # the form was submitted
-                form = ConfCreateForm(request.POST, instance=conf)
-                roomset = RoomsFormSet(request.POST, instance=conf)
-                if form.is_valid() and roomset.is_valid():
+                form = ConfCreateForm(request.POST)
+                if form.is_valid():
                     form.save()
                     return HttpResponseRedirect(reverse('confla:thanks'))
             else:
-                form = ConfCreateForm(instance=conf)
-                roomset = RoomsFormSet(instance=conf)
+                form = ConfCreateForm()
 
             return render(request, 'confla/newconf.html', {
-                'form' : form, 'formset': roomset,
+                'form' : form,
             })
         else:
             if(request.method == 'POST'):

@@ -11,12 +11,6 @@ class ConfCreateForm(forms.ModelForm):
         fields = ['name', 'start_date', 'end_date', 'start_time',
             'end_time', 'rooms']
 
-        widgets = {
-            'rooms': forms.CheckboxSelectMultiple(),
-        }
-
-    rooms = forms.ModelMultipleChoiceField(queryset=Room.objects.all(), required = False)
-
     def __init__(self, *args, **kwargs):
         super(ConfCreateForm, self).__init__(*args, **kwargs)
 
@@ -25,6 +19,18 @@ class ConfCreateForm(forms.ModelForm):
             if key in ['start_date', 'end_date']:
                 classes += ' datepicker'
             self.fields[key].widget.attrs.update({'class' : classes})
+
+class RoomCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Room
+        fields = ['shortname', 'description', 'color']
+
+    def __init__(self, *args, **kwargs):
+        super(RoomCreateForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields.keys():
+            self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
