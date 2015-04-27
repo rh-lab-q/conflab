@@ -5,21 +5,64 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
-</form>
-{% if error_message %} <p>{{ error_message }}</a> {% endif %}
-<ul>
-{% for email in email_list %}
-    <form action="{% url 'confla:user_delete_email' %}" method="post">{% csrf_token %}
-    <li>{% if email.is_primary %}Primary: {% endif%}{{ email.address }}
-    <input type="hidden" name="id" value="{{email.id}}" /> <a href="javascript:void(0);" onclick="$(this).closest('form').submit();">[X]</a></li>
-</form>
-{% endfor %}
-</ul>
-<form action="{% url 'confla:user_add_email' %}" method="post">{% csrf_token %}
-    {{ email_form.as_p }}
-    <button class="btn btn-default" type="submit">{% trans "Submit" %}</button>
-</form>
+<div class="container">
+    <form action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {% trans "About" %}
+                </div>
+                <div class="panel-body">
+                    <label for="id_company">{% trans "Company" %}</label>
+                            {{ form.company }}
+                    <label for="id_position">{% trans "Position" %}</label>
+                            {{ form.position }}
+                    <label for="id_web">{% trans "Company" %}</label>
+                            {{ form.company }}
+                    <label for="id_facebook">{% trans "Facebook" %}</label>
+                            {{ form.facebook }}
+                    <label for="id_linkedin">{% trans "Linkedin" %}</label>
+                            {{ form.linkedin }}
+                    <label for="Twitter">{% trans "Twitter" %}</label>
+                            {{ form.twitter }}
+                    <label for="id_google_plus">{% trans "Google+" %}</label>
+                            {{ form.google_plus }}
+                    <label for="id_bio">{% trans "About me" %}</label>
+                            {{ form.bio }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                   {% trans "Personal information" %}
+                </div>
+                <div class="panel-body">
+                    <label for="id_first_name">{% trans "First name" %}</label>
+                        {{ form.first_name }}
+                    <label for="id_last_name">{% trans "Last name" %}</label>
+                        {{ form.last_name }}
+                    <label for="id_phone">{% trans "Telephone number" %}</label>
+                        {{ form.phone }}
+                    <br/>
+                        <dl>
+                            {% for email in email_list %}
+                            <dd>{% if email.is_primary %}Primary: {% endif%}{{ email.address }}
+                            {% endfor %}
+                        </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class=col-md-1>
+            <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
+        <div/>
+        <div class=col-md-11>
+            {% if error_message %} <p>{{ error_message }}</a> {% endif %}
+        </div>
+    </div>
+    </form>
+</div>
 {% endblock %}
