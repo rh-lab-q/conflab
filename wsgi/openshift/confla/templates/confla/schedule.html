@@ -25,7 +25,7 @@
                 {% for r in room_list %}
                 {% with s=r|get_slot:t %}
                 {% if s %}
-                <td align=center rowspan={{ s.length|div:10 }}>Timeslot {{t}}<br/>Room {{r.room.shortname}}</td>
+                <td align=center rowspan={{ s.length|div:r.conf.timedelta }}>Timeslot {{t}}<br/>Room {{r.room.shortname}}</td>
                 {% elif r|is_free:t %}
                 <td></td>
                 {% endif %}
