@@ -249,7 +249,10 @@ class TimetableView(generic.TemplateView):
             if request.method == 'POST': # the form was submitted
                 form = ConfCreateForm(request.POST)
                 if form.is_valid():
-                    form.save()
+                    conf = form.save(commit=False)
+                    conf.active = True
+                    conf.save()
+                    form.save_m2m()
                     return HttpResponseRedirect(reverse('confla:thanks'))
             else:
                 form = ConfCreateForm()
@@ -260,11 +263,13 @@ class TimetableView(generic.TemplateView):
         else:
             if(request.method == 'POST'):
                 TimetableView.json_to_timeslots(request.POST['data'])
+                return HttpResponseRedirect(reverse('confla:thanks'))
             #TODO: Add compatibility with archived conferences
             conf = Conference.get_active()
             return render(request, TimetableView.template_name,
                            { 'time_list' : conf.get_delta_list(),
-                             'room_list' : Room.objects.all(),
+                             'room_list' : [{'conf' : conf,
+                                             'room' : x} for x in conf.rooms.all()],
                              'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                         })
 
@@ -272,7 +277,6 @@ class TimetableView(generic.TemplateView):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
         conf = Conference.get_active()
         json_obj = json.loads(json_string)
-
         # Remove all timeslots from db
         for slot in Timeslot.objects.filter(conf_id=conf):
             slot.delete()
