@@ -15,8 +15,8 @@ class Conference(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     rooms = models.ManyToManyField('Room', related_name='room+')
-    timedelta = models.IntegerField()
-    active = models.BooleanField()
+    timedelta = models.IntegerField(default=10)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
