@@ -73,20 +73,21 @@ function timetableSubmit(selector) {
 
 $(document).ready(function() {
     var timeslotCount = 0;
+    var cellSize = 31;
 
     // Go through all .item objects and make them the right size and resizable
     $(".item").height(function(){
         var len = $(this).attr("deltalen")-1;
-        return this.clientHeight+31*len
+        return this.clientHeight+cellSize*len
     }).resizable({
-        grid: 31,
+        grid: cellSize,
         containment: "tbody",
         handles: "s",
         resize: function(event, ui) {
             
             var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
             var height = $(this).height();
-            var rowdiff = (height-26)/31;
+            var rowdiff = (height-26)/cellSize;
             var endspan = $(this).find("span.end")
             var tr_array = $(this).parent().parent().parent().parent().find('tr');
             var endtime_text = countEndtime(tr_array, row+rowdiff+1)
@@ -130,12 +131,12 @@ $(document).ready(function() {
         });
 
         $(elem).resizable({
-            grid: 31,     // size of table cell
+            grid: cellSize,     // size of table cell
             containment: "tbody",
             handles: "s",   // a bug in jQuery does not allow north resize with containment
             resize: function(event, ui) {
                 var height = $(this).height();
-                var rowdiff = (height-26)/31;
+                var rowdiff = (height-26)/cellSize;
                 var endtime_text = countEndtime(tr_array, row+rowdiff+1)
                 $(endspan).text("Ends at: " + endtime_text);
             }
