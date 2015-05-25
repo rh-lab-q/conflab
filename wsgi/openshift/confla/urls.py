@@ -7,7 +7,7 @@ from confla import views
 urlpatterns = patterns('',
         url(r'^$', views.AboutView.as_view(), name='index'),
         url(r'^about/$', views.AboutView.as_view(), name='about'),
-        url(r'^sched/$', views.ScheduleView.my_view, name='schedule'),
+        #url(r'^sched/$', views.ScheduleView.my_view, name='schedule'),
         url(r'add_rooms/$', views.AddRoomsView.view_form, name='add_rooms'),
         url(r'^timetable/$', views.TimetableView.view_timetable, name='timetable'),
         url(r'^timetable/saveTable/$', views.TimetableView.view_timetable, name='saveTable'),

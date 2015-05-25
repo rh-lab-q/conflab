@@ -16,11 +16,8 @@ function countEndtime(tr_array, rownumber) {
         var td_text = $(time_td).text();
         var firstpart = td_text.slice(0,2);
         var secondpart = td_text.slice(3,5);
-        // \||/
-        //  \/
-        //  |    ALERT!!! We are counting with + 10 minutes, but that may vary!!
-        //  O
-        secondpart = parseInt(secondpart)+10;
+        var tdelta = $(tr_array).parent().parent().attr("tdelta")
+        secondpart = parseInt(secondpart)+parseInt(tdelta);
         if(secondpart >= 60) {
             firstpart = parseInt(firstpart) + 1;
             secondpart = secondpart - 60;
@@ -77,6 +74,7 @@ function timetableSubmit(selector) {
 $(document).ready(function() {
     var timeslotCount = 0;
 
+    // Go through all .item objects and make them the right size and resizable
     $(".item").height(function(){
         var len = $(this).attr("deltalen")-1;
         return this.clientHeight+31*len
@@ -94,7 +92,10 @@ $(document).ready(function() {
             var endtime_text = countEndtime(tr_array, row+rowdiff+1)
             $(endspan).text("Ends at: " + endtime_text);
         }
-    });
+    }).find("div.removesign").click(function() {
+            // add closing functionality
+            $(this).closest(".item").remove()
+        });
 
     $("td").on("dblclick", ".wrap", function() {
         var row = $(this).parent().parent().parent().children().index($(this).parent().parent());

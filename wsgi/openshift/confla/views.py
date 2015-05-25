@@ -27,7 +27,7 @@ class VolunteerView(generic.TemplateView):
     def my_view(request):
         return render(request, VolunteerView.template_name)
 
-
+"""
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/schedule.html'
 
@@ -42,6 +42,7 @@ class ScheduleView(generic.TemplateView):
                                          'room' : x} for x in conf.rooms.all()],
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
+"""
 
 class LoginView(generic.TemplateView):
     template_name = 'confla/login.html'
