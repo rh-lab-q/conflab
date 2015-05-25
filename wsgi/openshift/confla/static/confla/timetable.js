@@ -79,10 +79,22 @@ $(document).ready(function() {
 
     // TODO: The following needs to get row information and count endtime same as
     // seen below
+    $(".item").height(function(){ return this.clientHeight+31; });
     $(".item").resizable({
         grid: 31,
         containment: "tbody",
-        handes: "s",
+        handles: "s",
+        resize: function(event, ui) {
+            
+            var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
+            var height = $(this).height();
+            console.log(height)
+            var rowdiff = (height-26)/31;
+            var endspan = $(this).find("span.end")
+            var tr_array = $(this).parent().parent().parent().parent().find('tr');
+            var endtime_text = countEndtime(tr_array, row+rowdiff+1)
+            $(endspan).text("Ends at: " + endtime_text);
+        }
     });
 
     $("td").on("dblclick", ".wrap", function() {

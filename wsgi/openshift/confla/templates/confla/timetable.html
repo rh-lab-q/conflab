@@ -28,13 +28,18 @@
             <td>{{t}}</td>
             {% for r in room_list %}
                 <td>
-                <div class="wrap">{% comment %}
+                <div class="wrap">
                 {% with s=r|get_slot:t %}
                 {% if s %}
-                    Timeslot {{t}}
+                    <div class="item">
+                        <div class="removesign">
+                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </div>
+                        <span class="start">Starts at: {{t}}</span>
+                        <span class="end">Ends at: {{s.get_end_time}}</span>
+                    </div>
                 {% endif %}
                 {% endwith %}
-                {% endcomment %}
                 </div>
                 </td>
             {% endfor %}
