@@ -37,7 +37,7 @@ class ScheduleView(generic.TemplateView):
         if not(conf):
             return HttpResponse("Currently no conferences.")
         return render(request, ScheduleView.template_name,
-                       { 'time_list' : conf.get_delta_list(),
+                      {  'time_list' : conf.get_delta_list(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
@@ -269,7 +269,8 @@ class TimetableView(generic.TemplateView):
             #TODO: Add compatibility with archived conferences
             conf = Conference.get_active()
             return render(request, TimetableView.template_name,
-                           { 'time_list' : conf.get_delta_list(),
+                          {  'conf'      : conf,
+                             'time_list' : conf.get_delta_list(),
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],
                              'slot_list' : Timeslot.objects.filter(conf_id=conf.id),

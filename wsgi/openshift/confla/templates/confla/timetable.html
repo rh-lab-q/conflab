@@ -13,7 +13,7 @@
 {% endblock %}
 {% block content %}
 {% csrf_token %}
-<table class="table">
+<table class="table" tdelta={{conf.timedelta}}>
     <thead>
         <tr>
             <th>Time</th>
@@ -27,11 +27,11 @@
         <tr>
             <td>{{t}}</td>
             {% for r in room_list %}
-                <td>
+            <td>
                 <div class="wrap">
                 {% with s=r|get_slot:t %}
                 {% if s %}
-                    <div class="item">
+                <div class="item" deltalen={{s.length}}>
                         <div class="removesign">
                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </div>
@@ -41,7 +41,7 @@
                 {% endif %}
                 {% endwith %}
                 </div>
-                </td>
+            </td>
             {% endfor %}
         </tr>
     {% endfor %}
