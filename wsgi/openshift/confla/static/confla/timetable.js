@@ -81,6 +81,8 @@ function timetableSubmit(selector) {
     timetableDisable();
     $(".save").hide();
     $(".edit").show();
+
+    $("td").off("dblclick", ".wrap");
 }
 
 function timetableEdit() {
