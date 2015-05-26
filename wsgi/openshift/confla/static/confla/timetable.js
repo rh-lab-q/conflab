@@ -66,11 +66,21 @@ function timetableToJson(selector) {
     return JSON.stringify(tableObject);
 }
 
+function timetableDisable() {
+    // disable resize and remove removal icon from timeslots
+    $(".item").resizable("disable").find("div.removesign").remove();
+}
+
 function timetableSubmit(selector) {
+    // generate JSON and submit to DB
     var toSend = timetableToJson(selector);
     $.post("saveTable/", {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: toSend});
+
+    timetableDisable();
+    $(".save").hide();
+    $(".edit").show();
 }
 
 function timetableEdit() {
@@ -92,15 +102,15 @@ function timetableEdit() {
             var endtime_text = countEndtime(tr_array, row+rowdiff+1)
             $(endspan).text("Ends at: " + endtime_text);
         }
-    }).find("div.removesign").click(function() {
-            // add closing functionality
-            $(this).closest(".item").remove()
-        });
-    $(".item").each(function(){
+    }).each(function(){
+        // add remove icon to existing timeslots
         var remove = document.createElement('div');
         remove.className="removesign";
         $(remove).append('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
         $(this).prepend(remove);
+    }).find("div.removesign").click(function() {
+        // add closing functionality
+        $(this).closest(".item").remove();
     });
 
 
@@ -149,6 +159,8 @@ function timetableEdit() {
         });
         $(this).append(elem);
     })
+
+    $(".item").resizable("enable");
 }
 
 $(document).ready(function() {
