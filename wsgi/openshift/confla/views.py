@@ -246,8 +246,8 @@ class AddRoomsView(generic.TemplateView):
 class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
 
-    @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
+        #TODO: Check if organizer before creating a conf form
         if len(Conference.objects.all()) == 0:
             if request.method == 'POST': # the form was submitted
                 form = ConfCreateForm(request.POST)
@@ -264,9 +264,6 @@ class TimetableView(generic.TemplateView):
                 'form' : form,
             })
         else:
-            if(request.method == 'POST'):
-                TimetableView.json_to_timeslots(request.POST['data'])
-                return HttpResponseRedirect(reverse('confla:thanks'))
             #TODO: Add compatibility with archived conferences
             conf = Conference.get_active()
             return render(request, TimetableView.template_name,
@@ -276,6 +273,12 @@ class TimetableView(generic.TemplateView):
                                              'room' : x} for x in conf.rooms.all()],
                              'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                         })
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def save_timetable(request):
+        if(request.method == 'POST'):
+            TimetableView.json_to_timeslots(request.POST['data'])
+            return HttpResponseRedirect(reverse('confla:thanks'))
 
     def json_to_timeslots(json_string):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'

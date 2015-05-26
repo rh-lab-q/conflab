@@ -3,6 +3,8 @@
     @author: Stanislav Laznicka <slaz@seznam.cz>
 */
 
+var cellSize = 31;
+
 function countEndtime(tr_array, rownumber) {
     /*
         Function that gets the endtime of a timeslot
@@ -71,20 +73,17 @@ function timetableSubmit(selector) {
         data: toSend});
 }
 
-$(document).ready(function() {
-    var timeslotCount = 0;
-    var cellSize = 31;
+function timetableEdit() {
+    $(".save").show();
+    $(".edit").hide();
 
-    // Go through all .item objects and make them the right size and resizable
-    $(".item").height(function(){
-        var len = $(this).attr("deltalen")-1;
-        return this.clientHeight+cellSize*len
-    }).resizable({
+    // Go through all .item objects and make them resizable and deletable
+    $(".item").resizable({
         grid: cellSize,
         containment: "tbody",
         handles: "s",
         resize: function(event, ui) {
-            
+
             var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
             var height = $(this).height();
             var rowdiff = (height-26)/cellSize;
@@ -97,6 +96,13 @@ $(document).ready(function() {
             // add closing functionality
             $(this).closest(".item").remove()
         });
+    $(".item").each(function(){
+        var remove = document.createElement('div');
+        remove.className="removesign";
+        $(remove).append('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
+        $(this).prepend(remove);
+    });
+
 
     $("td").on("dblclick", ".wrap", function() {
         var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
@@ -143,4 +149,17 @@ $(document).ready(function() {
         });
         $(this).append(elem);
     })
+}
+
+$(document).ready(function() {
+    var timeslotCount = 0;
+
+    $(".save").hide();
+
+    // Go through all .item objects and make them the right size
+    $(".item").height(function(){
+        var len = $(this).attr("deltalen")-1;
+        return this.clientHeight+cellSize*len
+    });
+
 })

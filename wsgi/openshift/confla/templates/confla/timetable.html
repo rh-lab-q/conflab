@@ -8,9 +8,11 @@
 
 {% block extranav %}
 <div style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
-    <button type="button" class="btn btn-success" onclick="timetableSubmit('.table'); window.location.href={% url 'confla:thanks' %}">Save</button>
+    <button type="button" class="btn btn-success edit" onclick="timetableEdit()">Edit</button>
+    <button type="button" class="btn btn-success save" onclick="timetableSubmit('.table'); window.location.href={% url 'confla:thanks' %}">Save</button>
 </div>
 {% endblock %}
+
 {% block content %}
 {% csrf_token %}
 <table class="table" tdelta={{conf.timedelta}}>
@@ -32,9 +34,6 @@
                 {% with s=r|get_slot:t %}
                 {% if s %}
                 <div class="item" deltalen={{s.length}}>
-                        <div class="removesign">
-                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                        </div>
                         <span class="start">Starts at: {{t}}</span>
                         <span class="end">Ends at: {{s.get_end_time}}</span>
                     </div>
