@@ -349,7 +349,11 @@ class ImportView(generic.TemplateView):
             newroom.name = room['name']
             newroom.description = room['desc']
             newroom.color = room['color']
-            newroom.full_clean()
+            try:
+                newroom.full_clean()
+            except ValidationError:
+                Room.objects.get(id=newroom.id).delete()
+                newroom.full_clean()
             newroom.save()
 
         # Generate conferences
@@ -370,8 +374,13 @@ class ImportView(generic.TemplateView):
             newconf.timedelta = conf['time_d']
             newconf.active = conf['active']
             # Conference has to be in db before we can add rooms
-            newconf.full_clean()
+            try:
+                newconf.full_clean()
+            except ValidationError:
+                Conference.objects.get(id=newconf.id).delete()
+                newconf.full_clean()
             newconf.save()
+
             for room in conf['rooms']:
                 newconf.rooms.add(Room.objects.get(id=room))
             newconf.save()
@@ -390,6 +399,10 @@ class ImportView(generic.TemplateView):
                                                         second=0, microsecond=0)
             newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
                                                         second=0, microsecond=0)
-            newslot.full_clean()
+            try:
+                newslot.full_clean()
+            except ValidationError:
+                Timeslot.objects.get(id=newslot.id).delete()
+                newslot.full_clean()
             newslot.save()
 
