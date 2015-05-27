@@ -334,6 +334,22 @@ class ImportView(generic.TemplateView):
                         "room_id" : 100,
                         "start_t" : "10:10",
                         "end_t" : "10:50"
+                }],
+                "users" : [{
+                        "username" : "testor",
+                        "f_name" : "First name",
+                        "l_name" : "Last name",
+                        "password" : "pbkdf2_sha256$12000$tM9lc9JIW9ZE$Yl8pbU25d3y5xEnUv7WqoPU1Kduo/7C4xps5SR/+fEM=",
+                        "phone" : "",
+                        "company" : "",
+                        "position" : "",
+                        "web" : "",
+                        "github" : "",
+                        "facebook" : "",
+                        "twitter" : "",
+                        "g+" : "",
+                        "linkedin" : "",
+                        "bio" : ""
                 }]
             }"""    
 
@@ -406,3 +422,28 @@ class ImportView(generic.TemplateView):
                 newslot.full_clean()
             newslot.save()
 
+        # Generate users
+        user_list = json_obj['users']
+        for user in user_list:
+            newuser = ConflaUser()
+            newuser.username = user['username']
+            newuser.password = user['password']
+            newuser.first_name = user['f_name']
+            newuser.last_name = user['l_name']
+            newuser.phone = user['phone']
+            newuser.picture = None
+            newuser.company = user['company']
+            newuser.position = user['position']
+            newuser.web = user['web']
+            newuser.github = user['github']
+            newuser.facebook = user['facebook']
+            newuser.twitter = user['twitter']
+            newuser.google_plus = user['g+']
+            newuser.linkedin = user['linkedin']
+            newuser.bio = user['bio']
+            try:
+                newuser.full_clean()
+            except ValidationError:
+                ConflaUser.objects.get(username=newuser.username).delete()
+                newuser.full_clean()
+            newuser.save()
