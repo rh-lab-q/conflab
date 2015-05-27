@@ -306,3 +306,90 @@ class TimetableView(generic.TemplateView):
                 newslot.full_clean()
                 # Add slot to db
                 newslot.save()
+
+class ImportView(generic.TemplateView):
+    template_name = "confla/import.html"
+
+    json_s = """{ "rooms" : [{
+                        "id" : 100,
+                        "s_name" : "r2",
+                        "name" : "",
+                        "desc" : "",
+                        "color" : ""
+                }],
+                "confs" : [{
+                        "id" : 100,
+                        "name" : "JSON_conf",
+                        "rooms" : [100],
+                        "start_t" : "10:00",
+                        "end_t" : "18:00",
+                        "start_d" : "27/03/2016",
+                        "end_d" : "28/03/2016",
+                        "time_d" : 10,
+                        "active" : true
+                }],
+                "slots" : [{
+                        "id" : 1,
+                        "conf_id" : 100,
+                        "room_id" : 100,
+                        "start_t" : "10:10",
+                        "end_t" : "10:50"
+                }]
+            }"""    
+
+    def json_to_db(json_string):
+        json_obj = json.loads(json_string)
+
+        # Generate rooms
+        room_list = json_obj['rooms']
+        for room in room_list:
+            newroom = Room()
+            newroom.id = room['id']
+            newroom.shortname = room['s_name']
+            newroom.name = room['name']
+            newroom.description = room['desc']
+            newroom.color = room['color']
+            newroom.full_clean()
+            newroom.save()
+
+        # Generate conferences
+        conf_list = json_obj['confs']
+        for conf in conf_list:
+            newconf = Conference()
+            newconf.id = conf['id']
+            newconf.name = conf['name']
+            # Has to be like this or else django complains!
+            start = datetime.strptime(conf['start_t'], "%H:%M")
+            end = datetime.strptime(conf['end_t'], "%H:%M")
+            newconf.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                            second=0, microsecond=0)
+            newconf.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                            second=0, microsecond=0)
+            newconf.start_date = datetime.strptime(conf['start_d'], "%d/%m/%Y")
+            newconf.end_date = datetime.strptime(conf['end_d'], "%d/%m/%Y")
+            newconf.timedelta = conf['time_d']
+            newconf.active = conf['active']
+            # Conference has to be in db before we can add rooms
+            newconf.full_clean()
+            newconf.save()
+            for room in conf['rooms']:
+                newconf.rooms.add(Room.objects.get(id=room))
+            newconf.save()
+
+        # Generate timeslots
+        slot_list = json_obj['slots']
+        for slot in slot_list:
+            newslot = Timeslot()
+            newslot.id = slot['id']
+            newslot.conf_id = Conference.objects.get(id=slot['conf_id'])
+            newslot.room_id = Room.objects.get(id=slot['room_id'])
+            # Has to be like this or else django complains!
+            start = datetime.strptime(slot['start_t'], "%H:%M")
+            end = datetime.strptime(slot['end_t'], "%H:%M")
+            newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                        second=0, microsecond=0)
+            newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                        second=0, microsecond=0)
+            newslot.full_clean()
+            newslot.save()
+
