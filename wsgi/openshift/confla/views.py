@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
-from confla.models import ConflaUser, Conference, Room, Timeslot, EmailAdress
+from confla.models import * 
 from confla.forms import *
 
 class AboutView(generic.TemplateView):
@@ -306,3 +306,228 @@ class TimetableView(generic.TemplateView):
                 newslot.full_clean()
                 # Add slot to db
                 newslot.save()
+
+class ImportView(generic.TemplateView):
+    template_name = "confla/import.html"
+
+    json_s = """{ "rooms" : [{
+                        "id" : 100,
+                        "s_name" : "r2",
+                        "name" : "",
+                        "desc" : "",
+                        "color" : ""
+                    }],
+                "confs" : [{
+                        "id" : 100,
+                        "name" : "JSON_conf",
+                        "rooms" : [100],
+                        "start_t" : "10:00",
+                        "end_t" : "18:00",
+                        "start_d" : "27/03/2016",
+                        "end_d" : "28/03/2016",
+                        "time_d" : 10,
+                        "active" : true
+                    }],
+                "slots" : [{
+                        "id" : 1,
+                        "conf_id" : 100,
+                        "room_id" : 100,
+                        "start_t" : "10:10",
+                        "end_t" : "10:50"
+                    },
+                    {
+                        "id" : 2,
+                        "conf_id" : 100,
+                        "room_id" : 100,
+                        "start_t" : "12:10",
+                        "end_t" : "12:50"
+                    }],
+                "users" : [{
+                        "username" : "testor",
+                        "f_name" : "First name",
+                        "l_name" : "Last name",
+                        "password" : "pbkdf2_sha256$12000$tM9lc9JIW9ZE$Yl8pbU25d3y5xEnUv7WqoPU1Kduo/7C4xps5SR/+fEM=",
+                        "phone" : "",
+                        "company" : "",
+                        "position" : "",
+                        "web" : "",
+                        "github" : "",
+                        "facebook" : "",
+                        "twitter" : "",
+                        "g+" : "",
+                        "linkedin" : "",
+                        "bio" : ""
+                    }],
+                "e_types" : [{
+                         "id" : 1,
+                         "name" : "talk"
+                    }],
+                "events" : [{
+                         "id" : 1,
+                         "type_id" : 1,
+                         "conf_id" : 100,
+                         "topic" : "topic",
+                         "desc" : "description",
+                         "lang" : "Czech",
+                         "slides" : "",
+                         "video" : "",
+                         "g_doc" : "",
+                         "speakers" : ["testor"]
+                    }]
+            }"""    
+
+    def json_to_db(json_string):
+        json_obj = json.loads(json_string)
+
+        # Generate rooms
+        room_list = json_obj['rooms']
+        for room in room_list:
+            newroom = Room()
+            newroom.id = room['id']
+            newroom.shortname = room['s_name']
+            newroom.name = room['name']
+            newroom.description = room['desc']
+            newroom.color = room['color']
+            try:
+                newroom.full_clean()
+            except ValidationError as e:
+                if ('id' in e.error_dict and
+                        e.error_dict['id'][0] == 'Room with this ID already exists.'):
+                    Room.objects.get(id=newroom.id).delete()
+                    newroom.full_clean()
+                else:
+                    raise e
+            newroom.save()
+
+        # Generate conferences
+        conf_list = json_obj['confs']
+        for conf in conf_list:
+            newconf = Conference()
+            newconf.id = conf['id']
+            newconf.name = conf['name']
+            # Has to be like this or else django complains!
+            start = datetime.strptime(conf['start_t'], "%H:%M")
+            end = datetime.strptime(conf['end_t'], "%H:%M")
+            newconf.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                            second=0, microsecond=0)
+            newconf.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                            second=0, microsecond=0)
+            newconf.start_date = datetime.strptime(conf['start_d'], "%d/%m/%Y")
+            newconf.end_date = datetime.strptime(conf['end_d'], "%d/%m/%Y")
+            newconf.timedelta = conf['time_d']
+            newconf.active = conf['active']
+            # Conference has to be in db before we can add rooms
+            try:
+                newconf.full_clean()
+            except ValidationError as e:
+                if ('id' in e.error_dict and
+                        e.error_dict['id'][0] == 'Conference with this ID already exists.'):
+                    Conference.objects.get(id=newconf.id).delete()
+                    newconf.full_clean()
+                else:
+                    raise e
+
+            newconf.save()
+
+            for room in conf['rooms']:
+                newconf.rooms.add(Room.objects.get(id=room))
+            newconf.save()
+
+        # Generate timeslots
+        slot_list = json_obj['slots']
+        for slot in slot_list:
+            newslot = Timeslot()
+            newslot.id = slot['id']
+            newslot.conf_id = Conference.objects.get(id=slot['conf_id'])
+            newslot.room_id = Room.objects.get(id=slot['room_id'])
+            # Has to be like this or else django complains!
+            start = datetime.strptime(slot['start_t'], "%H:%M")
+            end = datetime.strptime(slot['end_t'], "%H:%M")
+            newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                        second=0, microsecond=0)
+            newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                        second=0, microsecond=0)
+            try:
+                newslot.full_clean()
+            except ValidationError as e:
+                if ('id' in e.error_dict and
+                        e.error_dict['id'][0] == 'Timeslot with this ID already exists.'):
+                    Timeslot.objects.get(id=newslot.id).delete()
+                    newslot.full_clean()
+                else:
+                    raise e
+            newslot.save()
+
+        # Generate users
+        user_list = json_obj['users']
+        for user in user_list:
+            newuser = ConflaUser()
+            newuser.username = user['username']
+            newuser.password = user['password']
+            newuser.first_name = user['f_name']
+            newuser.last_name = user['l_name']
+            newuser.phone = user['phone']
+            newuser.picture = None
+            newuser.company = user['company']
+            newuser.position = user['position']
+            newuser.web = user['web']
+            newuser.github = user['github']
+            newuser.facebook = user['facebook']
+            newuser.twitter = user['twitter']
+            newuser.google_plus = user['g+']
+            newuser.linkedin = user['linkedin']
+            newuser.bio = user['bio']
+            try:
+                newuser.full_clean()
+            except ValidationError as e:
+                if ('username' in e.error_dict and
+                        e.error_dict['username'][0] == 'Confla user with this Username already exists.'):
+                    ConflaUser.objects.get(username=newuser.username).delete()
+                    newuser.full_clean()
+                else:
+                    raise e
+            newuser.save()
+
+        # Generate event types
+        event_type_list = json_obj['e_types']
+        for etype in event_type_list:
+            newtype = EventType()
+            newtype.id = etype['id']
+            newtype.name = etype['name']
+            try:
+                newtype.full_clean()
+            except ValidationError as e:
+                if ('id' in e.error_dict and
+                        e.error_dict['id'][0] == 'Event type with this ID already exists.'):
+                    EventType.objects.get(id=newtype.id).delete()
+                    newtype.full_clean()
+                else:
+                    raise e
+            newtype.save()
+
+        # Generate events
+        event_list = json_obj['events']
+        for event in event_list:
+            newevent = Event()
+            newevent.id = event['id']
+            newevent.conf_id = Conference.objects.get(id=event['conf_id'])
+            newevent.e_type_id = EventType.objects.get(id=event['type_id'])
+            newevent.topic = event['topic']
+            newevent.description = event['desc']
+            newevent.lang = event['lang']
+            newevent.slides = event['slides']
+            newevent.video = event['video']
+            newevent.google_doc_url = event['g_doc']
+            try:
+                newevent.full_clean()
+            except ValidationError as e:
+                if ('id' in e.error_dict and
+                        e.error_dict['id'][0] == 'Event with this ID already exists.'):
+                    Event.objects.get(id=newevent.id).delete()
+                    newevent.full_clean()
+                else:
+                    raise e
+            newevent.save()
+            for speaker in event['speakers']:
+                newevent.speaker.add(ConflaUser.objects.get(username=speaker))
+            newevent.save()
