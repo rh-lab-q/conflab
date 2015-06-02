@@ -69,6 +69,9 @@ function timetableToJson(selector) {
 function timetableDisable() {
     // disable resize and remove removal icon from timeslots
     $(".item").resizable("disable").find("div.removesign").remove();
+
+    // Remove display: block
+    $(".ui-resizable-handle").css('display', '');
 }
 
 function timetableSubmit(selector) {
@@ -105,8 +108,10 @@ function timetableEdit() {
             $(endspan).text("Ends at: " + endtime_text);
         }
     }).draggable({
+        revert: "invalid",
+        containment: ".table",
         cursor: "move",
-        cursorAt: { top: 20, left: 20 },
+        cursorAt: { top: 20},
         opacity: 0.7,
     }).each(function(){
         // add remove icon to existing timeslots
@@ -118,27 +123,39 @@ function timetableEdit() {
         // add closing functionality
         $(this).closest(".item").remove();
     });
+
+    // Make all .wrap divs droppable
     $(".wrap").droppable({
+        accept: ".item",
         tolerance: "pointer",
         hoverClass: "ui-state-hover",
         drop: function( event, ui ) {
-            // Append the item to the droppable
-            $(this).append($(ui.draggable));
-
-            // Delete all styles but save height
             var height = $(ui.draggable).height();
-            $(ui.draggable).removeAttr("style").height(height);
-
-            // Setup new start and end times
-            var row = $(ui.draggable).parent().parent().parent().parent().children().index($(ui.draggable).parent().parent().parent());
+            var row = $(ui.draggable).parent().parent().parent().parent().children().index($(this).parent().parent());
+            var rownum = $(ui.draggable).parent().parent().parent().parent().children().length
             var rowdiff = (height-26)/cellSize;
-            var endspan = $(ui.draggable).find("span.end");
-            var startspan = $(ui.draggable).find("span.start");
-            var tr_array = $(ui.draggable).parent().parent().parent().parent().find('tr');
-            var my_tr = $(this).parent().parent();
-            var endtime_text = countEndtime(tr_array, row+rowdiff+1)
-            $(startspan).text("Starts at: " + $(my_tr.children('td')[0]).text())
-            $(endspan).text("Ends at: " + endtime_text);
+
+            // Check if the item is not partly outside the table
+            if ((rownum - row) > rowdiff) {
+                // Append the item to the droppable
+                $(this).append($(ui.draggable));
+
+                // Delete all styles but save height
+                $(ui.draggable).removeAttr("style").height(height);
+
+                // Setup new start and end times
+                var endspan = $(ui.draggable).find("span.end");
+                var startspan = $(ui.draggable).find("span.start");
+                var tr_array = $(ui.draggable).parent().parent().parent().parent().find('tr');
+                var my_tr = $(this).parent().parent();
+                var endtime_text = countEndtime(tr_array, row+rowdiff+1)
+                $(startspan).text("Starts at: " + $(my_tr.children('td')[0]).text())
+                $(endspan).text("Ends at: " + endtime_text);
+            }
+            else {
+                // Revert to original position
+                ui.draggable.draggable('option', 'revert', true);
+            }
         }
     });
 
