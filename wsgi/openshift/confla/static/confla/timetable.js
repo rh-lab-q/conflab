@@ -67,8 +67,8 @@ function timetableToJson(selector) {
 }
 
 function timetableDisable() {
-    // disable resize and remove removal icon from timeslots
-    $(".item").resizable("disable").find("div.removesign").remove();
+    // disable resize, drag and remove removal icon from timeslots
+    $(".item").resizable("disable").draggable("disable").find("div.removesign").remove();
 
     // Remove display: block
     $(".ui-resizable-handle").css('display', '');
@@ -201,11 +201,17 @@ function timetableEdit() {
                 var endtime_text = countEndtime(tr_array, row+rowdiff+1)
                 $(endspan).text("Ends at: " + endtime_text);
             }
+        }).draggable({
+            revert: "invalid",
+            containment: ".table",
+            cursor: "move",
+            cursorAt: { top: 20},
+            opacity: 0.7,
         });
         $(this).append(elem);
     })
 
-    $(".item").resizable("enable");
+    $(".item").resizable("enable").draggable("enable");
 }
 
 $(document).ready(function() {
