@@ -95,7 +95,7 @@ function timetableEdit() {
         containment: "tbody",
         handles: "s",
         resize: function(event, ui) {
-
+            // New end time on resize
             var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
             var height = $(this).height();
             var rowdiff = (height-26)/cellSize;
@@ -104,6 +104,10 @@ function timetableEdit() {
             var endtime_text = countEndtime(tr_array, row+rowdiff+1)
             $(endspan).text("Ends at: " + endtime_text);
         }
+    }).draggable({
+        cursor: "move",
+        cursorAt: { top: 20, left: 20 },
+        opacity: 0.7,
     }).each(function(){
         // add remove icon to existing timeslots
         var remove = document.createElement('div');
@@ -114,7 +118,29 @@ function timetableEdit() {
         // add closing functionality
         $(this).closest(".item").remove();
     });
+    $(".wrap").droppable({
+        tolerance: "pointer",
+        hoverClass: "ui-state-hover",
+        drop: function( event, ui ) {
+            // Append the item to the droppable
+            $(this).append($(ui.draggable));
 
+            // Delete all styles but save height
+            var height = $(ui.draggable).height();
+            $(ui.draggable).removeAttr("style").height(height);
+
+            // Setup new start and end times
+            var row = $(ui.draggable).parent().parent().parent().parent().children().index($(ui.draggable).parent().parent().parent());
+            var rowdiff = (height-26)/cellSize;
+            var endspan = $(ui.draggable).find("span.end");
+            var startspan = $(ui.draggable).find("span.start");
+            var tr_array = $(ui.draggable).parent().parent().parent().parent().find('tr');
+            var my_tr = $(this).parent().parent();
+            var endtime_text = countEndtime(tr_array, row+rowdiff+1)
+            $(startspan).text("Starts at: " + $(my_tr.children('td')[0]).text())
+            $(endspan).text("Ends at: " + endtime_text);
+        }
+    });
 
     $("td").on("dblclick", ".wrap", function() {
         var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
