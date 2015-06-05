@@ -1,12 +1,10 @@
 from datetime import datetime
 import json
 
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views import generic
-from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
@@ -14,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
-from confla.models import * 
+from confla.models import *
 from confla.forms import *
 
 class AboutView(generic.TemplateView):
@@ -110,7 +108,7 @@ class UserView(generic.TemplateView):
             email.address = request.POST['address']
             try:
                 email.full_clean()
-            except ValidationError as e:
+            except ValidationError:
                 user_form = ProfileForm(instance=request.user)
                 return render(request, 'confla/profile.html', {
                      'email_form' : form,
@@ -284,16 +282,18 @@ class TimetableView(generic.TemplateView):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
         conf = Conference.get_active()
         json_obj = json.loads(json_string)
-        # Remove all timeslots from db
-        for slot in Timeslot.objects.filter(conf_id=conf):
-            slot.delete()
 
         # Create new timeslots from JSON
         for row in json_obj:
             # row: one row in the timeslot table
             # key: room shortname, also dictionary key for timeslots
             for key in row:
-                newslot = Timeslot()
+                # Check if its a new slot or an edited existing one
+                if row[key]['id'] == '0':
+                    newslot = Timeslot()
+                else:
+                    newslot = Timeslot.objects.get(id=int(row[key]['id']))
+
                 newslot.room_id = Room.objects.get(shortname=key)
                 newslot.conf_id = conf
                 # Has to be like this or else django complains!
@@ -374,7 +374,7 @@ class ImportView(generic.TemplateView):
                          "g_doc" : "",
                          "speakers" : ["testor"]
                     }]
-            }"""    
+            }"""
 
     def json_to_db(json_string):
         json_obj = json.loads(json_string)

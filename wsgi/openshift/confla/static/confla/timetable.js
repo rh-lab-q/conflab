@@ -49,6 +49,7 @@ function timetableToJson(selector) {
                     // The numbers 10 and 8 are the lenght of "Starts at: ", "Ends at: "
                     cell["start"] = $($(this).find("span.start")).text().slice(11,16);
                     cell["end"] = $($(this).find("span.end")).text().slice(9,14);
+                    cell["id"] = $(this).find("div.item").attr("id");
                     row[rowName] = cell;
                 }
             }
@@ -176,15 +177,16 @@ function timetableEdit() {
 
         var elem = document.createElement('div');
         elem.className = "item";
+        $(elem).attr('id', '0');
         $(elem).css({position: "absolute", top: "0", left: "0"});
         var remove = document.createElement('div');
         remove.className="removesign";
         $(remove).append('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
         $(elem).append(remove);
-        $(elem).append('<span class="start">Starts at: ' + timestart + '</span>');
+        $(elem).append('<span class="start" style="display:none">Starts at: ' + timestart + '</span>');
         var endspan = document.createElement('span');
         endspan.className = "end";
-        $(endspan).append("Ends at:" + countEndtime(tr_array, row+1));
+        $(endspan).append("Ends at:" + countEndtime(tr_array, row+1)).css('display', 'none');
         $(elem).append(endspan);
 
         $(remove).click(function() {

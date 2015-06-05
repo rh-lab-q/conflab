@@ -35,10 +35,15 @@
                 <div class="wrap">
                 {% with s=r|get_slot:t %}
                 {% if s %}
-                <div class="item" deltalen={{s.length}}>
-                        <span class="start">Starts at: {{t}}</span>
-                        <span class="end">Ends at: {{s.get_end_time}}</span>
-                    </div>
+                <div class="item" deltalen={{s.length}} id={{s.id}}>
+                    <span class="start" style=" display:none">Starts at: {{t}}</span>
+                    <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
+                    {% if s.event_id %}
+                        <div class="event">
+                            Testing event
+                        </div>
+                    {% endif %}
+                </div>
                 {% endif %}
                 {% endwith %}
                 </div>
