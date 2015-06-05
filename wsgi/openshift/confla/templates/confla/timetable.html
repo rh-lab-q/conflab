@@ -35,12 +35,20 @@
                 <div class="wrap">
                 {% with s=r|get_slot:t %}
                 {% if s %}
-                <div class="item" deltalen={{s.length}} id={{s.id}}>
+                <div class="item" deltalen={{s.length}} id={{s.id}} data-toggle="popover" title="Popover title">
                     <span class="start" style=" display:none">Starts at: {{t}}</span>
                     <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                     {% if s.event_id %}
+                    {% with e=s.event_id %}
                         <div class="event">
-                            Testing event
+                            <span class="topic">{{e.topic}}</span><br />
+                            <span class="author">{{e.get_users}}</span>
+                            <p class="desc">{{e.description}}</span>
+                        </div>
+                    {% endwith %}
+                    {% else %}
+                        <div class="event">
+                            No Event
                         </div>
                     {% endif %}
                 </div>

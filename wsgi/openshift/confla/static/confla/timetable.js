@@ -219,6 +219,30 @@ function timetableEdit() {
 $(document).ready(function() {
     var timeslotCount = 0;
 
+    // Bootstrap popover init
+    $('[data-toggle="popover"]').each(function() {
+        var item = this;
+        $(this).popover({
+            trigger: "manual",
+            placement: "top"
+        }).on("mouseenter", function () {
+            // Pop on hover and set offset
+            var _this = this;
+            if ($(this).parent().find(".popover").length == 0) {
+                $(this).popover("show");
+                $(this).parent().find(".popover").css("top", $(item).height()/2 + "px");
+            }
+        }).on("mouseleave", function () {
+            // Disappear when not hovering over item or popover
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+            }, 300);
+        });
+    });
+
     $(".save").hide();
 
     // Go through all .item objects and make them the right size
