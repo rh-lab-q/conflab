@@ -69,7 +69,7 @@ function timetableToJson(selector) {
 
 function timetableDisable() {
     // disable resize, drag and remove removal icon from timeslots
-    $(".item").resizable("disable").draggable("disable").find("div.removesign").remove();
+    $(".item").resizable("disable").draggable("disable").popover('enable').find("div.removesign").remove();
 
     // Remove display: block
     $(".ui-resizable-handle").css('display', '');
@@ -114,6 +114,7 @@ function timetableEdit() {
         cursor: "move",
         cursorAt: { top: 20},
         opacity: 0.7,
+        stack: ".item"
     }).each(function(){
         // add remove icon to existing timeslots
         var remove = document.createElement('div');
@@ -209,18 +210,19 @@ function timetableEdit() {
             cursor: "move",
             cursorAt: { top: 20},
             opacity: 0.7,
+            stack: ".item"
         });
         $(this).append(elem);
     })
 
-    $(".item").resizable("enable").draggable("enable");
+    $(".item").resizable("enable").draggable("enable").popover("disable");
 }
 
 $(document).ready(function() {
     var timeslotCount = 0;
 
     // Bootstrap popover init
-    $('[data-toggle="popover"]').each(function() {
+    $('.item').each(function() {
         var item = this;
         var timeout = 100;
         $(this).popover({
@@ -243,7 +245,6 @@ $(document).ready(function() {
                     }
                     }, timeout);
                 });
-
             }
         }).on("mouseleave", function () {
             // Disappear when not hovering over item or popover
