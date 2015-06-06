@@ -49,6 +49,13 @@
                             {% trans "Edit event" %}
                         </div>
                         <div class="pop-content" style="display:none">
+                            <form method="post">
+                            {% with form=e|get_event_form %}
+                                {{ form.topic}}
+                                {{ form.description}}
+                                {{ form.speaker}}
+                            {% endwith %}
+                            </form>
                         </div>
                     {% endwith %}
                     {% else %}

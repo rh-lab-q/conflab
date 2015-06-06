@@ -2,8 +2,8 @@ from datetime import datetime
 
 from django import template
 
-from confla.models import Timeslot, Conference
-
+from confla.models import Event, Timeslot, Conference
+from confla.forms import EventCreateForm
 
 
 register = template.Library()
@@ -24,6 +24,11 @@ def get_slot(value, arg):
         if s.get_start_time == arg:
             return s
     return False
+
+@register.filter
+def get_event_form(value):
+    form = EventCreateForm(instance=value)
+    return form
 
 @register.filter
 def is_free(value, arg):
