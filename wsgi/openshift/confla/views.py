@@ -263,9 +263,11 @@ class TimetableView(generic.TemplateView):
             })
         else:
             #TODO: Add compatibility with archived conferences
+            event_create = EventCreateForm(request.POST)
             conf = Conference.get_active()
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
+                             'event_create' : event_create,
                              'time_list' : conf.get_delta_list(),
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],

@@ -222,24 +222,38 @@ $(document).ready(function() {
     // Bootstrap popover init
     $('[data-toggle="popover"]').each(function() {
         var item = this;
+        var timeout = 100;
         $(this).popover({
             trigger: "manual",
-            placement: "top"
+            placement: "bottom",
+            html: "true",
+            title: $(this).find(".pop-title").text(),
+            content: $(this).find(".pop-content").html()
         }).on("mouseenter", function () {
             // Pop on hover and set offset
             var _this = this;
             if ($(this).parent().find(".popover").length == 0) {
                 $(this).popover("show");
-                $(this).parent().find(".popover").css("top", $(item).height()/2 + "px");
+                popover = $(this).parent().find(".popover")
+                // Hide on mouseleave from popover to popover
+                $(popover).css("top", $(item).height()/3 + "px").on('mouseleave', function (){
+                    setTimeout(function () {
+                    if (!$(item).filter(":hover").length) {
+                        $(_this).popover("hide");
+                    }
+                    }, timeout);
+                });
+
             }
         }).on("mouseleave", function () {
             // Disappear when not hovering over item or popover
             var _this = this;
+            popover = $(this).parent().find(".popover")
             setTimeout(function () {
-                if (!$(".popover:hover").length) {
+                if (!$(popover).filter(":hover").length) {
                     $(_this).popover("hide");
                 }
-            }, 300);
+            }, timeout);
         });
     });
 

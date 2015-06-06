@@ -20,7 +20,7 @@
 <table class="table" tdelta={{conf.timedelta}}>
     <thead>
         <tr>
-            <th>Time</th>
+            <th>{% trans "Time" %}</th>
             {% for r in room_list %}
             <th>{{ r.room.shortname }}</th>
             {% endfor %}
@@ -35,7 +35,7 @@
                 <div class="wrap">
                 {% with s=r|get_slot:t %}
                 {% if s %}
-                <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover" title="Popover title">
+                <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover">
                     <span class="start" style=" display:none">Starts at: {{t}}</span>
                     <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                     {% if s.event_id %}
@@ -45,10 +45,22 @@
                             <span class="author">{{e.get_users}}</span>
                             <p class="desc">{{e.description}}</span>
                         </div>
+                        <div class="pop-title"style="display:none">
+                            {% trans "Edit event" %}
+                        </div>
+                        <div class="pop-content" style="display:none">
+                        </div>
                     {% endwith %}
                     {% else %}
-                        <div class="event">
-                            No Event
+                        <div class="pop-title"style="display:none">
+                            {% trans "Add event" %}
+                        </div>
+                        <div class="pop-content" style="display:none">
+                            <form method="post">
+                                {{ event_create.topic}}
+                                {{ event_create.description}}
+                                {{ event_create.speaker}}
+                            </form>
                         </div>
                     {% endif %}
                 </div>

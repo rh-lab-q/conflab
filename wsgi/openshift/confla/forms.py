@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
 
-from confla.models import Conference, Room, ConflaUser, Paper, EmailAdress
+from confla.models import Event, Conference, Room, ConflaUser, Paper, EmailAdress
 
 class ConfCreateForm(forms.ModelForm):
 
@@ -31,6 +31,21 @@ class RoomCreateForm(forms.ModelForm):
 
         for key in self.fields.keys():
             self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
+
+class EventCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Event
+        fields = ['topic', 'description', 'lang', 'speaker', 'tags']
+
+    def __init__(self, *args, **kwargs):
+        super(EventCreateForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({'style' : 'width: 100%'})
+        self.fields['topic'].widget.attrs.update({'placeholder' : _('Topic')})
+        self.fields['description'].widget.attrs.update({'rows' : '5',
+                                                        'placeholder' : _('Description')})
+
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
