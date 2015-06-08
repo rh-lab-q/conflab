@@ -17,6 +17,7 @@
 
 {% block content %}
 {% csrf_token %}
+
 <table class="table" tdelta={{conf.timedelta}}>
     <thead>
         <tr>
@@ -53,8 +54,8 @@
                             {% with form=e|get_event_form %}
                                 {{ form.topic}}
                                 {{ form.description}}
-                                {{ form.speaker}}
-                            {% endwith %}
+                                <select class="selselect selectize-input"></select>
+                                {% endwith %}
                             </form>
                         </div>
                     {% endwith %}
@@ -82,5 +83,6 @@
 </table>
 {% endblock %}
 
-{% block extrascripts %}<script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
+{% block extrascripts %}
+<script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
 {% endblock %}
