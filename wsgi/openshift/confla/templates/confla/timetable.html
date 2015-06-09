@@ -52,35 +52,35 @@
                     <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                     {% if s.event_id %}
                     {% with e=s.event_id %}
-                        <div class="event">
-                            <span class="topic">{{e.topic}}</span><br />
-                            <span class="author">{{e.get_users}}</span>
-                            <p class="desc">{{e.description}}</span>
-                        </div>
-                        <div class="pop-title"style="display:none">
-                            {% trans "Edit event" %}
-                        </div>
-                        <div class="pop-content" style="display:none">
-                            <form method="post">
-                            {% with form=e|get_event_form %}
-                                {{ form.topic}}
-                                {{ form.description}}
-                                <select class="selselect selectize-input"></select>
-                                {% endwith %}
-                            </form>
-                        </div>
+                    <div class="event">
+                        <span class="topic">{{e.topic}}</span><br />
+                        <span class="author">{{e.get_users}}</span>
+                        <p class="desc">{{e.description}}</span>
+                    </div>
+                    <div class="pop-title"style="display:none">
+                        {% trans "Edit event" %}
+                    </div>
+                    <div class="pop-content" style="display:none">
+                        <form method="post">
+                        {% with form=e|get_event_form %}
+                            {{ form.topic}}
+                            {{ form.description}}
+                            <select class="selselect selectize-input"></select>
+                            {% endwith %}
+                        </form>
+                    </div>
                     {% endwith %}
                     {% else %}
-                        <div class="pop-title"style="display:none">
-                            {% trans "Add event" %}
-                        </div>
-                        <div class="pop-content" style="display:none">
-                            <form method="post">
-                                {{ event_create.topic}}
-                                {{ event_create.description}}
-                                {{ event_create.speaker}}
-                            </form>
-                        </div>
+                    <div class="pop-title"style="display:none">
+                        {% trans "Add event" %}
+                    </div>
+                    <div class="pop-content" style="display:none">
+                        <form method="post">
+                            {{ event_create.topic}}
+                            {{ event_create.description}}
+                            {{ event_create.speaker}}
+                        </form>
+                    </div>
                     {% endif %}
                 </div>
                 {% endif %}

@@ -158,6 +158,7 @@ function timetableEdit() {
         }
     });
 
+    // Create a new slot
     $("td").on("dblclick", ".wrap", function() {
         var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
         var timestart = $($(this).parent().parent().children('td')[0]).text();
@@ -233,89 +234,71 @@ $(document).ready(function() {
                       '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 
     // Bootstrap popover init
-    $('.item').each(function() {
-        var item = this;
-        var timeout = 100;
-        $(this).popover({
-            trigger: "manual",
-            placement: "bottom",
-            html: "true",
-            title: $(this).find(".pop-title").text(),
-            content: $(this).find(".pop-content").html()
-        }).on("mouseenter", function () {
-            // Pop on hover and set offset
-            var _this = this;
-            if ($(this).parent().find(".popover").length == 0) {
-                $(this).popover("show");
-                popover = $(this).parent().find(".popover")
-                // Hide on mouseleave from popover to popover
-                $(popover).css("top", $(item).height()/3 + "px").on('mouseleave', function (){
-                    setTimeout(function () {
-                    if (!$(item).filter(":hover").length) {
-                        $(_this).popover("hide");
-                    }
-                    }, timeout);
-                });
-            }
-        }).on("mouseleave", function () {
-            // Disappear when not hovering over item or popover
-            var _this = this;
-            popover = $(this).parent().find(".popover")
-            setTimeout(function () {
-                if (!$(popover).filter(":hover").length) {
-                    $(_this).popover("hide");
-                }
-            }, timeout);
-        }).on('shown.bs.popover', function() {
-            // Selectize init
-            $(".popover").find('.selselect').selectize({
-                persist: false,
-                maxItems: null,
-                valueField: 'email',
-                labelField: 'name',
-                searchField: ['name', 'email'],
-                options: [
-                    {email: 'brian@thirdroute.com', name: 'Brian Reavis'},
-                    {email: 'nikola@tesla.com', name: 'Nikola Tesla'},
-                    {email: 'someone@gmail.com'}
-                ],
-                render: {
-                    item: function(item, escape) {
-                        return '<div>' +
-                            (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
-                            (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
-                        '</div>';
-                    },
-                    option: function(item, escape) {
-                        var label = item.name || item.email;
-                        var caption = item.name ? item.email : null;
-                        return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                        '</div>';
-                    }
+    $('.editsign').popover({
+        placement: "left",
+        container: "body",
+        html: "true",
+        title: function () {
+            return $(this).parent().parent().find(".pop-title").text();
+        },
+        content: function () {
+           return $(this).parent().parent().find(".pop-content").html();
+        }
+    }).on("shown.bs.popover", function() {
+        // Selectize init
+        $(".popover").find(".selselect").selectize({
+            persist: false,
+            maxItems: null,
+            valueField: 'email',
+            labelField: 'name',
+            searchField: ['name', 'email'],
+            options: [
+                {email: 'brian@thirdroute.com', name: 'Brian Reavis'},
+                {email: 'nikola@tesla.com', name: 'Nikola Tesla'},
+                {email: 'someone@gmail.com'}
+            ],
+            render: {
+                item: function(item, escape) {
+                    return '<div>' +
+                        (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+                        (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+                    '</div>';
                 },
-                createFilter: function(input) {
-                        var match, regex;
-
-                        // email@address.com
-                        regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
-                        match = input.match(regex);
-                        if (match) return !this.options.hasOwnProperty(match[0]);
-
-                        // name <email@address.com>
-                        regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
-                        match = input.match(regex);
-                        if (match) return !this.options.hasOwnProperty(match[2]);
-
-                        return false;
+                option: function(item, escape) {
+                    var label = item.name || item.email;
+                    var caption = item.name ? item.email : null;
+                    return '<div>' +
+                        '<span class="label">' + escape(label) + '</span>' +
+                        (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                    '</div>';
                 }
-            });
-            $("div.selselect").removeClass("selectize-input"); 
-        });
-    });
-   
+            },
+            createFilter: function(input) {
+                    var match, regex;
 
+                    // email@address.com
+                    regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
+                    match = input.match(regex);
+                    if (match) return !this.options.hasOwnProperty(match[0]);
+
+                    // name <email@address.com>
+                    regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
+                    match = input.match(regex);
+                    if (match) return !this.options.hasOwnProperty(match[2]);
+
+                    return false;
+            }
+        });
+        $("div.selselect").removeClass("selectize-input");
+    });
+
+    // Close all edit popovers if clicked outside of a popover or edit icon
+    $('html').on('click', function(e) {
+        if (!$(e.target).parent().hasClass("editsign")
+           && $(e.target).parents('.popover.in').length === 0) {
+               $('.editsign').popover('hide');
+        }
+    });
     $(".save").hide();
 
     // Go through all .item objects and make them the right size
@@ -323,5 +306,4 @@ $(document).ready(function() {
         var len = $(this).attr("deltalen")-1;
         return this.clientHeight+cellSize*len
     });
-
 })
