@@ -69,7 +69,8 @@ function timetableToJson(selector) {
 
 function timetableDisable() {
     // disable resize, drag and remove removal icon from timeslots
-    $(".item").resizable("disable").draggable("disable").popover('enable').find("div.removesign").remove();
+    $(".item").resizable("disable").draggable("disable").popover('enable');
+    $(".item-buttons").slideUp();
 
     // Remove display: block
     $(".ui-resizable-handle").css('display', '');
@@ -109,22 +110,18 @@ function timetableEdit() {
             $(endspan).text("Ends at: " + endtime_text);
         }
     }).draggable({
+        handle: "div.movesign",
         revert: "invalid",
         containment: ".table",
         cursor: "move",
         cursorAt: { top: 20},
         opacity: 0.7,
         stack: ".item"
-    }).each(function(){
-        // add remove icon to existing timeslots
-        var remove = document.createElement('div');
-        remove.className="removesign";
-        $(remove).append('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
-        $(this).prepend(remove);
     }).find("div.removesign").click(function() {
         // add closing functionality
         $(this).closest(".item").remove();
     });
+    $(".item-buttons").slideDown();
 
     // Make all .wrap divs droppable
     $(".wrap").droppable({
@@ -180,10 +177,21 @@ function timetableEdit() {
         elem.className = "item";
         $(elem).attr('slot-id', '0');
         $(elem).css({position: "absolute", top: "0", left: "0"});
+        var buttondiv = document.createElement('div');
+        buttondiv.className="item-buttons";
         var remove = document.createElement('div');
         remove.className="removesign";
-        $(remove).append('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
-        $(elem).append(remove);
+        $(remove).append('<span class="glyphicon glyphicon-remove"></span>');
+        $(buttondiv).append(remove);
+        var edit = document.createElement('div');
+        edit.className="editsign";
+        $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
+        $(buttondiv).append(edit);
+        var move = document.createElement('div');
+        move.className="movesign";
+        $(move).append('<span class="glyphicon glyphicon-move"></span>');
+        $(buttondiv).append(move);
+        $(elem).append(buttondiv);
         $(elem).append('<span class="start" style="display:none">Starts at: ' + timestart + '</span>');
         var endspan = document.createElement('span');
         endspan.className = "end";

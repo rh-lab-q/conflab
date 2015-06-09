@@ -76,17 +76,31 @@ td {
     height: 100%;
 }
 .removesign {
-    color: red;
     font-size: 14px;
     margin-right: 5px;
     float: right;
     cursor: pointer;
 }
-
+.movesign {
+    font-size: 14px;
+    //margin-left: 5px;
+    float: left;
+    cursor: move;
+}
+.editsign {
+    font-size: 14px;
+    margin-right: 5px;
+    float: right;
+    cursor: pointer;
+}
 .start, .end {
     float: left;
     clear: left;
 }
+.event {
+    clear: both;
+}
+
 
 /* Thicken jQuery-UI resizable handle */
 .ui-resizable-s {
