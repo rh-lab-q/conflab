@@ -76,9 +76,6 @@
                     </div>
                     <div class="pop-content" style="display:none">
                         <form method="post">
-                            {{ event_create.topic}}
-                            {{ event_create.description}}
-                            {{ event_create.speaker}}
                         </form>
                     </div>
                     {% endif %}
@@ -96,4 +93,7 @@
 
 {% block extrascripts %}
 <script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
+<script type="text/javascript">
+var users = {{ user_list|safe }};
+</script>
 {% endblock %}

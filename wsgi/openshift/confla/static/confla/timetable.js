@@ -87,7 +87,7 @@ function timetableSubmit(selector) {
     $(".save").hide();
     $(".edit").show();
 
-    $("td").off("dblclick", ".wrap");
+    $("td").off("click", ".wrap");
 }
 
 function timetableEdit() {
@@ -248,50 +248,39 @@ $(document).ready(function() {
         }
     }).on("shown.bs.popover", function() {
         // Selectize init
-        $(".popover").find(".selselect").selectize({
-            persist: false,
-            maxItems: null,
-            valueField: 'email',
-            labelField: 'name',
-            searchField: ['name', 'email'],
-            options: [
-                {email: 'brian@thirdroute.com', name: 'Brian Reavis'},
-                {email: 'nikola@tesla.com', name: 'Nikola Tesla'},
-                {email: 'someone@gmail.com'}
-            ],
-            render: {
-                item: function(item, escape) {
-                    return '<div>' +
-                        (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
-                        (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
-                    '</div>';
-                },
-                option: function(item, escape) {
-                    var label = item.name || item.email;
-                    var caption = item.name ? item.email : null;
-                    return '<div>' +
-                        '<span class="label">' + escape(label) + '</span>' +
-                        (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                    '</div>';
+        $(".popover").find(".selselect").each( function () {
+            var select = this;
+            var itemlist = [];
+            $(this).find("[selected='selected']").each(function () {
+                itemlist.push($(this).text());
+            })
+            $(this).selectize({
+                persist: false,
+                maxItems: null,
+                valueField: 'username',
+                labelField: 'name',
+                searchField: ['name', 'username'],
+                options: users,
+                items: itemlist,
+                render: {
+                    item: function(item, escape) {
+                        return '<div>' +
+                            (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+                            (item.username ? '<span class="username">' + escape(item.username) + '</span>' : '') +
+                        '</div>';
+                    },
+                    option: function(item, escape) {
+                        var label = item.username;
+                        var caption = item.name;
+                        return '<div>' +
+                            '<span class="label">' + escape(label) + '</span>' +
+                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                        '</div>';
+                    }
                 }
-            },
-            createFilter: function(input) {
-                    var match, regex;
-
-                    // email@address.com
-                    regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
-                    match = input.match(regex);
-                    if (match) return !this.options.hasOwnProperty(match[0]);
-
-                    // name <email@address.com>
-                    regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
-                    match = input.match(regex);
-                    if (match) return !this.options.hasOwnProperty(match[2]);
-
-                    return false;
-            }
+            });
+            $("div.selselect").removeClass("selectize-input");
         });
-        $("div.selselect").removeClass("selectize-input");
     });
 
     // Close all edit popovers if clicked outside of a popover or edit icon

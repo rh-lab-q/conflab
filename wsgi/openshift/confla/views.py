@@ -263,16 +263,17 @@ class TimetableView(generic.TemplateView):
             })
         else:
             #TODO: Add compatibility with archived conferences
-            event_create = EventCreateForm(request.POST)
             conf = Conference.get_active()
+            users = ConflaUser.objects.all()
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
-                             'event_create' : event_create,
                              'time_list' : conf.get_delta_list(),
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],
                              'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
-                        })
+                             'user_list' : [{'name' : u.first_name + ' ' + u.last_name,
+                                             'username' : u.username} for u in users],
+                           })
 
     @permission_required('confla.can_organize', raise_exception=True)
     def save_timetable(request):

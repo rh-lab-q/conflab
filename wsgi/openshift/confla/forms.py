@@ -38,6 +38,7 @@ class EventCreateForm(forms.ModelForm):
         model = Event
         fields = ['topic', 'description', 'lang', 'speaker', 'tags']
 
+
     def __init__(self, *args, **kwargs):
         super(EventCreateForm, self).__init__(*args, **kwargs)
         for key in self.fields:
@@ -45,7 +46,6 @@ class EventCreateForm(forms.ModelForm):
         self.fields['topic'].widget.attrs.update({'placeholder' : _('Topic')})
         self.fields['description'].widget.attrs.update({'rows' : '5',
                                                         'placeholder' : _('Description')})
-
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
