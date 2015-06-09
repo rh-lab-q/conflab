@@ -284,6 +284,7 @@ class TimetableView(generic.TemplateView):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
         conf = Conference.get_active()
         json_obj = json.loads(json_string)
+        ids = []
 
         # Create new timeslots from JSON
         for row in json_obj:
@@ -308,6 +309,9 @@ class TimetableView(generic.TemplateView):
                 newslot.full_clean()
                 # Add slot to db
                 newslot.save()
+                ids.append(newslot.id)
+
+        Timeslot.objects.exclude(id__in=ids).delete()
 
 class ImportView(generic.TemplateView):
     template_name = "confla/import.html"
