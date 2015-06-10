@@ -90,6 +90,58 @@ function timetableSubmit(selector) {
     $("td").off("click", ".wrap");
 }
 
+function popoverInit(selector) {
+    $(selector).popover({
+        placement: "left",
+        container: "body",
+        html: "true",
+        title: function () {
+            return $(this).parent().parent().find(".pop-title").text();
+        },
+        content: function () {
+           return $(this).parent().parent().find(".pop-content").html();
+        }
+    }).on("shown.bs.popover", function() {
+        // Selectize init
+        $(".popover").find(".selselect").each( function () {
+            var select = this;
+            var itemlist = [];
+            $(this).find("[selected='selected']").each(function () {
+                itemlist.push($(this).text());
+            })
+            $(this).selectize({
+                persist: false,
+                maxItems: null,
+                valueField: 'username',
+                labelField: 'name',
+                searchField: ['name', 'username'],
+                options: users,
+                items: itemlist,
+                render: {
+                    item: function(item, escape) {
+                        return '<div>' +
+                            (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+                            (item.username ? '<span class="username">' + escape(item.username) + '</span>' : '') +
+                        '</div>';
+                    },
+                    option: function(item, escape) {
+                        var label = item.username;
+                        var caption = item.name;
+                        return '<div>' +
+                            '<span class="label">' + escape(label) + '</span>' +
+                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                        '</div>';
+                    }
+                }
+            });
+            $("div.selselect").removeClass("selectize-input");
+        });
+    });
+    $(selector).on("hide.bs.popover", function () {
+        ;
+    });
+}
+
 function timetableEdit() {
     $(".save").show();
     $(".edit").hide();
@@ -232,62 +284,19 @@ function timetableEdit() {
 $(document).ready(function() {
     var timeslotCount = 0;
 
-    var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
-                      '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
-
     // Bootstrap popover init
-    $('.editsign').popover({
-        placement: "left",
-        container: "body",
-        html: "true",
-        title: function () {
-            return $(this).parent().parent().find(".pop-title").text();
-        },
-        content: function () {
-           return $(this).parent().parent().find(".pop-content").html();
-        }
-    }).on("shown.bs.popover", function() {
-        // Selectize init
-        $(".popover").find(".selselect").each( function () {
-            var select = this;
-            var itemlist = [];
-            $(this).find("[selected='selected']").each(function () {
-                itemlist.push($(this).text());
-            })
-            $(this).selectize({
-                persist: false,
-                maxItems: null,
-                valueField: 'username',
-                labelField: 'name',
-                searchField: ['name', 'username'],
-                options: users,
-                items: itemlist,
-                render: {
-                    item: function(item, escape) {
-                        return '<div>' +
-                            (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
-                            (item.username ? '<span class="username">' + escape(item.username) + '</span>' : '') +
-                        '</div>';
-                    },
-                    option: function(item, escape) {
-                        var label = item.username;
-                        var caption = item.name;
-                        return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
-                        '</div>';
-                    }
-                }
-            });
-            $("div.selselect").removeClass("selectize-input");
-        });
-    });
+    popoverInit(".editsign");
 
     // Close all edit popovers if clicked outside of a popover or edit icon
     $('html').on('click', function(e) {
         if (!$(e.target).parent().hasClass("editsign")
-           && $(e.target).parents('.popover.in').length === 0) {
-               $('.editsign').popover('hide');
+            && $(e.target).parents('.popover.in').length === 0) {
+                $('.editsign').each( function () {
+                // If there is an open popover, hide it
+                if ($(this).attr("aria-describedby")) {
+                   $(this).popover('hide');
+                }
+            });
         }
     });
     $(".save").hide();
