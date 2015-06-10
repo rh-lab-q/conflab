@@ -120,8 +120,8 @@ function popoverInit(selector) {
                 render: {
                     item: function(item, escape) {
                         return '<div>' +
-                            (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
-                            (item.username ? '<span class="username">' + escape(item.username) + '</span>' : '') +
+                            (item.name ? '<span class="name">' + escape(item.name) + ' </span>' : '') +
+                            (item.username ? '<span class="username">(' + escape(item.username) + ')</span>' : '') +
                         '</div>';
                     },
                     option: function(item, escape) {
