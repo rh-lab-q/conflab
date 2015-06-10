@@ -62,10 +62,10 @@
                     </div>
                     <div class="pop-content" style="display:none">
                         <form method="post">
-                        {% with form=e|get_event_form %}
-                            {{ form.topic}}
-                            {{ form.description}}
-                            <select class="selselect selectize-input" style="visibility:hidden"></select>
+                            {% with form=e|get_event_form %}
+                            {{ form.topic }}
+                            {{ form.description }}
+                            {{ form.speaker }}
                             {% endwith %}
                         </form>
                     </div>

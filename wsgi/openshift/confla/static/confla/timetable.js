@@ -136,9 +136,28 @@ function popoverInit(selector) {
             });
             $("div.selselect").removeClass("selectize-input");
         });
-    });
-    $(selector).on("hide.bs.popover", function () {
-        ;
+    }).on("hide.bs.popover", function () {
+        var original = $(this).parent().parent().find(".pop-content");
+        var popoverSelector = "#" + $(this).attr("aria-describedby");
+        var content = $(popoverSelector).find(".popover-content");
+        var visible = $(this).parent().parent().find(".event");
+        var selectize = $(content).find("select.selselect");
+
+        // Copy edited content into original html
+        $(original).find("#id_topic").attr("value", ($(content).find("#id_topic").val()));
+        $(original).find("#id_description").text($(content).find("#id_description").val());
+        $(visible).find(".topic").text(($(content).find("#id_topic").val()));
+        $(visible).find(".desc").text($(content).find("#id_description").val());
+        // Go through all options in the original select and mark them selected/not selected
+        // TODO: Add the values to visible event
+        $(original).find("select.selselect").children().each(function () {
+            if ($.inArray($(this).text(), selectize[0].selectize.items) !== -1) {
+                $(this).attr("selected", "selected");
+            }
+            else {
+                $(this).removeAttr("selected");
+            }
+        });
     });
 }
 

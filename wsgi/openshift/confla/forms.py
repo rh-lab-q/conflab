@@ -46,6 +46,8 @@ class EventCreateForm(forms.ModelForm):
         self.fields['topic'].widget.attrs.update({'placeholder' : _('Topic')})
         self.fields['description'].widget.attrs.update({'rows' : '5',
                                                         'placeholder' : _('Description')})
+        self.fields['speaker'].widget.attrs.update({'class' : 'selselect selectized-input',
+                                                    'style': 'visibility:hidden'})
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
