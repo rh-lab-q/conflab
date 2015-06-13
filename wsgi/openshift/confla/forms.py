@@ -36,7 +36,7 @@ class EventCreateForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ['topic', 'description', 'speaker']
+        fields = ['topic', 'description', 'speaker', 'tags']
 
 
     def __init__(self, *args, **kwargs):
@@ -46,7 +46,9 @@ class EventCreateForm(forms.ModelForm):
         self.fields['topic'].widget.attrs.update({'placeholder' : _('Topic')})
         self.fields['description'].widget.attrs.update({'rows' : '5',
                                                         'placeholder' : _('Description')})
-        self.fields['speaker'].widget.attrs.update({'class' : 'selselect selectized-input',
+        self.fields['speaker'].widget.attrs.update({'class' : 'sel-speaker selectized-input',
+                                                    'style': 'visibility:hidden'})
+        self.fields['tags'].widget.attrs.update({'class' : 'sel-tag selectized-input',
                                                     'style': 'visibility:hidden'})
 
 class RegisterForm(forms.ModelForm):

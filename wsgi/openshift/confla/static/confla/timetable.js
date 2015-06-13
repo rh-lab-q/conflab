@@ -109,13 +109,13 @@ function popoverInit(selector) {
             $(item).popover("hide");
         });
 
-        // Selectize init
-        $(".popover").find(".selselect").each( function () {
+        // Selectize speaker init
+        $(".popover").find(".sel-speaker").each( function () {
             var select = this;
             var itemlist = [];
             $(this).find("[selected='selected']").each(function () {
                 itemlist.push($(this).text());
-            })
+            });
             $(this).selectize({
                 persist: false,
                 maxItems: null,
@@ -141,24 +141,69 @@ function popoverInit(selector) {
                     }
                 }
             });
-            $("div.selselect").removeClass("selectize-input");
+            $("div.sel-speaker").removeClass("selectize-input");
+        });
+
+        // Selectize tags init
+            $(".popover").find(".sel-tag").each( function () {
+                var select = this;
+                var itemlist = [];
+                $(this).find("[selected='selected']").each(function () {
+                    itemlist.push($(this).val());
+            });
+            $(this).selectize({
+                persist: false,
+                maxItems: null,
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                //options: users,
+                items: itemlist,
+                render: {
+                    item: function(item, escape) {
+                        return '<div>' +
+                            '<span class="name">' + escape(item.name) + ' </span>' +
+                        '</div>';
+                    },
+                    option: function(item, escape) {
+                        var caption = item.name;
+                        return '<div>' +
+                            '<span class="caption">' + escape(caption) + '</span>' +
+                                '</div>';
+                    }
+                }
+            });
+            $("div.sel-tag").removeClass("selectize-input");
         });
     }).on("hide.bs.popover", function () {
         var original = $(this).parent().parent().find(".pop-content");
         var popoverSelector = "#" + $(this).attr("aria-describedby");
         var content = $(popoverSelector).find(".popover-content");
         var visible = $(this).parent().parent().find(".event");
-        var selectize = $(content).find("select.selselect");
+        var selSpeaker = $(content).find("select.sel-speaker");
+        var selTag = $(content).find("select.sel-tag");
 
         // Copy edited content into original html
         $(original).find("#id_topic").attr("value", ($(content).find("#id_topic").val()));
         $(original).find("#id_description").text($(content).find("#id_description").val());
         $(visible).find(".topic").text(($(content).find("#id_topic").val()));
         $(visible).find(".desc").text($(content).find("#id_description").val());
-        // Go through all options in the original select and mark them selected/not selected
+        // Go through all options in the original selects and mark them selected/not selected
         // TODO: Add the values to visible event
-        $(original).find("select.selselect").children().each(function () {
-            if ($.inArray($(this).text(), selectize[0].selectize.items) !== -1) {
+
+        // Speaker select
+        $(original).find("select.sel-speaker").children().each(function () {
+            if ($.inArray($(this).text(), selSpeaker[0].selectize.items) !== -1) {
+                $(this).attr("selected", "selected");
+            }
+            else {
+                $(this).removeAttr("selected");
+            }
+        });
+
+        // Tag select
+        $(original).find("select.sel-tag").children().each(function () {
+            if ($.inArray($(this).val(), selTag[0].selectize.items) !== -1) {
                 $(this).attr("selected", "selected");
             }
             else {

@@ -266,6 +266,7 @@ class TimetableView(generic.TemplateView):
             #TODO: Add compatibility with archived conferences
             conf = Conference.get_active()
             users = ConflaUser.objects.all()
+            tags = EventTag.objects.all()
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
@@ -284,15 +285,15 @@ class TimetableView(generic.TemplateView):
             return HttpResponseRedirect(reverse('confla:thanks'))
 
     def save_event(request):
-        try:
-            if request.method == 'POST':
+        if request.method == 'POST':
+            if request.POST['event_id'] == "0":
+                pass
+            else:
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
                 if form.is_valid():
                     form.save()
                 return HttpResponseRedirect(reverse('confla:thanks'))
-        except Exception as e:
-            print(e)
 
     def json_to_timeslots(json_string):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
