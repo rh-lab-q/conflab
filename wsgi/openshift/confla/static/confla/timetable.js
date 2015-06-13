@@ -96,12 +96,19 @@ function popoverInit(selector) {
         container: "body",
         html: "true",
         title: function () {
-            return $(this).parent().parent().find(".pop-title").text();
+            return $(this).parent().parent().find(".pop-title").html();
         },
         content: function () {
            return $(this).parent().parent().find(".pop-content").html();
         }
     }).on("shown.bs.popover", function() {
+        // Set click method for the close icon
+        var item = this;
+        var popoverSelector = "#" + $(this).attr("aria-describedby");
+        $(popoverSelector).find(".pop-close").on("click", function () {
+            $(item).popover("hide");
+        });
+
         // Selectize init
         $(".popover").find(".selselect").each( function () {
             var select = this;

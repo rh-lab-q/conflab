@@ -75,6 +75,11 @@ td {
     width: 260px;
     height: 100%;
 }
+.pop-close {
+    font-size: 14px;
+    float: right;
+    cursor: pointer;
+}
 .removesign {
     font-size: 14px;
     margin-right: 5px;
@@ -85,7 +90,7 @@ td {
     font-size: 14px;
     //margin-left: 5px;
     float: left;
-    cursor: move;
+    cursor: grab;
 }
 .editsign {
     font-size: 14px;
