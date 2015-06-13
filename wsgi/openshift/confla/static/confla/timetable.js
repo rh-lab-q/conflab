@@ -50,13 +50,13 @@ function timetableToJson(selector) {
                     cell["start"] = $($(this).find("span.start")).text().slice(11,16);
                     cell["end"] = $($(this).find("span.end")).text().slice(9,14);
                     cell["id"] = $(this).find("div.item").attr("slot-id");
+                    cell["event"] = $(this).find("div.event").attr("event-id")
                     row[rowName] = cell;
                 }
             }
         });
         return row;
     }).get()
-
     for(i = 0; i < tableObject.length; i++) {
         if(Object.getOwnPropertyNames(tableObject[i]).length === 0) {
             tableObject.splice(i, 1);
@@ -165,6 +165,11 @@ function popoverInit(selector) {
                 $(this).removeAttr("selected");
             }
         });
+
+        // Save the event form
+        var form = original.find("form");
+        $(form).ajaxForm();
+        $(form).ajaxSubmit();
     });
 }
 

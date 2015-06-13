@@ -141,6 +141,7 @@ class UserView(generic.TemplateView):
     @login_required
     def view_profile(request):
         if request.method == 'POST':
+            print(request.POST)
             form = ProfileForm(data=request.POST, instance=request.user)
             if form.is_valid():
                 user = form.save(commit=False)
@@ -267,6 +268,7 @@ class TimetableView(generic.TemplateView):
             users = ConflaUser.objects.all()
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
+                             'event_create' : EventCreateForm(),
                              'time_list' : conf.get_delta_list(),
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],
@@ -281,12 +283,22 @@ class TimetableView(generic.TemplateView):
             TimetableView.json_to_timeslots(request.POST['data'])
             return HttpResponseRedirect(reverse('confla:thanks'))
 
+    def save_event(request):
+        try:
+            if request.method == 'POST':
+                event = Event.objects.get(id=request.POST['event_id'])
+                form = EventCreateForm(data=request.POST, instance=event)
+                if form.is_valid():
+                    form.save()
+                return HttpResponseRedirect(reverse('confla:thanks'))
+        except Exception as e:
+            print(e)
+
     def json_to_timeslots(json_string):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
         conf = Conference.get_active()
         json_obj = json.loads(json_string)
         ids = []
-
         # Create new timeslots from JSON
         for row in json_obj:
             # row: one row in the timeslot table
