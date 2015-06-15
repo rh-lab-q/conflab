@@ -103,6 +103,13 @@ td {
     clear: left;
 }
 .event {
+    width: 100%;
+    height: 100%;
+}
+td > .ui-state-hover {
+    border-width: 0;
+}
+.event-visible {
     clear: both;
     border: 2px solid black;
     -webkit-border-radius: 5px;

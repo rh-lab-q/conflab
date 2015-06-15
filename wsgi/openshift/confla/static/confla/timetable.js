@@ -35,6 +35,75 @@ function countEndtime(tr_array, rownumber) {
     return endtime_text;
 }
 
+function createSlot(e) {
+    if ($(e.target).is("div.wrap") && $(".popover").length === 0) {
+        var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
+        var timestart = $($(this).parent().parent().children('td')[0]).text();
+        // Array of all rows in a table
+        var tr_array = $(this).parent().parent().parent().find('tr');
+
+        // A hack so that the text does not get selected on dblclick
+        if(document.selection && document.selection.empty) {
+            document.selection.empty();
+        }
+        else if(window.getSelection) {
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+        }
+
+        var elem = document.createElement('div');
+        elem.className = "item";
+        $(elem).attr('slot-id', '0');
+        $(elem).css({position: "absolute", top: "0", left: "0"});
+        var buttondiv = document.createElement('div');
+        buttondiv.className="item-buttons";
+        var remove = document.createElement('div');
+        remove.className="removesign";
+        $(remove).append('<span class="glyphicon glyphicon-remove"></span>');
+        $(buttondiv).append(remove);
+        var edit = document.createElement('div');
+        edit.className="editsign";
+        $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
+        $(buttondiv).append(edit);
+        var move = document.createElement('div');
+        move.className="movesign";
+        $(move).append('<span class="glyphicon glyphicon-move"></span>');
+        $(buttondiv).append(move);
+        $(elem).append(buttondiv);
+        $(elem).append('<span class="start" style="display:none">Starts at: ' + timestart + '</span>');
+        var endspan = document.createElement('span');
+        endspan.className = "end";
+        $(endspan).append("Ends at: " + countEndtime(tr_array, row+1)).css('display', 'none');
+        $(elem).append(endspan);
+
+        $(remove).click(function() {
+            $(this).closest(".item").remove()
+        });
+
+        $(elem).resizable({
+            grid: cellSize,     // size of table cell
+            containment: "tbody",
+            handles: "s",   // a bug in jQuery does not allow north resize with containment
+            resize: function(event, ui) {
+                var height = $(this).height();
+                var rowdiff = (height-26)/cellSize;
+                var endtime_text = countEndtime(tr_array, row+rowdiff+1)
+                $(endspan).text("Ends at: " + endtime_text);
+            }
+        }).draggable({
+            handle: "div.movesign",
+            revert: "invalid",
+            containment: ".table",
+            cursor: "move",
+            cursorAt: { top: 20},
+            opacity: 0.7,
+            stack: ".item"
+        });
+        $(this).append(elem);
+    }
+}
+
+
 function timetableToJson(selector) {
     var cols = $(selector + " thead tr th").map(function() {
         return $(this).text()
@@ -67,13 +136,39 @@ function timetableToJson(selector) {
     return JSON.stringify(tableObject);
 }
 
+function timetableEnable() {
+    // enable resize, drag and remove removal icon from timeslots
+    $(".item").resizable("enable").draggable("enable");
+    $(".item-buttons").slideDown();
+
+    // enable event dragging
+    $(".event").draggable("enable")
+
+    $(".event-visible").css("cursor", "grab");
+
+    $("td").on("click", ".wrap", createSlot);
+}
+
 function timetableDisable() {
     // disable resize, drag and remove removal icon from timeslots
-    $(".item").resizable("disable").draggable("disable").popover('enable');
+    $(".item").resizable("disable").draggable("disable");
     $(".item-buttons").slideUp();
+
+    // disable event dragging
+    $(".event").draggable("disable")
 
     // Remove display: block
     $(".ui-resizable-handle").css('display', '');
+
+    $(".event-visible").css("cursor", "auto");
+
+    $("td").off("click", ".wrap");
+}
+
+function timetableEdit() {
+    timetableEnable();
+    $(".save").show();
+    $(".edit").hide();
 }
 
 function timetableSubmit(selector) {
@@ -87,7 +182,6 @@ function timetableSubmit(selector) {
     $(".save").hide();
     $(".edit").show();
 
-    $("td").off("click", ".wrap");
 }
 
 function popoverInit(selector) {
@@ -218,11 +312,8 @@ function popoverInit(selector) {
     });
 }
 
-function timetableEdit() {
-    $(".save").show();
-    $(".edit").hide();
-
-    // Go through all .item objects and make them resizable and deletable
+function timetableInit() {
+    // Go through all .item objects and make them resizable, deletable, draggable and droppable
     $(".item").resizable({
         grid: cellSize,
         containment: "tbody",
@@ -241,15 +332,45 @@ function timetableEdit() {
         handle: "div.movesign",
         revert: "invalid",
         containment: ".table",
-        cursor: "move",
         cursorAt: { top: 20},
         opacity: 0.7,
-        stack: ".item"
+        stack: ".item",
+        start: function( event, ui ) {},
+        stop: function( event, ui ) {}
+    }).droppable({
+        accept: ".event",
+        tolerance: "pointer",
+        hoverClass: "ui-state-hover",
+        drop: function( event, ui ) {
+            $(ui.draggable).parent().append($(this).find(".event"));
+            $(this).append($(ui.draggable));
+        }
+    }).on("dragstart", function (event, ui) {
+        $(ui.helper).find(".movesign").css("cursor", "grabbing");
+    }).on("dragstop", function (event, ui) {
+        $(ui.helper).find(".movesign").css("cursor", "grab");
     }).find("div.removesign").click(function() {
         // add closing functionality
         $(this).closest(".item").remove();
     });
-    $(".item-buttons").slideDown();
+
+    // Make all events draggable
+    $(".event").draggable({
+        revert: "invalid",
+        containment: ".table",
+        cursor: "grabbing",
+        opacity: 0.7,
+        stack: ".item",
+        appendTo: "body",
+        zIndex: 1000,
+        cursorAt: { top: 20, left: 20 },
+        helper: function () {
+            var helper = $(this).find(".event-visible").clone()
+            $(helper).height($(this).parent().height()/2);
+            $(helper).width($(this).parent().width()/2);
+            return helper;
+        }
+    });
 
     // Make all .wrap divs droppable
     $(".wrap").droppable({
@@ -287,75 +408,8 @@ function timetableEdit() {
     });
 
     // Create a new slot
-    $("td").on("click", ".wrap", function(e) {
-        if ($(e.target).is("div.wrap") && $(".popover").length === 0) {
-            var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
-            var timestart = $($(this).parent().parent().children('td')[0]).text();
-            // Array of all rows in a table
-            var tr_array = $(this).parent().parent().parent().find('tr');
-
-            // A hack so that the text does not get selected on dblclick
-            if(document.selection && document.selection.empty) {
-                document.selection.empty();
-            }
-            else if(window.getSelection) {
-                var sel = window.getSelection();
-                sel.removeAllRanges();
-            }
-
-            var elem = document.createElement('div');
-            elem.className = "item";
-            $(elem).attr('slot-id', '0');
-            $(elem).css({position: "absolute", top: "0", left: "0"});
-            var buttondiv = document.createElement('div');
-            buttondiv.className="item-buttons";
-            var remove = document.createElement('div');
-            remove.className="removesign";
-            $(remove).append('<span class="glyphicon glyphicon-remove"></span>');
-            $(buttondiv).append(remove);
-            var edit = document.createElement('div');
-            edit.className="editsign";
-            $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
-            $(buttondiv).append(edit);
-            var move = document.createElement('div');
-            move.className="movesign";
-            $(move).append('<span class="glyphicon glyphicon-move"></span>');
-            $(buttondiv).append(move);
-            $(elem).append(buttondiv);
-            $(elem).append('<span class="start" style="display:none">Starts at: ' + timestart + '</span>');
-            var endspan = document.createElement('span');
-            endspan.className = "end";
-            $(endspan).append("Ends at:" + countEndtime(tr_array, row+1)).css('display', 'none');
-            $(elem).append(endspan);
-
-            $(remove).click(function() {
-                $(this).closest(".item").remove()
-            });
-
-            $(elem).resizable({
-                grid: cellSize,     // size of table cell
-                containment: "tbody",
-                handles: "s",   // a bug in jQuery does not allow north resize with containment
-                resize: function(event, ui) {
-                    var height = $(this).height();
-                    var rowdiff = (height-26)/cellSize;
-                    var endtime_text = countEndtime(tr_array, row+rowdiff+1)
-                    $(endspan).text("Ends at: " + endtime_text);
-                }
-            }).draggable({
-                handle: "div.movesign",
-                revert: "invalid",
-                containment: ".table",
-                cursor: "move",
-                cursorAt: { top: 20},
-                opacity: 0.7,
-                stack: ".item"
-            });
-            $(this).append(elem);
-        }
-    })
-
-    $(".item").resizable("enable").draggable("enable").popover("disable");
+    $("td").on("click", ".wrap", createSlot); 
+    timetableDisable();
 }
 
 $(document).ready(function() {
@@ -363,6 +417,8 @@ $(document).ready(function() {
 
     // Bootstrap popover init
     popoverInit(".editsign");
+
+    timetableInit();
 
     // Close all edit popovers if clicked outside of a popover or edit icon
     $('html').on('click', function(e) {
