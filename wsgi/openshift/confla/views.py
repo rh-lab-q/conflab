@@ -551,3 +551,25 @@ class ImportView(generic.TemplateView):
             for speaker in event['speakers']:
                 newevent.speaker.add(ConflaUser.objects.get(username=speaker))
             newevent.save()
+
+    # import json from devconf for testing purposes
+    def dv(json_string):
+        # delete everyone excluding admin
+        ConflaUser.objects.all().exclude(username="admin").delete()
+        json_obj = json.loads(json_string)
+
+        # Generate users
+        user_list = json_obj['users']
+        for user in user_list:
+            newuser = ConflaUser()
+            newuser.username = user['username']
+            newuser.password = "blank"
+            if 'name' in user:
+                newuser.first_name = user['name']
+            try:
+                newuser.full_clean()
+            except ValidationError as e:
+                pass
+
+            newuser.save()
+
