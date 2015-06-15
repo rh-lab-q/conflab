@@ -288,7 +288,7 @@ function timetableEdit() {
 
     // Create a new slot
     $("td").on("click", ".wrap", function(e) {
-        if ($(e.target).is("div.wrap")) {
+        if ($(e.target).is("div.wrap") && $(".popover").length === 0) {
             var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
             var timestart = $($(this).parent().parent().children('td')[0]).text();
             // Array of all rows in a table
@@ -343,6 +343,7 @@ function timetableEdit() {
                     $(endspan).text("Ends at: " + endtime_text);
                 }
             }).draggable({
+                handle: "div.movesign",
                 revert: "invalid",
                 containment: ".table",
                 cursor: "move",
