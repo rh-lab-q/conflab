@@ -54,9 +54,8 @@
                     {% with e=s.event_id %}
                     <div class="event">
                         <div class="event-visible">
-                            <span class="topic">{{e.topic}}</span><br />
+                            <p class="topic">{{e.topic}}</p><br />
                             <span class="author">{{e.get_users}}</span>
-                            <p class="desc">{{e.description}}</span>
                         </div>
                         <div class="pop-title"style="display:none">
                             <span>{% trans "Edit event" %}</span>
@@ -78,7 +77,10 @@
                     {% endwith %}
                     {% else %}
                     <div class="event">
-                        <div class="event-visible"></div>
+                        <div class="event-visible">
+                            <p class="topic"></p><br />
+                            <span class="author"></span>
+                        </div>
                         <div class="pop-title"style="display:none">
                             <span>{% trans "Add event" %}</span>
                             <span class="pop-close glyphicon glyphicon-remove"></span>

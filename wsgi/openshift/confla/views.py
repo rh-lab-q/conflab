@@ -558,6 +558,64 @@ class ImportView(generic.TemplateView):
         ConflaUser.objects.all().exclude(username="admin").delete()
         json_obj = json.loads(json_string)
 
+        Timeslot.objects.all().delete()
+        Event.objects.all().delete()
+        room_list = []
+        for i in Room.objects.all():
+            room_list.append(i.shortname)
+        user_list = []
+
+        # Generate sessions
+        event_list = json_obj['sessions']
+        for event in event_list:
+            newevent = Event()
+            newevent.conf_id = Conference.get_active()
+            newevent.e_type_id = EventType.objects.get(id=1)
+            newevent.topic = event['topic']
+            newevent.description = event['description']
+            newevent.lang = event['lang']
+
+            newevent.full_clean()
+            newevent.save()
+
+            # Create timeslot for the event
+            newslot = Timeslot()
+            newslot.conf_id = Conference.get_active()
+            if event['room'] in room_list:
+                newslot.room_id = Room.objects.get(shortname=event['room'])
+            # Has to be like this or else django complains!
+            start = datetime.fromtimestamp(int(event['event_start']))
+            end = datetime.fromtimestamp(int(event['event_end']))
+            newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                        second=0, microsecond=0)
+            newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                        second=0, microsecond=0)
+            newslot.event_id = newevent
+            if (start.day == 6):
+                newslot.full_clean()
+                newslot.save()
+
+            # Create speakers
+            for speaker in event['speakers']:
+                username = speaker.replace(" ", "")[:30]
+                if username in user_list:
+                    newevent.speaker.add(ConflaUser.objects.get(username=username))
+                else:
+                    newuser = ConflaUser()
+                    newuser.username = username
+                    newuser.password = "blank"
+                    newuser.first_name = speaker
+                    try:
+                        newuser.full_clean()
+                    except ValidationError as e:
+                        pass
+                    newuser.save()
+                    newevent.speaker.add(newuser)
+                    user_list.append(username)
+
+            newevent.save()   
+
+        """
         # Generate users
         user_list = json_obj['users']
         for user in user_list:
@@ -572,4 +630,4 @@ class ImportView(generic.TemplateView):
                 pass
 
             newuser.save()
-
+        """
