@@ -113,5 +113,6 @@
 <script type="text/javascript">
 var users = {{ user_list|safe }};
 var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}{{event_create.speaker|escapejs}}';
+var form_action = "{% url 'confla:saveEvent' %}";
 </script>
 {% endblock %}

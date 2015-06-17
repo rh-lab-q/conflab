@@ -142,6 +142,7 @@ function createSlot(e) {
         // Event create form
         nform = document.createElement('form');
         $(nform).attr("method", "post");
+        $(nform).attr("action", form_action);
         $(nform).append($($("[name=csrfmiddlewaretoken]")[0]).clone());
         $(nform).append('<input type="hidden" name="event_id" value="0" />');
         $(nform).append(form);
@@ -367,7 +368,10 @@ function popoverInit(selector) {
         $(form).ajaxForm();
         $(form).ajaxSubmit({
             success: function(response) {
-                form.find("[name=event_id]").attr("value", response);
+                var event_id = form.find("[name=event_id]");
+                if (event_id.attr("value") == 0) {
+                    event_id.attr("value", response);
+                }
             }
         });
     });

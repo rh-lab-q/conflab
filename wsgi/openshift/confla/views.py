@@ -288,17 +288,12 @@ class TimetableView(generic.TemplateView):
         if request.method == 'POST':
             if request.POST['event_id'] == "0":
                 form = EventCreateForm(request.POST)
-                print(form.errors)
                 if form.is_valid():
-                    print("wat")
                     new_event = form.save(commit=False)
                     new_event.conf_id = Conference.get_active()
                     new_event.e_type_id = EventType.objects.get(id=1)
                     new_event.lang = "cz"
-                    try:
-                        new_event.save()
-                    except Exception as e:
-                        print(e)
+                    new_event.save()
                     return HttpResponse(new_event.id)
                 else:
                     return HttpResponse("-1")
