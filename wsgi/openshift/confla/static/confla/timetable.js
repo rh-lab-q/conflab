@@ -35,6 +35,26 @@ function countEndtime(tr_array, rownumber) {
     return endtime_text;
 }
 
+function eventInit(selector) {
+    $(selector).draggable({
+        revert: "invalid",
+        containment: ".table",
+        cursor: "grabbing",
+        opacity: 0.7,
+        stack: ".item",
+        appendTo: "body",
+        zIndex: 1000,
+        cursorAt: { top: 20, left: 20 },
+        helper: function () {
+            var helper = $(this).find(".event-visible").clone()
+            $(helper).height($(this).parent().height()/2);
+            $(helper).width($(this).parent().width()/2);
+            return helper;
+        }
+    });
+    $(selector).find(".event-visible").css("cursor", "grab");
+}
+
 function itemInit(selector) {
     $(selector).resizable({
         grid: cellSize,
@@ -148,14 +168,16 @@ function createSlot(e) {
         $(nform).append(form);
         $(popcontent).append(nform);
         $(nevent).append(popcontent);
+        eventInit(nevent);
         $(elem).append(nevent);
 
         // Setup slot removal button
         $(remove).click(function() {
             $(this).closest(".item").remove()
         });
-        // Setup jQuery magic for the slot
+        // Setup jQuery magic for the slot and event
         itemInit(elem);
+        eventInit(nevent);
         // Setup popover for the slot's event
         popoverInit(edit);
         $(this).append(elem);
@@ -382,22 +404,7 @@ function timetableInit() {
     itemInit(".item");
 
     // Make all events draggable
-    $(".event").draggable({
-        revert: "invalid",
-        containment: ".table",
-        cursor: "grabbing",
-        opacity: 0.7,
-        stack: ".item",
-        appendTo: "body",
-        zIndex: 1000,
-        cursorAt: { top: 20, left: 20 },
-        helper: function () {
-            var helper = $(this).find(".event-visible").clone()
-            $(helper).height($(this).parent().height()/2);
-            $(helper).width($(this).parent().width()/2);
-            return helper;
-        }
-    });
+    eventInit(".event");
 
     // Make all .wrap divs droppable
     $(".wrap").droppable({
