@@ -62,7 +62,7 @@
                             <span class="pop-close glyphicon glyphicon-remove"></span>
                         </div>
                         <div class="pop-content" style="display:none">
-                            <form method="post" action="/timetable/saveEvent/">
+                            <form method="post" action="{% url 'confla:saveEvent' %}">
                                 {% csrf_token %}
                                 {% with form=e|get_event_form %}
                                 <input type="hidden" name="event_id" value={{ e.id }} />
@@ -86,7 +86,7 @@
                             <span class="pop-close glyphicon glyphicon-remove"></span>
                         </div>
                         <div class="pop-content" style="display:none">
-                            <form method="post">
+                            <form method="post" action="{% url 'confla:saveEvent' %}">
                             {% csrf_token %}
                             <input type="hidden" name="event_id" value="0" />
                             {{ event_create.topic }}

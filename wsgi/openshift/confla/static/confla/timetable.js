@@ -143,6 +143,7 @@ function createSlot(e) {
         nform = document.createElement('form');
         $(nform).attr("method", "post");
         $(nform).append($($("[name=csrfmiddlewaretoken]")[0]).clone());
+        $(nform).append('<input type="hidden" name="event_id" value="0" />');
         $(nform).append(form);
         $(popcontent).append(nform);
         $(nevent).append(popcontent);
@@ -175,7 +176,7 @@ function timetableToJson(selector) {
                     cell["start"] = $($(this).find("span.start")).text().slice(11,16);
                     cell["end"] = $($(this).find("span.end")).text().slice(9,14);
                     cell["id"] = $(this).find("div.item").attr("slot-id");
-                    cell["event"] = $(this).find("div.event").attr("event-id")
+                    cell["event"] = $(this).find("[name=event_id]").attr("value")
                     row[rowName] = cell;
                 }
             }
@@ -364,7 +365,11 @@ function popoverInit(selector) {
         // Save the event form
         var form = original.find("form");
         $(form).ajaxForm();
-        $(form).ajaxSubmit();
+        $(form).ajaxSubmit({
+            success: function(response) {
+                form.find("[name=event_id]").attr("value", response);
+            }
+        });
     });
 }
 

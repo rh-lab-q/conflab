@@ -287,7 +287,21 @@ class TimetableView(generic.TemplateView):
     def save_event(request):
         if request.method == 'POST':
             if request.POST['event_id'] == "0":
-                pass
+                form = EventCreateForm(request.POST)
+                print(form.errors)
+                if form.is_valid():
+                    print("wat")
+                    new_event = form.save(commit=False)
+                    new_event.conf_id = Conference.get_active()
+                    new_event.e_type_id = EventType.objects.get(id=1)
+                    new_event.lang = "cz"
+                    try:
+                        new_event.save()
+                    except Exception as e:
+                        print(e)
+                    return HttpResponse(new_event.id)
+                else:
+                    return HttpResponse("-1")
             else:
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
@@ -310,7 +324,10 @@ class TimetableView(generic.TemplateView):
                     newslot = Timeslot()
                 else:
                     newslot = Timeslot.objects.get(id=int(row[key]['id']))
-
+                try:
+                    newslot.event_id = Event.objects.get(id=row[key]['event'])
+                except Exception as e:
+                    print(row[key]['event'])
                 newslot.room_id = Room.objects.get(shortname=key)
                 newslot.conf_id = conf
                 # Has to be like this or else django complains!
@@ -320,8 +337,18 @@ class TimetableView(generic.TemplateView):
                                                             second=0, microsecond=0)
                 newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
                                                             second=0, microsecond=0)
-                newslot.full_clean()
                 # Add slot to db
+                try:
+                    newslot.full_clean()
+                except ValidationError as e:
+                    if ('event_id' in e.error_dict and
+                            e.error_dict['event_id'][0] == 'Timeslot with this Event id already exists.'):
+                        oldslot = Timeslot.objects.get(event_id=newslot.event_id)
+                        oldslot.event_id = None
+                        oldslot.save()
+                        newslot.full_clean()
+                    else:
+                        raise e
                 newslot.save()
                 ids.append(newslot.id)
 
