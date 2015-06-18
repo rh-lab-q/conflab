@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'selectize/selectize.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bselectize/selectize.bootstrap3.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'bootsidemenu/BootSideMenu.css' %}" />
     {% block extrastyles %}{% endblock %}
 </head>
 
@@ -70,12 +71,14 @@
     Welcome to Confla system. Not much to be seen around yet.
     {% endblock %}
 </div>
+{% block sidenav %}{% endblock %}
   <!-- Bootstrap core JavaScript
   ================================================== -->
   <script src="{% static 'jquery/jquery-1.11.2.min.js' %}"></script>
   <script src="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.min.js' %}"></script>
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
   <script src="{% static 'selectize/selectize.min.js' %}"></script>
+  <script src="{% static 'bootsidemenu/BootSideMenu.js' %}"></script>
   <script src="http://malsup.github.com/jquery.form.js"></script>
   {% block extrascripts %}{% endblock %}
 </body>

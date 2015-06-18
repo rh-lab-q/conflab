@@ -459,6 +459,11 @@ $(document).ready(function() {
     // Timetable jQuery init
     timetableInit();
 
+    $('#demo').BootSideMenu({
+        side:"right", // left or right
+        autoClose:true // auto close when page loads
+    });
+
     // Close all edit popovers if clicked outside of a popover or edit icon
     $('html').on('click', function(e) {
         if (!$(e.target).parent().hasClass("editsign")
