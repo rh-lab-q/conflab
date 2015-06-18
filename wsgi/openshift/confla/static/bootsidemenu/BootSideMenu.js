@@ -54,6 +54,7 @@
 		    var container = toggler.parent();
             container.css("right", -(container.width()+2));
 		    container.attr('data-status', 'closed');
+			toggleArrow(toggler, "right");
             // Original code:
             // $(this).find(".toggler").trigger("click");
 		}

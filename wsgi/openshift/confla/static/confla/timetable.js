@@ -463,6 +463,7 @@ $(document).ready(function() {
         side:"right", // left or right
         autoClose:true // auto close when page loads
     });
+    $("#demo").show();
 
     // Close all edit popovers if clicked outside of a popover or edit icon
     $('html').on('click', function(e) {

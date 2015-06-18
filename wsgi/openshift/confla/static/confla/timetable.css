@@ -11,6 +11,9 @@
     z-index: 2;
 }
 */
+#table-wrap {
+    overflow: auto;
+}
 th {
     text-align: center;
 }
