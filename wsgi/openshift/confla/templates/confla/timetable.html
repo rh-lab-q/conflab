@@ -10,7 +10,7 @@
 {% if perms.confla.can_organize %}
 <div style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
     <button type="button" class="btn btn-success edit" onclick="timetableEdit()">Edit</button>
-    <button type="button" class="btn btn-success save" onclick="timetableSubmit('.table')">Save</button>
+    <button type="button" class="btn btn-success save" onclick="timetableSubmit('.table')" style="display:none">Save</button>
 </div>
 {% endif %}
 {% endblock %}

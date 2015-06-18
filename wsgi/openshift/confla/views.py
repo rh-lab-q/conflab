@@ -141,7 +141,6 @@ class UserView(generic.TemplateView):
     @login_required
     def view_profile(request):
         if request.method == 'POST':
-            print(request.POST)
             form = ProfileForm(data=request.POST, instance=request.user)
             if form.is_valid():
                 user = form.save(commit=False)
@@ -319,10 +318,9 @@ class TimetableView(generic.TemplateView):
                     newslot = Timeslot()
                 else:
                     newslot = Timeslot.objects.get(id=int(row[key]['id']))
-                try:
+                # If the slot has an event bound to it
+                if row[key]['event'] != "0":
                     newslot.event_id = Event.objects.get(id=row[key]['event'])
-                except Exception as e:
-                    print(row[key]['event'])
                 newslot.room_id = Room.objects.get(shortname=key)
                 newslot.conf_id = conf
                 # Has to be like this or else django complains!

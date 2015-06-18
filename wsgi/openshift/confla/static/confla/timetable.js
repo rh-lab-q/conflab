@@ -1,6 +1,7 @@
 /*
     @file: timetable.js
     @author: Stanislav Laznicka <slaz@seznam.cz>
+    @author: Petr Kubat <petr.kubat.hb@seznam.cz>
 */
 
 var cellSize = 31;
@@ -447,10 +448,15 @@ function timetableInit() {
 }
 
 $(document).ready(function() {
-    var timeslotCount = 0;
+    // Go through all .item objects and make them the right size
+    $(".item").height(function(){
+        var len = $(this).attr("deltalen")-1;
+        return this.clientHeight+cellSize*len
+    });
+
     // Bootstrap popover init
     popoverInit(".editsign");
-
+    // Timetable jQuery init
     timetableInit();
 
     // Close all edit popovers if clicked outside of a popover or edit icon
@@ -465,11 +471,5 @@ $(document).ready(function() {
             });
         }
     });
-    $(".save").hide();
 
-    // Go through all .item objects and make them the right size
-    $(".item").height(function(){
-        var len = $(this).attr("deltalen")-1;
-        return this.clientHeight+cellSize*len
-    });
 })
