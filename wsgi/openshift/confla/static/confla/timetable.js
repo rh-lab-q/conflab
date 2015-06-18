@@ -5,6 +5,30 @@
 */
 
 var cellSize = 31;
+$.expr[':'].Contains = function(a, i, m) {
+    // m is PROBABLY an array ofcCaller, calling method('Contains'), and content of the call
+    return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+}
+
+function listFilter(input, list, elem) {
+    $(input)
+        .change(function() {
+            var filter = $(this).val();
+            if(filter) {
+                $matches = $(list).find(elem + ':Contains(' + filter + ')').parent();
+                $('.event-visible', list).not($matches).hide();
+                $matches.show();
+            }
+            else {
+                $(list).find('.event-visible').show();
+            }
+            return false;
+        })
+
+        .keyup(function() {
+            $(this).change();
+        });
+}
 
 function countEndtime(tr_array, rownumber) {
     /*
@@ -39,16 +63,16 @@ function countEndtime(tr_array, rownumber) {
 function eventInit(selector) {
     $(selector).draggable({
         revert: "invalid",
-        containment: ".table",
+        containment: "body",
         cursor: "grabbing",
         opacity: 0.7,
         stack: ".item",
         appendTo: "body",
-        zIndex: 1000,
+        zIndex: 100000,
         cursorAt: { top: 20, left: 20 },
         helper: function () {
             var helper = $(this).find(".event-visible").clone()
-            $(helper).height($(this).parent().height()/2);
+            $(helper).height(100);
             $(helper).width($(this).parent().width()/2);
             return helper;
         }
@@ -454,16 +478,27 @@ $(document).ready(function() {
         return this.clientHeight+cellSize*len
     });
 
+    // Setup BootSideMenu
+    $('#event-bar').BootSideMenu({
+        side: "right",
+        autoClose: true // on page load
+    });
+    $("#event-bar").show();
+
     // Bootstrap popover init
     popoverInit(".editsign");
     // Timetable jQuery init
     timetableInit();
 
-    $('#demo').BootSideMenu({
-        side:"right", // left or right
-        autoClose:true // auto close when page loads
+    $("#event-bar").droppable({
+        accept: ".event",
+        tolerance: "pointer",
+        //hoverClass: "ui-state-hover",
+        drop: function( event, ui ) {
+            $(this).find("#event-list").append($(ui.draggable));
+            $("#filter_input").change();
+        }
     });
-    $("#demo").show();
 
     // Close all edit popovers if clicked outside of a popover or edit icon
     $('html').on('click', function(e) {
@@ -477,5 +512,5 @@ $(document).ready(function() {
             });
         }
     });
-
+    listFilter($("#filter_input"), $("#event-list"), "p");
 })

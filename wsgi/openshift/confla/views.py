@@ -269,6 +269,7 @@ class TimetableView(generic.TemplateView):
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
+                             'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
                              'time_list' : conf.get_delta_list(),
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],

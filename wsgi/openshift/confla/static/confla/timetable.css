@@ -132,6 +132,9 @@ td > .ui-state-hover {
     line-height: 100%;
 }
 
+#filter_input {
+    width: 100%;
+}
 /* Thicken jQuery-UI resizable handle */
 .ui-resizable-s {
     bottom: 0;
