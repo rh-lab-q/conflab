@@ -15,7 +15,7 @@
     overflow: auto;
 }
 .table-dummy {
-    height: 20px;
+    height: 1px;
 }
 th {
     text-align: center;

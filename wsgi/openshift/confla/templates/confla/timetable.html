@@ -9,7 +9,7 @@
 {% block extranav %}
 {% if perms.confla.can_organize %}
 <div id="event-bar" style="display:none">
-    <input id="filter_input" type="text" value="" />
+    <input id="filter_input" type="text" value="" placeholder="Filter" />
     <div class="list-group" id="event-list">
         {% for e in event_list %}
         <div class="event">

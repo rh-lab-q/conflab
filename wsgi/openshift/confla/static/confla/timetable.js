@@ -72,7 +72,7 @@ function eventInit(selector) {
         cursorAt: { top: 20, left: 20 },
         helper: function () {
             var helper = $(this).find(".event-visible").clone()
-            $(helper).height(100);
+            $(helper).height(50);
             $(helper).width($(this).parent().width()/2);
             return helper;
         }
@@ -109,7 +109,14 @@ function itemInit(selector) {
         tolerance: "pointer",
         hoverClass: "ui-state-hover",
         drop: function( event, ui ) {
-            $(ui.draggable).parent().append($(this).find(".event"));
+            // Don't append empty events to event list
+            if ($(ui.draggable).parent().is("#event-list") &&
+                    $(this).find(".topic").text() === "") {
+                $(this).find(".event").remove(); 
+            }
+            else {
+                $(ui.draggable).parent().append($(this).find(".event"));
+            }
             $(this).append($(ui.draggable));
         }
     }).on("dragstart", function (event, ui) {
@@ -120,6 +127,40 @@ function itemInit(selector) {
         // add closing functionality
         $(this).closest(".item").remove();
     });
+}
+
+function createEvent() {
+        var nevent = document.createElement('div');
+        nevent.className = "event";
+        var visevent = document.createElement('div');
+        visevent.className = 'event-visible';
+        $(visevent).append('<p class="topic"></p>');
+        $(visevent).append('<p class="author"></p>');
+        $(nevent).append(visevent);
+        // Generate popover title and content
+        var poptitle = document.createElement('div');
+        poptitle.className = "pop-title";
+        $(poptitle).attr("style", "display : none");
+        // TODO: Translation in javascript
+        // https://docs.djangoproject.com/en/1.8/topics/i18n/translation/#using-the-javascript-translation-catalog
+        $(poptitle).append('<span>Add event</span>')
+        $(poptitle).append('<span class="pop-close" glyphicon glyphicon-remove></span>');
+        $(nevent).append(poptitle);
+        var popcontent = document.createElement('div');
+        popcontent.className = "pop-content";
+        $(popcontent).attr("style", "display : none");
+        // Event create form
+        nform = document.createElement('form');
+        $(nform).attr("method", "post");
+        $(nform).attr("action", form_action);
+        $(nform).append($($("[name=csrfmiddlewaretoken]")[0]).clone());
+        $(nform).append('<input type="hidden" name="event_id" value="0" />');
+        $(nform).append(form);
+        $(popcontent).append(nform);
+        $(nevent).append(popcontent);
+        // jQuery magic
+        eventInit(nevent);
+        return nevent;
 }
 
 function createSlot(e) {
@@ -165,35 +206,7 @@ function createSlot(e) {
         $(elem).append(endspan);
 
         // Generate event
-        var nevent = document.createElement('div');
-        nevent.className = "event";
-        var visevent = document.createElement('div');
-        visevent.className = 'event-visible';
-        $(visevent).append('<p class="topic"></p>');
-        $(visevent).append('<p class="author"></p>');
-        $(nevent).append(visevent);
-        // Generate popover title and content
-        var poptitle = document.createElement('div');
-        poptitle.className = "pop-title";
-        $(poptitle).attr("style", "display : none");
-        // TODO: Translation in javascript
-        // https://docs.djangoproject.com/en/1.8/topics/i18n/translation/#using-the-javascript-translation-catalog
-        $(poptitle).append('<span>Add event</span>')
-        $(poptitle).append('<span class="pop-close" glyphicon glyphicon-remove></span>');
-        $(nevent).append(poptitle);
-        var popcontent = document.createElement('div');
-        popcontent.className = "pop-content";
-        $(popcontent).attr("style", "display : none");
-        // Event create form
-        nform = document.createElement('form');
-        $(nform).attr("method", "post");
-        $(nform).attr("action", form_action);
-        $(nform).append($($("[name=csrfmiddlewaretoken]")[0]).clone());
-        $(nform).append('<input type="hidden" name="event_id" value="0" />');
-        $(nform).append(form);
-        $(popcontent).append(nform);
-        $(nevent).append(popcontent);
-        eventInit(nevent);
+        var nevent = createEvent();
         $(elem).append(nevent);
 
         // Setup slot removal button
@@ -274,6 +287,7 @@ function timetableEdit() {
     timetableEnable();
     $(".save").show();
     $(".edit").hide();
+    $("#event-bar").show();
 }
 
 function timetableSubmit(selector) {
@@ -286,6 +300,7 @@ function timetableSubmit(selector) {
     timetableDisable();
     $(".save").hide();
     $(".edit").show();
+    $("#event-bar").hide();
 
 }
 
@@ -483,7 +498,6 @@ $(document).ready(function() {
         side: "right",
         autoClose: true // on page load
     });
-    $("#event-bar").show();
 
     // Bootstrap popover init
     popoverInit(".editsign");
@@ -491,10 +505,16 @@ $(document).ready(function() {
     timetableInit();
 
     $("#event-bar").droppable({
+        greedy: true,
         accept: ".event",
         tolerance: "pointer",
         //hoverClass: "ui-state-hover",
         drop: function( event, ui ) {
+            // Don't append empty events to event list
+            if (!$(ui.draggable).parent().is("#event-list")) {
+                var nevent = createEvent();
+                $(ui.draggable).parent().append(nevent);
+            }
             $(this).find("#event-list").append($(ui.draggable));
             $("#filter_input").change();
         }

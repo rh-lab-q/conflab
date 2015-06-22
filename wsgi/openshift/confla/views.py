@@ -322,6 +322,8 @@ class TimetableView(generic.TemplateView):
                 # If the slot has an event bound to it
                 if row[key]['event'] != "0":
                     newslot.event_id = Event.objects.get(id=row[key]['event'])
+                else:
+                    newslot.event_id = None
                 newslot.room_id = Room.objects.get(shortname=key)
                 newslot.conf_id = conf
                 # Has to be like this or else django complains!
