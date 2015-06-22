@@ -46,6 +46,9 @@
 
 {% block content %}
 {% csrf_token %}
+<div id="dummy-wrap">
+    <div class="table-dummy"></div>
+</div>
 <div id="table-wrap">
 <table class="table" tdelta={{conf.timedelta}}>
     <thead>

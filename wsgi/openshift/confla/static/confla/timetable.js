@@ -513,4 +513,16 @@ $(document).ready(function() {
         }
     });
     listFilter($("#filter_input"), $("#event-list"), "p");
+
+    // Set up a dummy scrollbar at the top of the table
+    $(".table-dummy").width($(".table").width());
+    // Propagate scroll events into the proper scrollbar
+    $("#dummy-wrap").scroll(function(){
+        $("#table-wrap")
+            .scrollLeft($("#dummy-wrap").scrollLeft());
+    });
+    $("#table-wrap").scroll(function(){
+        $("#dummy-wrap")
+            .scrollLeft($("#table-wrap").scrollLeft());
+    });
 })

@@ -11,8 +11,11 @@
     z-index: 2;
 }
 */
-#table-wrap {
+#table-wrap, #dummy-wrap {
     overflow: auto;
+}
+.table-dummy {
+    height: 20px;
 }
 th {
     text-align: center;
@@ -135,6 +138,7 @@ td > .ui-state-hover {
 #filter_input {
     width: 100%;
 }
+
 /* Thicken jQuery-UI resizable handle */
 .ui-resizable-s {
     bottom: 0;
