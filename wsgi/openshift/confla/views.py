@@ -25,9 +25,8 @@ class VolunteerView(generic.TemplateView):
     def my_view(request):
         return render(request, VolunteerView.template_name)
 
-"""
 class ScheduleView(generic.TemplateView):
-    template_name = 'confla/schedule.html'
+    template_name = 'confla/usertable.html'
 
     def my_view(request):
         #TODO: Add compatibility with archived conferences
@@ -35,12 +34,23 @@ class ScheduleView(generic.TemplateView):
         if not(conf):
             return HttpResponse("Currently no conferences.")
         return render(request, ScheduleView.template_name,
-                      {  'time_list' : conf.get_delta_list(),
+                    {  'time_list' : conf.get_delta_list(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
-"""
+
+    def list_view(request):
+        #TODO: Add compatibility with archived conferences
+        conf = Conference.get_active()
+        if not(conf):
+            return HttpResponse("Currently no conferences.")
+        return render(request, "confla/schedlist.html",
+                      {  'time_list' : [x.strftime("%H:%M") for x in Timeslot.objects.values_list("start_time", flat=True).distinct()],
+                         'room_list' : [{'conf' : conf,
+                                         'room' : x} for x in conf.rooms.all()],
+                         'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
+                    })
 
 class LoginView(generic.TemplateView):
     template_name = 'confla/login.html'

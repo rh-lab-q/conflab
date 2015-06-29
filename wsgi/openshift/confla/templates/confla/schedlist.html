@@ -1,0 +1,48 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load confla_filters %}
+{% block title %}Timetable{% endblock %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/schedlist.css' %}" />
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div id="dummy-wrap">
+    <div class="table-dummy"></div>
+</div>
+<div id="table-wrap">
+    {% for t in time_list %}
+    <div class="time">{{t}}</div>
+    <div class="events-wrap">
+    {% with slots=r|get_slots:t %}
+    {% for s in slots %}
+    {% if s.event_id %}
+    {% with e=s.event_id %}
+        <div class="event">
+            <div class="event-visible">
+                <p class="topic">{{e.topic}}</p>
+                <p class="author">{{e.get_users}}</p>
+            </div>
+            <div class="pop-title"style="display:none">
+                <span>{% trans "Edit event" %}</span>
+                <span class="pop-close glyphicon glyphicon-remove"></span>
+            </div>
+            <div class="pop-content" style="display:none">
+            </div>
+        </div>
+    {% endwith %}
+    {% endif %}
+    {% endfor %}
+    <br style="clear:both"></br>
+    {% endwith %}
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
+{% block sidenav %}
+
+{% endblock %}

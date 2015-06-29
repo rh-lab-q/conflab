@@ -26,6 +26,16 @@ def get_slot(value, arg):
     return False
 
 @register.filter
+def get_slots(value, arg):
+    slot_list = []
+    slots = Timeslot.objects.filter(conf_id=Conference.get_active())
+    for s in slots:
+        if s.get_start_time == arg:
+            print(s.get_start_time)
+            slot_list.append(s)
+    return slot_list
+
+@register.filter
 def get_event_form(value):
     form = EventCreateForm(instance=value)
     return form
