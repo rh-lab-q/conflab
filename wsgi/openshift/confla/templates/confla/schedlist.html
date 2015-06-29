@@ -12,8 +12,10 @@
     <div class="table-dummy"></div>
 </div>
 <div id="table-wrap">
-    {% for t in time_list %}
-    <div class="time">{{t}}</div>
+    {% for day in time_list %}
+    <h4>{{day.day}}</h4>
+    {% for t in day.list %}
+    <div class="time">{{t.short}}</div>
     <div class="events-wrap">
     {% with slots=r|get_slots:t %}
     {% for s in slots %}
@@ -37,6 +39,7 @@
     <br style="clear:both"></br>
     {% endwith %}
     </div>
+    {% endfor %}
     {% endfor %}
 </div>
 

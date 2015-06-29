@@ -45,6 +45,13 @@ class Conference(models.Model):
                                                                 timedelta(minutes=mins))]
         return delta_list
 
+# Returns a list of times during a day for a defined timedelta
+    def get_date_list(self):
+        day_num = (self.end_date - self.start_date).days + 1
+        date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
+                        for x in range(0, day_num)]
+        return date_list
+
     # gets events in a conference, filter by speaker, room, type
     def get_Events(self, speaker_id=None, room_id=None, type_id=None):
         event_set = Event.objects.filter(conf=self.id)
@@ -169,6 +176,10 @@ class Timeslot(models.Model):
     @property
     def get_start_time(self):
         return self.start_time.time().strftime("%H:%M")
+
+    @property
+    def get_start_datetime(self):
+        return self.start_time.strftime("%x %H:%M")
 
     @property
     def get_end_time(self):

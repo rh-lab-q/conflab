@@ -9,6 +9,10 @@ from confla.forms import EventCreateForm
 register = template.Library()
 
 @register.filter
+def dictitem(value, arg):
+      return value[arg]
+
+@register.filter
 def div(value, arg):
     value = int(value)
     arg = int(arg)
@@ -30,8 +34,7 @@ def get_slots(value, arg):
     slot_list = []
     slots = Timeslot.objects.filter(conf_id=Conference.get_active())
     for s in slots:
-        if s.get_start_time == arg:
-            print(s.get_start_time)
+        if s.get_start_datetime == arg['full']:
             slot_list.append(s)
     return slot_list
 

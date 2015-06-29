@@ -45,8 +45,24 @@ class ScheduleView(generic.TemplateView):
         conf = Conference.get_active()
         if not(conf):
             return HttpResponse("Currently no conferences.")
+        time_list = []
+        # Distinct ordered datetime list for the current conference
+        start_list = Timeslot.objects.filter(conf_id=conf).order_by("start_time").values_list("start_time", flat=True).distinct()
+        for date in conf.get_date_list():
+            time_dict = {}
+            time_dict["day"] = date
+            time_dict["list"] = []
+            for start_time in start_list:
+                if start_time.strftime("%A, %d.%m.") == date:
+                    time = {}
+                    time['short'] = start_time.strftime("%H:%M") 
+                    time['full'] = start_time.strftime("%x %H:%M") 
+                    time_dict["list"].append(time)
+            time_list.append(time_dict)
+
+        print(time_list)
         return render(request, "confla/schedlist.html",
-                      {  'time_list' : [x.strftime("%H:%M") for x in Timeslot.objects.values_list("start_time", flat=True).distinct()],
+                      {  'time_list' : time_list, 
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
@@ -619,14 +635,16 @@ class ImportView(generic.TemplateView):
             # Has to be like this or else django complains!
             start = datetime.fromtimestamp(int(event['event_start']))
             end = datetime.fromtimestamp(int(event['event_end']))
-            newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
+            newslot.start_time = timezone.now().replace(year=start.year, month=start.month,
+                                                        day=start.day, hour=start.hour, minute=start.minute,
                                                         second=0, microsecond=0)
-            newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
+            newslot.end_time = timezone.now().replace(year=end.year, month=end.month,
+                                                        day=end.day, hour=end.hour, minute=end.minute,
                                                         second=0, microsecond=0)
             newslot.event_id = newevent
-            if (start.day == 6):
-                newslot.full_clean()
-                newslot.save()
+            #if (start.day == 6):
+            newslot.full_clean()
+            newslot.save()
 
             # Create speakers
             for speaker in event['speakers']:
