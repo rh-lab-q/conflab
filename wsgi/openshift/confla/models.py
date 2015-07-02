@@ -45,10 +45,31 @@ class Conference(models.Model):
                                                                 timedelta(minutes=mins))]
         return delta_list
 
-# Returns a list of times during a day for a defined timedelta
+    # Returns a list of datetimes during a day for a defined timedelta
+    def get_datetime_time_list(self):
+        def delta_func(start, end, delta):
+            current = start
+            while current < end:
+                yield current
+                current = (datetime.combine(date.today(), current) + delta).time()
+
+        mins = self.timedelta
+        delta_list = [x for x in delta_func(self.start_time,
+                                                self.end_time,
+                                                timedelta(minutes=mins))]
+        return delta_list
+
+    # Returns a list of times during a day for a defined timedelta
     def get_date_list(self):
         day_num = (self.end_date - self.start_date).days + 1
         date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
+                        for x in range(0, day_num)]
+        return date_list
+
+    # Returns a list of times during a day for a defined timedelta
+    def get_datetime_date_list(self):
+        day_num = (self.end_date - self.start_date).days + 1
+        date_list = [(self.start_date + timedelta(days=x))
                         for x in range(0, day_num)]
         return date_list
 
@@ -185,6 +206,9 @@ class Timeslot(models.Model):
     def get_end_time(self):
         return self.end_time.time().strftime("%H:%M")
 
+    @property
+    def get_end_datetime(self):
+        return self.end_time.strftime("%x %H:%M")
 
     # event length in minutes
     @property

@@ -9,10 +9,6 @@ from confla.forms import EventCreateForm
 register = template.Library()
 
 @register.filter
-def dictitem(value, arg):
-      return value[arg]
-
-@register.filter
 def div(value, arg):
     value = int(value)
     arg = int(arg)
@@ -25,7 +21,7 @@ def div(value, arg):
 def get_slot(value, arg):
     slots = Timeslot.objects.filter(room_id=value['room'], conf_id=value['conf'])
     for s in slots:
-        if s.get_start_time == arg:
+        if s.get_start_datetime == arg['full']:
             return s
     return False
 
@@ -44,10 +40,17 @@ def get_event_form(value):
     return form
 
 @register.filter
+def set_height(value, arg):
+    size = int(arg)
+    return str(size*value) + "px"
+
+"""
+@register.filter
 def is_free(value, arg):
     slots = Timeslot.objects.filter(room_id=value['room'], conf_id=value['conf'])
-    time = datetime.strptime(arg, "%H:%M")
+    time = datetime.strptime(arg['full'], '%x %H:%M')
     for s in slots:
-        if datetime.strptime(s.get_start_time, "%H:%M") < time and datetime.strptime(s.get_end_time, "%H:%M") > time:
+        if datetime.strptime(s.get_start_datetime, '%x %H:%M') < time and datetime.strptime(s.get_end_datetime, '%x %H:%M') > time:
             return False
     return True
+"""

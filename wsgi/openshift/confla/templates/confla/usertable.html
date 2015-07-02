@@ -3,11 +3,15 @@
 {% load i18n %}
 {% load confla_filters %}
 {% block title %}Timetable{% endblock %}
-{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/usertable.css' %}" />
 {% endblock %}
 
 {% block content %}
 {% csrf_token %}
+
+
+{% for day in time_list %}
+<h4>{{ day.day }}</h4>
 <div id="dummy-wrap">
     <div class="table-dummy"></div>
 </div>
@@ -22,31 +26,33 @@
         </tr>
     </thead>
 <tbody>
-    {% for t in time_list %}
+    {% for t in day.list %}
         <tr>
-            <td>{{t}}</td>
+            <td>{{ t.short }}</td>
             {% for r in room_list %}
             {% with s=r|get_slot:t %}
             {% if s %}
-            <td align=center rowspan={{ s.length }}>
+            <td>
             {% if s.event_id %}
-            {% with e=s.event_id %}
-                <div class="event" style="position:absolute">
-                    <div class="event-visible">
-                        <p class="topic">{{e.topic}}</p>
-                        <p class="author">{{e.get_users}}</p>
+                <div class="item" style="height: {{ s.length|set_height:"30"}}">
+                {% with e=s.event_id %}
+                    <div class="event" style="position:absolute">
+                        <div class="event-visible">
+                            <p class="topic">{{e.topic}}</p>
+                            <p class="author">{{e.get_users}}</p>
+                        </div>
+                        <div class="pop-title"style="display:none">
+                            <span>{% trans "Edit event" %}</span>
+                            <span class="pop-close glyphicon glyphicon-remove"></span>
+                        </div>
+                        <div class="pop-content" style="display:none">
+                        </div>
                     </div>
-                    <div class="pop-title"style="display:none">
-                        <span>{% trans "Edit event" %}</span>
-                        <span class="pop-close glyphicon glyphicon-remove"></span>
-                    </div>
-                    <div class="pop-content" style="display:none">
-                    </div>
+                {% endwith %}
                 </div>
-            {% endwith %}
             {% endif %}
             </td>
-            {% elif r|is_free:t %}
+            {% else %}
             <td></td>
             {% endif %}
             {% endwith %}
@@ -56,7 +62,7 @@
 </tbody>
 </table>
 </div>
-
+{% endfor %}
 
 {% endblock %}
 

@@ -33,8 +33,21 @@ class ScheduleView(generic.TemplateView):
         conf = Conference.get_active()
         if not(conf):
             return HttpResponse("Currently no conferences.")
+        time_list = []
+        start_list = conf.get_datetime_time_list()
+        for date in conf.get_datetime_date_list():
+            time_dict = {}
+            time_dict["day"] = date.strftime("%A, %d.%m.")
+            time_dict["list"] = []
+            for start_time in start_list:
+                time = {}
+                time['short'] = start_time.strftime("%H:%M") 
+                time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                time_dict["list"].append(time)
+            time_list.append(time_dict)
+
         return render(request, ScheduleView.template_name,
-                    {  'time_list' : conf.get_delta_list(),
+                    {    'time_list' : time_list,
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
                          'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
@@ -60,7 +73,6 @@ class ScheduleView(generic.TemplateView):
                     time_dict["list"].append(time)
             time_list.append(time_dict)
 
-        print(time_list)
         return render(request, "confla/schedlist.html",
                       {  'time_list' : time_list, 
                          'room_list' : [{'conf' : conf,
@@ -292,11 +304,23 @@ class TimetableView(generic.TemplateView):
             conf = Conference.get_active()
             users = ConflaUser.objects.all()
             tags = EventTag.objects.all()
+            time_list = []
+            start_list = conf.get_datetime_time_list()
+            for date in conf.get_datetime_date_list():
+                time_dict = {}
+                time_dict["day"] = date.strftime("%A, %d.%m.")
+                time_dict["list"] = []
+                for start_time in start_list:
+                    time = {}
+                    time['short'] = start_time.strftime("%H:%M") 
+                    time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                    time_dict["list"].append(time)
+                time_list.append(time_dict)
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
                              'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
-                             'time_list' : conf.get_delta_list(),
+                             'time_list' : time_list,
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],
                              'slot_list' : Timeslot.objects.filter(conf_id=conf.id),

@@ -47,6 +47,9 @@
 
 {% block content %}
 {% csrf_token %}
+
+{% for day in time_list %}
+<h4>{{ day.day }}</h4>
 <div id="dummy-wrap">
     <div class="table-dummy"></div>
 </div>
@@ -61,9 +64,9 @@
         </tr>
     </thead>
 <tbody>
-    {% for t in time_list %}
+    {% for t in day.list %}
         <tr>
-            <td>{{t}}</td>
+            <td>{{ t.short }}</td>
             {% for r in room_list %}
             <td>
                 <div class="wrap">
@@ -81,7 +84,7 @@
                             <span class="glyphicon glyphicon-move"></span>
                         </div>
                     </div>
-                    <span class="start" style=" display:none">Starts at: {{t}}</span>
+                    <span class="start" style=" display:none">Starts at: {{t.short}}</span>
                     <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                     {% if s.event_id %}
                     {% with e=s.event_id %}
@@ -140,7 +143,7 @@
 </tbody>
 </table>
 </div>
-
+{% endfor %}
 
 {% endblock %}
 
