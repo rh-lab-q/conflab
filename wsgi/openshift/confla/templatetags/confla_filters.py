@@ -18,14 +18,6 @@ def div(value, arg):
     return ''
 
 @register.filter
-def get_slot(value, arg):
-    slots = Timeslot.objects.filter(room_id=value['room'], conf_id=value['conf'])
-    for s in slots:
-        if s.get_start_datetime == arg['full']:
-            return s
-    return False
-
-@register.filter
 def get_slots(value, arg):
     slot_list = []
     slots = Timeslot.objects.filter(conf_id=Conference.get_active())

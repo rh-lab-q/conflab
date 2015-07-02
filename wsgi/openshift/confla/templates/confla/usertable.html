@@ -29,8 +29,7 @@
     {% for t in day.list %}
         <tr>
             <td>{{ t.short }}</td>
-            {% for r in room_list %}
-            {% with s=r|get_slot:t %}
+            {% for s in t.slots %}
             {% if s %}
             <td>
             {% if s.event_id %}
@@ -55,7 +54,6 @@
             {% else %}
             <td></td>
             {% endif %}
-            {% endwith %}
             {% endfor %}
         </tr>
     {% endfor %}

@@ -67,10 +67,9 @@
     {% for t in day.list %}
         <tr>
             <td>{{ t.short }}</td>
-            {% for r in room_list %}
+            {% for s in t.slots %}
             <td>
                 <div class="wrap">
-                {% with s=r|get_slot:t %}
                 {% if s %}
                 <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover">
                     <div class="item-buttons" style="display:none">
@@ -134,7 +133,6 @@
                     {% endif %}
                 </div>
                 {% endif %}
-                {% endwith %}
                 </div>
             </td>
             {% endfor %}

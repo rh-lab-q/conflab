@@ -31,6 +31,10 @@ class ScheduleView(generic.TemplateView):
     def my_view(request):
         #TODO: Add compatibility with archived conferences
         conf = Conference.get_active()
+        slot_list = {}
+        rooms = conf.rooms.all()
+        for room in rooms:
+            slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
         if not(conf):
             return HttpResponse("Currently no conferences.")
         time_list = []
@@ -43,14 +47,21 @@ class ScheduleView(generic.TemplateView):
                 time = {}
                 time['short'] = start_time.strftime("%H:%M") 
                 time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                time['slots'] = []
+                for room in rooms:
+                    for slot in slot_list[room.shortname]:
+                        if slot.get_start_datetime == time['full']:
+                            time['slots'].append(slot)
+                            break
+                    else:
+                        time['slots'].append(None)
                 time_dict["list"].append(time)
             time_list.append(time_dict)
 
         return render(request, ScheduleView.template_name,
                     {    'time_list' : time_list,
                          'room_list' : [{'conf' : conf,
-                                         'room' : x} for x in conf.rooms.all()],
-                         'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
+                                         'room' : x} for x in rooms],
                     })
 
     def list_view(request):
@@ -302,8 +313,14 @@ class TimetableView(generic.TemplateView):
         else:
             #TODO: Add compatibility with archived conferences
             conf = Conference.get_active()
+            if not(conf):
+                return HttpResponse("Currently no conferences.")
             users = ConflaUser.objects.all()
             tags = EventTag.objects.all()
+            rooms = conf.rooms.all()
+            slot_list = {}
+            for room in rooms:
+                slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
             time_list = []
             start_list = conf.get_datetime_time_list()
             for date in conf.get_datetime_date_list():
@@ -314,8 +331,17 @@ class TimetableView(generic.TemplateView):
                     time = {}
                     time['short'] = start_time.strftime("%H:%M") 
                     time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                    time['slots'] = []
+                    for room in rooms:
+                        for slot in slot_list[room.shortname]:
+                            if slot.get_start_datetime == time['full']:
+                                time['slots'].append(slot)
+                                break
+                        else:
+                            time['slots'].append(None)
                     time_dict["list"].append(time)
                 time_list.append(time_dict)
+
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
@@ -323,7 +349,6 @@ class TimetableView(generic.TemplateView):
                              'time_list' : time_list,
                              'room_list' : [{'conf' : conf,
                                              'room' : x} for x in conf.rooms.all()],
-                             'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                              'user_list' : [{'name' : u.first_name + ' ' + u.last_name,
                                              'username' : u.username} for u in users],
                            })
