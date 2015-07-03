@@ -404,10 +404,14 @@ class TimetableView(generic.TemplateView):
                 # Has to be like this or else django complains!
                 start = datetime.strptime(row[key]['start'], "%H:%M")
                 end = datetime.strptime(row[key]['end'], "%H:%M")
-                newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
-                                                            second=0, microsecond=0)
-                newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
-                                                            second=0, microsecond=0)
+                start = timezone.now().replace(hour=start.hour, minute=start.minute,
+                                                second=0, microsecond=0)
+                end = timezone.now().replace(hour=end.hour, minute=end.minute,
+                                                second=0, microsecond=0)
+                start = datetime.combine(datetime.strptime(row[key]['day'], "%A, %d.%m."),
+                                                            start.time())
+                end = datetime.combine(datetime.strptime(row[key]['day'], "%A, %d.%m."),
+                                                            end.time())
                 # Add slot to db
                 try:
                     newslot.full_clean()

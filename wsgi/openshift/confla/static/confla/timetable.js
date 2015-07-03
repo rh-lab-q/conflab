@@ -234,6 +234,7 @@ function timetableToJson(selector) {
                     var rowName = cols[i];
                     var cell = {};
                     // The numbers 10 and 8 are the lenght of "Starts at: ", "Ends at: "
+                    cell["day"] = $(this).closest(".day-wrap").find("h4").text()
                     cell["start"] = $($(this).find("span.start")).text().slice(11,16);
                     cell["end"] = $($(this).find("span.end")).text().slice(9,14);
                     cell["id"] = $(this).find("div.item").attr("slot-id");

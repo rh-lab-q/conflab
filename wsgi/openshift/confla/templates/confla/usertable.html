@@ -11,54 +11,56 @@
 
 
 {% for day in time_list %}
-<h4>{{ day.day }}</h4>
-<div id="dummy-wrap">
-    <div class="table-dummy"></div>
-</div>
-<div id="table-wrap">
-<table class="table" tdelta={{conf.timedelta}}>
-    <thead>
-        <tr>
-            <th>{% trans "Time" %}</th>
-            {% for r in room_list %}
-            <th>{{ r.room.shortname }}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-<tbody>
-    {% for t in day.list %}
-        <tr>
-            <td>{{ t.short }}</td>
-            {% for s in t.slots %}
-            {% if s %}
-            <td>
-            {% if s.event_id %}
-                <div class="item" style="height: {{ s.length|set_height:"30"}}">
-                {% with e=s.event_id %}
-                    <div class="event" style="position:absolute">
-                        <div class="event-visible">
-                            <p class="topic">{{e.topic}}</p>
-                            <p class="author">{{e.get_users}}</p>
+<div class="day-wrap">
+    <h4>{{ day.day }}</h4>
+    <div id="dummy-wrap">
+        <div class="table-dummy"></div>
+    </div>
+    <div id="table-wrap">
+    <table class="table" tdelta={{conf.timedelta}}>
+        <thead>
+            <tr>
+                <th>{% trans "Time" %}</th>
+                {% for r in room_list %}
+                <th>{{ r.room.shortname }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    <tbody>
+        {% for t in day.list %}
+            <tr>
+                <td>{{ t.short }}</td>
+                {% for s in t.slots %}
+                {% if s %}
+                <td>
+                {% if s.event_id %}
+                    <div class="item" style="height: {{ s.length|set_height:"30"}}">
+                    {% with e=s.event_id %}
+                        <div class="event" style="position:absolute">
+                            <div class="event-visible">
+                                <p class="topic">{{e.topic}}</p>
+                                <p class="author">{{e.get_users}}</p>
+                            </div>
+                            <div class="pop-title"style="display:none">
+                                <span>{% trans "Edit event" %}</span>
+                                <span class="pop-close glyphicon glyphicon-remove"></span>
+                            </div>
+                            <div class="pop-content" style="display:none">
+                            </div>
                         </div>
-                        <div class="pop-title"style="display:none">
-                            <span>{% trans "Edit event" %}</span>
-                            <span class="pop-close glyphicon glyphicon-remove"></span>
-                        </div>
-                        <div class="pop-content" style="display:none">
-                        </div>
+                    {% endwith %}
                     </div>
-                {% endwith %}
-                </div>
-            {% endif %}
-            </td>
-            {% else %}
-            <td></td>
-            {% endif %}
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</tbody>
-</table>
+                {% endif %}
+                </td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
 </div>
 {% endfor %}
 

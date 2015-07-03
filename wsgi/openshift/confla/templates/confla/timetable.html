@@ -49,97 +49,99 @@
 {% csrf_token %}
 
 {% for day in time_list %}
-<h4>{{ day.day }}</h4>
-<div id="dummy-wrap">
-    <div class="table-dummy"></div>
-</div>
-<div id="table-wrap">
-<table class="table" tdelta={{conf.timedelta}}>
-    <thead>
-        <tr>
-            <th>{% trans "Time" %}</th>
-            {% for r in room_list %}
-            <th>{{ r.room.shortname }}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-<tbody>
-    {% for t in day.list %}
-        <tr>
-            <td>{{ t.short }}</td>
-            {% for s in t.slots %}
-            <td>
-                <div class="wrap">
-                {% if s %}
-                <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover">
-                    <div class="item-buttons" style="display:none">
-                        <div class="removesign">
-                            <span class="glyphicon glyphicon-remove"></span>
+<div class="day-wrap">
+    <h4>{{ day.day }}</h4>
+    <div id="dummy-wrap">
+        <div class="table-dummy"></div>
+    </div>
+    <div id="table-wrap">
+    <table class="table" tdelta={{conf.timedelta}}>
+        <thead>
+            <tr>
+                <th>{% trans "Time" %}</th>
+                {% for r in room_list %}
+                <th>{{ r.room.shortname }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    <tbody>
+        {% for t in day.list %}
+            <tr>
+                <td>{{ t.short }}</td>
+                {% for s in t.slots %}
+                <td>
+                    <div class="wrap">
+                    {% if s %}
+                    <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover">
+                        <div class="item-buttons" style="display:none">
+                            <div class="removesign">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </div>
+                            <div class="editsign">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </div>
+                            <div class="movesign">
+                                <span class="glyphicon glyphicon-move"></span>
+                            </div>
                         </div>
-                        <div class="editsign">
-                            <span class="glyphicon glyphicon-edit"></span>
+                        <span class="start" style=" display:none">Starts at: {{t.short}}</span>
+                        <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
+                        {% if s.event_id %}
+                        {% with e=s.event_id %}
+                        <div class="event">
+                            <div class="event-visible">
+                                <p class="topic">{{e.topic}}</p>
+                                <p class="author">{{e.get_users}}</p>
+                            </div>
+                            <div class="pop-title"style="display:none">
+                                <span>{% trans "Edit event" %}</span>
+                                <span class="pop-close glyphicon glyphicon-remove"></span>
+                            </div>
+                            <div class="pop-content" style="display:none">
+                                <form method="post" action="{% url 'confla:saveEvent' %}">
+                                    {% csrf_token %}
+                                    {% with form=e|get_event_form %}
+                                    <input type="hidden" name="event_id" value={{ e.id }} />
+                                    {{ form.topic }}
+                                    {{ form.description }}
+                                    {{ form.speaker }}
+                                    {{ form.tags }}
+                                    {% endwith %}
+                                </form>
+                            </div>
                         </div>
-                        <div class="movesign">
-                            <span class="glyphicon glyphicon-move"></span>
-                        </div>
-                    </div>
-                    <span class="start" style=" display:none">Starts at: {{t.short}}</span>
-                    <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
-                    {% if s.event_id %}
-                    {% with e=s.event_id %}
-                    <div class="event">
-                        <div class="event-visible">
-                            <p class="topic">{{e.topic}}</p>
-                            <p class="author">{{e.get_users}}</p>
-                        </div>
-                        <div class="pop-title"style="display:none">
-                            <span>{% trans "Edit event" %}</span>
-                            <span class="pop-close glyphicon glyphicon-remove"></span>
-                        </div>
-                        <div class="pop-content" style="display:none">
-                            <form method="post" action="{% url 'confla:saveEvent' %}">
+                        {% endwith %}
+                        {% else %}
+                        <div class="event">
+                            <div class="event-visible">
+                                <p class="topic"></p>
+                                <p class="author"></p>
+                            </div>
+                            <div class="pop-title"style="display:none">
+                                <span>{% trans "Add event" %}</span>
+                                <span class="pop-close glyphicon glyphicon-remove"></span>
+                            </div>
+                            <div class="pop-content" style="display:none">
+                                <form method="post" action="{% url 'confla:saveEvent' %}">
                                 {% csrf_token %}
-                                {% with form=e|get_event_form %}
-                                <input type="hidden" name="event_id" value={{ e.id }} />
-                                {{ form.topic }}
-                                {{ form.description }}
-                                {{ form.speaker }}
-                                {{ form.tags }}
-                                {% endwith %}
-                            </form>
+                                <input type="hidden" name="event_id" value="0" />
+                                {{ event_create.topic }}
+                                {{ event_create.description }}
+                                {{ event_create.speaker }}
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                    {% endwith %}
-                    {% else %}
-                    <div class="event">
-                        <div class="event-visible">
-                            <p class="topic"></p>
-                            <p class="author"></p>
-                        </div>
-                        <div class="pop-title"style="display:none">
-                            <span>{% trans "Add event" %}</span>
-                            <span class="pop-close glyphicon glyphicon-remove"></span>
-                        </div>
-                        <div class="pop-content" style="display:none">
-                            <form method="post" action="{% url 'confla:saveEvent' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="event_id" value="0" />
-                            {{ event_create.topic }}
-                            {{ event_create.description }}
-                            {{ event_create.speaker }}
-                            </form>
-                        </div>
+                        {% endif %}
                     </div>
                     {% endif %}
-                </div>
-                {% endif %}
-                </div>
-            </td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</tbody>
-</table>
+                    </div>
+                </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
 </div>
 {% endfor %}
 
