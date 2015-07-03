@@ -662,10 +662,12 @@ class ImportView(generic.TemplateView):
 
         Timeslot.objects.all().delete()
         Event.objects.all().delete()
+        EventTag.objects.all().delete()
         room_list = []
         for i in Room.objects.all():
             room_list.append(i.shortname)
         user_list = []
+        tag_list = []
 
         # Generate sessions
         event_list = json_obj['sessions']
@@ -716,6 +718,25 @@ class ImportView(generic.TemplateView):
                     newuser.save()
                     newevent.speaker.add(newuser)
                     user_list.append(username)
+            if event['tags']:
+                tags = event['tags'][0].split(",")
+            else:
+                tags = ['notag']
+            # Create tags
+            for tag in tags:
+                tag = tag.strip()
+                if tag in tag_list:
+                    newevent.tags.add(EventTag.objects.get(name=tag))
+                else:
+                    newtag = EventTag()
+                    newtag.name = tag
+                    try:
+                        newtag.full_clean()
+                    except ValidationError as e:
+                        pass
+                    newtag.save()
+                    newevent.tags.add(newtag)
+                    tag_list.append(tag)
 
             newevent.save()   
 
