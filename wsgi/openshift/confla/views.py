@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import random
 
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse
@@ -60,6 +61,7 @@ class ScheduleView(generic.TemplateView):
 
         return render(request, ScheduleView.template_name,
                     {    'time_list' : time_list,
+                         'tag_list' : EventTag.objects.all(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                     })
@@ -86,9 +88,9 @@ class ScheduleView(generic.TemplateView):
 
         return render(request, "confla/schedlist.html",
                       {  'time_list' : time_list, 
+                         'tag_list' : EventTag.objects.all(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
-                         'slot_list' : Timeslot.objects.filter(conf_id=conf.id),
                     })
 
 class LoginView(generic.TemplateView):
@@ -345,6 +347,7 @@ class TimetableView(generic.TemplateView):
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
+                             'tag_list' : EventTag.objects.all(),
                              'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
                              'time_list' : time_list,
                              'room_list' : [{'conf' : conf,
@@ -730,6 +733,7 @@ class ImportView(generic.TemplateView):
                 else:
                     newtag = EventTag()
                     newtag.name = tag
+                    newtag.color = "#%06x" % random.randint(0,0xFFFFFF)
                     try:
                         newtag.full_clean()
                     except ValidationError as e:

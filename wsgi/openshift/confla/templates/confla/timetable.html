@@ -3,7 +3,15 @@
 {% load i18n %}
 {% load confla_filters %}
 {% block title %}Timetable{% endblock %}
-{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+<style type='text/css'>
+    {% for tag in tag_list %}
+    .tag{{tag.id}} {
+        background : {{tag.color}};
+    }
+    {% endfor %}
+</style>
 {% endblock %}
 
 {% block extranav %}
@@ -89,7 +97,7 @@
                         {% if s.event_id %}
                         {% with e=s.event_id %}
                         <div class="event">
-                            <div class="event-visible">
+                            <div class="event-visible {{e|tag_class}}">
                                 <p class="topic">{{e.topic}}</p>
                                 <p class="author">{{e.get_users}}</p>
                             </div>

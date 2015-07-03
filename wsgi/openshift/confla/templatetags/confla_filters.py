@@ -32,6 +32,10 @@ def get_event_form(value):
     return form
 
 @register.filter
+def tag_class(value):
+    return "tag" + str(value.tags.all()[0].id)
+
+@register.filter
 def set_height(value, arg):
     size = int(arg)
     return str(size*value) + "px"
