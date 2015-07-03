@@ -73,6 +73,7 @@ td {
     z-index: 100;
 }
 
+
 .item > .item-buttons {
     margin: auto 10px;
 }
@@ -166,4 +167,9 @@ td > .ui-state-hover {
 .ui-resizable-s {
     bottom: 0;
     height: 7px;
+}
+
+/* user view */
+td > .item {
+    width: 96%;
 }

@@ -288,6 +288,7 @@ function timetableEdit() {
     $(".save").show();
     $(".edit").hide();
     $("#event-bar").show();
+    $(".toggler").trigger("click")
 }
 
 function timetableSubmit(selector) {
@@ -509,7 +510,7 @@ $(document).ready(function() {
         accept: ".event",
         tolerance: "pointer",
         //hoverClass: "ui-state-hover",
-        drop: function( event, ui ) {
+        drop: function(event, ui) {
             // Don't append empty events to event list
             if (!$(ui.draggable).parent().is("#event-list")) {
                 var nevent = createEvent();
@@ -517,6 +518,12 @@ $(document).ready(function() {
             }
             $(this).find("#event-list").append($(ui.draggable));
             $("#filter_input").change();
+        },
+        over: function(event, ui) {
+            $(".item").droppable("disable").removeClass("ui-state-hover");
+        },
+        out: function(event, ui) {
+            $(".item").droppable("enable");
         }
     });
 
