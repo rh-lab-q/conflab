@@ -22,7 +22,7 @@
     <div class="list-group" id="event-list">
         {% for e in event_list %}
         <div class="event">
-            <div class="event-visible">
+            <div class="event-visible {{e|tag_class}}">
                 <p class="topic">{{e.topic}}</p>
                 <p class="author">{{e.get_users}}</p>
             </div>
@@ -162,8 +162,9 @@
 {% block extrascripts %}
 <script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
 <script type="text/javascript">
+var tags = {{ tag_list|safe }}
 var users = {{ user_list|safe }};
-var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}{{event_create.speaker|escapejs}}';
+var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}{{event_create.speaker|escapejs}}{{event_create.tags|escapejs}}';
 var form_action = "{% url 'confla:saveEvent' %}";
 </script>
 {% endblock %}

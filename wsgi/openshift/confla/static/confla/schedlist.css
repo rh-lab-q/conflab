@@ -14,14 +14,12 @@
 .event {
     height: 100%;
     float:left;
+    margin: 3px;
 }
 
 .event-visible {
     clear: both;
-    border: 2px solid black;
-//    -webkit-border-radius: 5px;
-//     -moz-border-radius: 5px;
-//          border-radius: 5px;
+    border: 1px solid #999;
     width: 100%;
     height: 100%;
     padding-top: 5px;

@@ -347,7 +347,9 @@ class TimetableView(generic.TemplateView):
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
-                             'tag_list' : EventTag.objects.all(),
+                             'tag_list' : [{'id' : x.id,
+                                            'color' : x.color}
+                                            for x in EventTag.objects.all()],
                              'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
                              'time_list' : time_list,
                              'room_list' : [{'conf' : conf,

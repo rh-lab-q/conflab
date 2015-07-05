@@ -78,6 +78,12 @@ function eventInit(selector) {
         }
     });
     $(selector).find(".event-visible").css("cursor", "grab");
+    // Setup primary tag in tag select
+    $(selector).find(".event-visible").each(function () {
+        tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
+        select = $(this).parent().find(".sel-tag");
+        select.prepend($(select).find("[value=" + tagId + "]"));
+    });
 }
 
 function itemInit(selector) {
@@ -368,6 +374,7 @@ function popoverInit(selector) {
                     itemlist.push($(this).val());
             });
             $(this).selectize({
+                plugins: ['drag_drop'],
                 persist: false,
                 maxItems: null,
                 valueField: 'id',
@@ -417,6 +424,13 @@ function popoverInit(selector) {
             }
         });
 
+        var items = selTag[0].selectize.items;
+        // Move the primary tag to the correct place
+        tagId = items[0];
+        select = $(original).find(".sel-tag");
+        select.prepend($(select).find("[value=" + tagId + "]"));
+        // Setup correct css class for the tag
+        $(original).parent().find(".event-visible")[0].className = "event-visible tag" + tagId;
         // Tag select
         $(original).find("select.sel-tag").children().each(function () {
             if ($.inArray($(this).val(), selTag[0].selectize.items) !== -1) {
