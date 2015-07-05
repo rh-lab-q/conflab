@@ -373,7 +373,10 @@ class TimetableView(generic.TemplateView):
                     new_event.conf_id = Conference.get_active()
                     new_event.e_type_id = EventType.objects.get(id=1)
                     new_event.lang = "cz"
+                    if "tags" in request.POST:
+                        new_event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
                     new_event.save()
+                    form.save_m2m()
                     return HttpResponse(new_event.id)
                 else:
                     return HttpResponse("-1")
@@ -381,7 +384,15 @@ class TimetableView(generic.TemplateView):
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
                 if form.is_valid():
-                    form.save()
+                    event = form.save(commit=False)
+                    if "tags" in request.POST:
+                        event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
+                    else:
+                        event.prim_tag = None
+                    event.save()
+                    form.save_m2m()
+                else:
+                    print("invalid")
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
     def json_to_timeslots(json_string):
@@ -744,6 +755,7 @@ class ImportView(generic.TemplateView):
                     newevent.tags.add(newtag)
                     tag_list.append(tag)
 
+            newevent.prim_tag = EventTag.objects.get(name=tags[0])
             newevent.save()   
 
         """

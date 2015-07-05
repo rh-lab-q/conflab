@@ -440,7 +440,6 @@ function popoverInit(selector) {
                 $(this).removeAttr("selected");
             }
         });
-
         // Save the event form
         var form = original.find("form");
         $(form).ajaxForm();

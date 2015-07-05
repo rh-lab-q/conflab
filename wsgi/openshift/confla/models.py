@@ -180,6 +180,7 @@ class Event(models.Model):
     google_doc_url = models.URLField(max_length=512, blank=True)
     speaker = models.ManyToManyField(ConflaUser, related_name='usr+')
     tags = models.ManyToManyField(EventTag, related_name='tag+', blank=True, null=True)
+    prim_tag = models.ForeignKey(EventTag, null=True, blank=True)
 
     def __str__(self):
         return self.topic
