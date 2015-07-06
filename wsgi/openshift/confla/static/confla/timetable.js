@@ -82,8 +82,10 @@ function eventInit(selector) {
     // Setup primary tag in tag select
     $(selector).find(".event-visible").each(function () {
         tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
-        select = $(this).parent().find(".sel-tag");
-        select.prepend($(select).find("[value=" + tagId + "]"));
+        if (tagId) {
+            select = $(this).parent().find(".sel-tag");
+            select.prepend($(select).find("[value=" + tagId + "]"));
+        }
     });
 }
 
@@ -428,8 +430,10 @@ function popoverInit(selector) {
         var items = selTag[0].selectize.items;
         // Move the primary tag to the correct place
         tagId = items[0];
-        select = $(original).find(".sel-tag");
-        select.prepend($(select).find("[value=" + tagId + "]"));
+        if (tagId) {
+            select = $(original).find(".sel-tag");
+            select.prepend($(select).find("[value=" + tagId + "]"));
+        }
         // Setup correct css class for the tag
         $(original).parent().find(".event-visible")[0].className = "event-visible tag" + tagId;
         // Tag select
