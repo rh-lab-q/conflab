@@ -475,7 +475,7 @@ function timetableInit() {
             var height = $(ui.draggable).height();
             var row = $(ui.draggable).parent().parent().parent().parent().children().index($(this).parent().parent());
             var rownum = $(ui.draggable).parent().parent().parent().parent().children().length
-            var rowdiff = (height-26)/cellSize;
+            var rowdiff = (height-itemHeight)/cellSize;
 
             // Check if the item is not partly outside the table
             if ((rownum - row) > rowdiff) {
