@@ -3,30 +3,22 @@
 }
 
 .schedlist-wrap .events-wrap {
-    overflow:auto;
     margin: 0px 0px 0px 50px;
+    position: relative;
 }
 
 .schedlist-wrap .time {
-    float:left;
+    float: left;
 }
 
 .schedlist-wrap .event {
-    height: 100%;
     width: auto;
-    float:left;
     margin: 3px;
 }
 
 .schedlist-wrap .event-visible {
-    clear: both;
-    border: 1px solid #999;
     width: 100%;
-    height: 100%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 5px;
     box-sizing: border-box;
 }
 
@@ -35,3 +27,23 @@
     line-height: 100%;
 }
 
+.schedlist-wrap .item {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 10px;
+}
+
+.sched-wrap ul, .sched-wrap li {
+    height: auto;
+    width: 100%;
+}
+
+#table-wrap > ul, #table-wrap > ul > li {
+    list-style-type: none;
+}
+
+#table-wrap > ul > li {
+    border-bottom: 1px dotted #999;
+    margin-bottom: 5px;
+}

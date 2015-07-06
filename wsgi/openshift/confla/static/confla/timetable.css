@@ -15,6 +15,14 @@
     overflow: auto;
 }
 
+.display-style h3, .display-style select {
+    display: inline;
+}
+
+.display-style {
+    margin-top: 1em;
+}
+
 .sched-wrap {
     padding-top: 1em;
 }

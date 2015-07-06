@@ -55,8 +55,8 @@
 
 {% block content %}
 <ul class='nav nav-tabs'>
-    <li class="active"><a href="#">View schedule</a></li>
-    <li><a href="#">Edit schedule</a></li>
+    <li><a href="{% url 'confla:schedule' %}">View schedule</a></li>
+    <li class="active"><a href="{% url 'confla:adminsched' %}">Edit schedule</a></li>
     <li><a href="#">New schedule</a></li>
 </ul>
 {% csrf_token %}
@@ -96,7 +96,7 @@
                                 <div class="movesign">
                                     <span class="glyphicon glyphicon-move"></span>
                                 </div>
-                            </div>
+                            </div><!-- item-buttons -->
                             <span class="start" style=" display:none">Starts at: {{t.short}}</span>
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}
@@ -121,8 +121,8 @@
                                         {{ form.tags }}
                                         {% endwith %}
                                     </form>
-                                </div>
-                            </div>
+                                </div><!-- pop-content -->
+                            </div><!-- event -->
                             {% endwith %}
                             {% else %}
                             <div class="event">
@@ -143,10 +143,10 @@
                                     {{ event_create.speaker }}
                                     {{ event_create.tags }}
                                     </form>
-                                </div>
-                            </div>
+                                </div><!-- pop-content -->
+                            </div><!-- event -->
                             {% endif %}
-                        </div>
+                        </div><!-- item -->
                         {% endif %}
                         </div>
                     </td>
@@ -158,7 +158,7 @@
     </div><!-- table-wrap -->
 </div><!-- day-wrap -->
 {% endfor %}
-</div>
+</div><!-- sched-wrap -->
 
 {% endblock %}
 

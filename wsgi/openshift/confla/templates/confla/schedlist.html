@@ -23,30 +23,34 @@
             <div class="table-dummy"></div>
         </div>
         <div id="table-wrap">
-           {% for t in day.list %}
-            <div class="time">{{t.short}}</div>
+            <ul>
+            {% for t in day.list %}
+            <li><div class="time">{{t.short}}</div>
             <div class="events-wrap">
             {% for s in t.slots %}
             {% if s.event_id %}
             {% with e=s.event_id %}
-                <div class="event">
-                    <div class="event-visible {{e|tag_class}}">
-                        <p class="topic">{{e.topic}}</p>
-                        <p class="author">{{e.get_users}}</p>
-                    </div>
-                    <div class="pop-title"style="display:none">
-                        <span>{% trans "Edit event" %}</span>
-                        <span class="pop-close glyphicon glyphicon-remove"></span>
-                    </div>
-                    <div class="pop-content" style="display:none">
-                    </div>
+                <div class="item">
+                    <div class="event">
+                        <div class="event-visible {{e|tag_class}}">
+                            <p class="topic">{{e.topic}}</p>
+                            <p class="author">{{e.get_users}}</p>
+                        </div>
+                        <div class="pop-title"style="display:none">
+                            <span>{% trans "Edit event" %}</span>
+                            <span class="pop-close glyphicon glyphicon-remove"></span>
+                        </div>
+                        <div class="pop-content" style="display:none">
+                        </div>
                 </div>
-            {% endwith %}
-            {% endif %}
-            {% endfor %}
-            <br style="clear:both"></br>
             </div>
+            {% endwith %}{# with e=s.event_id #}
+            {% endif %}{# if s.event_id #}
+            {% endfor %}{# for s in t.slots #}
+            </div>
+        </li>
             {% endfor %}
+        </ul>
         </div>
     </div>
     {% endfor %}

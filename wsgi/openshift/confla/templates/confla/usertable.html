@@ -16,12 +16,21 @@
 {% endblock %}
 
 {% block content %}
+{% if perms.confla.can_organize %}
+<ul class='nav nav-tabs'>
+    <li class="active"><a href="{% url 'confla:schedule' %}">View schedule</a></li>
+    <li><a href="{% url 'confla:adminsched' %}">Edit schedule</a></li>
+    <li><a href="#">New schedule</a></li>
+</ul>
+{% endif %}
 {% csrf_token %}
-
+<div class="display-style">
+<h3>{% trans "Display as" %}
 <select class="sel-view form-control" onchange="changeView()" style="width:100px">
-    <option selected="selected">Grid</option>
-    <option>List</option>
-</select>
+    <option selected="selected">{% trans "Grid" %}</option>
+    <option>{% trans "List" %}</option>
+</select></h3>
+</div>
 <div class="sched-wrap">
     {% for day in time_list %}
     <div class="day-wrap">
@@ -30,7 +39,7 @@
             <div class="table-dummy"></div>
         </div>
         <div id="table-wrap">
-        <table class="table" tdelta={{conf.timedelta}}>
+        <table class="table" tdelta="{{conf.timedelta}}">
             <thead>
                 <tr>
                     <th>{% trans "Time" %}</th>
@@ -54,7 +63,7 @@
                                     <p class="topic">{{e.topic}}</p>
                                     <p class="author">{{e.get_users}}</p>
                                 </div>
-                                <div class="pop-title"style="display:none">
+                                <div class="pop-title" style="display:none">
                                     <span>{% trans "Edit event" %}</span>
                                     <span class="pop-close glyphicon glyphicon-remove"></span>
                                 </div>
