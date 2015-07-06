@@ -139,7 +139,7 @@ function createEvent() {
         var nevent = document.createElement('div');
         nevent.className = "event";
         var visevent = document.createElement('div');
-        visevent.className = 'event-visible';
+        visevent.className = 'event-visible tag0';
         $(visevent).append('<p class="topic"></p>');
         $(visevent).append('<p class="author"></p>');
         $(nevent).append(visevent);
