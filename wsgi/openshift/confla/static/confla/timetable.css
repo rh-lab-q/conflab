@@ -183,8 +183,3 @@ td > .ui-state-hover {
     bottom: 0;
     height: 7px;
 }
-
-/* user view */
-td > .item {
-    width: 96%;
-}

@@ -55,6 +55,7 @@
                     {% for s in t.slots %}
                     {% if s %}
                     <td>
+                    <div class="wrap">
                     {% if s.event_id %}
                         <div class="item" style="height: {{ s.length|set_height:"30"}}">
                         {% with e=s.event_id %}
@@ -73,6 +74,7 @@
                         {% endwith %}
                         </div>
                     {% endif %}
+                    </div><!-- wrap -->
                     </td>
                     {% else %}
                     <td></td>

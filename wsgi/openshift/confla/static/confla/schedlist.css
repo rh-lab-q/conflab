@@ -9,6 +9,7 @@
 
 .schedlist-wrap .time {
     float: left;
+    font-weight: bold;
 }
 
 .schedlist-wrap .event {
@@ -33,11 +34,6 @@
     margin: 5px;
     float:left;
     display: inline-block;
-}
-
-.sched-wrap ul, .sched-wrap li {
-    height: auto;
-    width: 100%;
 }
 
 #table-wrap > ul, #table-wrap > ul > li {
