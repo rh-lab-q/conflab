@@ -1,23 +1,24 @@
-#table-wrap, #dummy-wrap {
+.schedlist-wrap #table-wrap, #dummy-wrap {
     overflow: auto;
 }
 
-.events-wrap {
+.schedlist-wrap .events-wrap {
     overflow:auto;
     margin: 0px 0px 0px 50px;
 }
 
-.time {
+.schedlist-wrap .time {
     float:left;
 }
 
-.event {
+.schedlist-wrap .event {
     height: 100%;
+    width: auto;
     float:left;
     margin: 3px;
 }
 
-.event-visible {
+.schedlist-wrap .event-visible {
     clear: both;
     border: 1px solid #999;
     width: 100%;
@@ -29,7 +30,7 @@
     box-sizing: border-box;
 }
 
-.topic {
+.schedlist-wrap .topic {
     font-weight: bold;
     line-height: 100%;
 }

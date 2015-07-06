@@ -15,7 +15,7 @@
 
 {% block content %}
 {% csrf_token %}
-<div class="sched-wrap">
+<div class="schedlist-wrap">
     {% for day in time_list %}
     <div class="day-wrap">
         <h4>{{day.day}}</h4>

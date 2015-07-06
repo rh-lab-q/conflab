@@ -3,7 +3,9 @@
 {% load i18n %}
 {% load confla_filters %}
 {% block title %}Timetable{% endblock %}
-{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'confla/schedlist.css' %}" />
 <style type='text/css'>
     {% for tag in tag_list %}
     .tag{{tag.id}} {
@@ -16,11 +18,11 @@
 {% block content %}
 {% csrf_token %}
 
+<select class="sel-view form-control" onchange="changeView()" style="width:100px">
+    <option selected="selected">Grid</option>
+    <option>List</option>
+</select>
 <div class="sched-wrap">
-    <select class="sel-view form-control" onchange="changeView()" style="width:100px">
-        <option>Grid</option>
-        <option>List</option>
-    </select>
     {% for day in time_list %}
     <div class="day-wrap">
         <h4>{{ day.day }}</h4>
