@@ -14,12 +14,19 @@
 #table-wrap, #dummy-wrap {
     overflow: auto;
 }
+
+.sched-wrap {
+    padding-top: 1em;
+}
+
 .table-dummy {
     height: 1px;
 }
+
 th {
     text-align: center;
 }
+
 .table {
     width: auto;
     /* already in bootstrap - border-spacing: 0; */
@@ -62,7 +69,7 @@ td {
      -moz-border-radius: 5px;
           border-radius: 5px; */
     width: 250px; /* 166px; */
-    height: 26px;
+    height: 28px;
     position: absolute;
     top: 0;
     left: 0;

@@ -5,6 +5,7 @@
 */
 
 var cellSize = 31;
+var itemHeight = 28;
 $.expr[':'].Contains = function(a, i, m) {
     // m is PROBABLY an array ofcCaller, calling method('Contains'), and content of the call
     return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
@@ -95,7 +96,7 @@ function itemInit(selector) {
             // New end time on resize
             var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
             var height = $(this).height();
-            var rowdiff = (height-26)/cellSize;
+            var rowdiff = (height-itemHeight)/cellSize;
             var endspan = $(this).find("span.end")
             var tr_array = $(this).parent().parent().parent().parent().find('tr');
             var endtime_text = countEndtime(tr_array, row+rowdiff+1)
@@ -118,7 +119,7 @@ function itemInit(selector) {
             // Don't append empty events to event list
             if ($(ui.draggable).parent().is("#event-list") &&
                     $(this).find(".topic").text() === "") {
-                $(this).find(".event").remove(); 
+                $(this).find(".event").remove();
             }
             else {
                 $(ui.draggable).parent().append($(this).find(".event"));

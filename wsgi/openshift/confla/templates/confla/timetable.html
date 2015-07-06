@@ -54,6 +54,11 @@
 {% endblock %}
 
 {% block content %}
+<ul class='nav nav-tabs'>
+    <li class="active"><a href="#">View schedule</a></li>
+    <li><a href="#">Edit schedule</a></li>
+    <li><a href="#">New schedule</a></li>
+</ul>
 {% csrf_token %}
 <div class="sched-wrap">
     {% for day in time_list %}
@@ -61,7 +66,7 @@
         <h4>{{ day.day }}</h4>
         <div id="dummy-wrap">
             <div class="table-dummy"></div>
-        </div>
+        </div><!-- dummy-wrap -->
         <div id="table-wrap">
         <table class="table" tdelta={{conf.timedelta}}>
             <thead>
@@ -149,10 +154,10 @@
             {% endfor %}
         </tbody>
         </table>
-        </div>
-    </div>
-</div>
+    </div><!-- table-wrap -->
+</div><!-- day-wrap -->
 {% endfor %}
+</div>
 
 {% endblock %}
 

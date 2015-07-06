@@ -11,7 +11,8 @@
       </div>
     </div>
 </div>
-<form action="{% url 'confla:timetable' %}" method="post">{% csrf_token %}
+<h1>Create a new conference</h1>
+<form action="{% url 'confla:adminsched' %}" method="post">{% csrf_token %}
     {{ form.as_p }}
     <a href="{% url 'confla:add_rooms' %}" data-toggle="modal" data-target="#modal" title="Add rooms" data-tooltip>Add rooms</a>
     <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
