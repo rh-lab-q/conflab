@@ -42,7 +42,10 @@ class EventCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EventCreateForm, self).__init__(*args, **kwargs)
         for key in self.fields:
-            self.fields[key].widget.attrs.update({'style' : 'width: 100%'})
+            self.fields[key].widget.attrs.update({
+                            'style' : 'width: 100%',
+                            'class' : 'form-control input-sm'
+            })
         self.fields['topic'].widget.attrs.update({'placeholder' : _('Topic')})
         self.fields['description'].widget.attrs.update({'rows' : '5',
                                                         'placeholder' : _('Description')})
