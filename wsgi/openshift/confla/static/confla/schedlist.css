@@ -29,11 +29,10 @@
 
 .schedlist-wrap .item {
     position: static;
-    min-width: 200px;
     width: auto;
-    max-width: 20%;
-    margin-left: 5px;
+    margin: 5px;
     float:left;
+    display: inline-block;
 }
 
 .sched-wrap ul, .sched-wrap li {
