@@ -29,7 +29,7 @@ def tag_class(value):
 @register.filter
 def set_height(value, arg):
     size = int(arg)
-    return str(size*value) + "px"
+    return str(size*value-2) + "px" # 2 is border size in pixels
 
 """
 @register.filter
