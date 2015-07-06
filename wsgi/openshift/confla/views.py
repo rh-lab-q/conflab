@@ -448,7 +448,6 @@ class TimetableView(generic.TemplateView):
                 newslot.save()
                 ids.append(newslot.id)
 
-        print(ids)
         Timeslot.objects.exclude(id__in=ids).delete()
 
 class ImportView(generic.TemplateView):
