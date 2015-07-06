@@ -15,40 +15,42 @@
 
 {% block content %}
 {% csrf_token %}
-<div id="dummy-wrap">
-    <div class="table-dummy"></div>
-</div>
-<div id="table-wrap">
+<div class="sched-wrap">
     {% for day in time_list %}
-    <h4>{{day.day}}</h4>
-    {% for t in day.list %}
-    <div class="time">{{t.short}}</div>
-    <div class="events-wrap">
-    {% for s in t.slots %}
-    {% if s.event_id %}
-    {% with e=s.event_id %}
-        <div class="event">
-            <div class="event-visible {{e|tag_class}}">
-                <p class="topic">{{e.topic}}</p>
-                <p class="author">{{e.get_users}}</p>
-            </div>
-            <div class="pop-title"style="display:none">
-                <span>{% trans "Edit event" %}</span>
-                <span class="pop-close glyphicon glyphicon-remove"></span>
-            </div>
-            <div class="pop-content" style="display:none">
-            </div>
+    <div class="day-wrap">
+        <h4>{{day.day}}</h4>
+        <div id="dummy-wrap">
+            <div class="table-dummy"></div>
         </div>
-    {% endwith %}
-    {% endif %}
-    {% endfor %}
-    <br style="clear:both"></br>
+        <div id="table-wrap">
+           {% for t in day.list %}
+            <div class="time">{{t.short}}</div>
+            <div class="events-wrap">
+            {% for s in t.slots %}
+            {% if s.event_id %}
+            {% with e=s.event_id %}
+                <div class="event">
+                    <div class="event-visible {{e|tag_class}}">
+                        <p class="topic">{{e.topic}}</p>
+                        <p class="author">{{e.get_users}}</p>
+                    </div>
+                    <div class="pop-title"style="display:none">
+                        <span>{% trans "Edit event" %}</span>
+                        <span class="pop-close glyphicon glyphicon-remove"></span>
+                    </div>
+                    <div class="pop-content" style="display:none">
+                    </div>
+                </div>
+            {% endwith %}
+            {% endif %}
+            {% endfor %}
+            <br style="clear:both"></br>
+            </div>
+            {% endfor %}
+        </div>
     </div>
     {% endfor %}
-    {% endfor %}
 </div>
-
-
 {% endblock %}
 
 {% block sidenav %}
