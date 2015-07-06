@@ -28,10 +28,12 @@
 }
 
 .schedlist-wrap .item {
-    position: relative;
-    top: 0;
-    left: 0;
-    margin-bottom: 10px;
+    position: static;
+    min-width: 200px;
+    width: auto;
+    max-width: 20%;
+    margin-left: 5px;
+    float:left;
 }
 
 .sched-wrap ul, .sched-wrap li {
@@ -45,5 +47,5 @@
 
 #table-wrap > ul > li {
     border-bottom: 1px dotted #999;
-    margin-bottom: 5px;
+    padding: 5px 0;
 }
