@@ -24,8 +24,7 @@
     {% for t in day.list %}
     <div class="time">{{t.short}}</div>
     <div class="events-wrap">
-    {% with slots=r|get_slots:t %}
-    {% for s in slots %}
+    {% for s in t.slots %}
     {% if s.event_id %}
     {% with e=s.event_id %}
         <div class="event">
@@ -44,7 +43,6 @@
     {% endif %}
     {% endfor %}
     <br style="clear:both"></br>
-    {% endwith %}
     </div>
     {% endfor %}
     {% endfor %}

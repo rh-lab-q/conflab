@@ -18,15 +18,6 @@ def div(value, arg):
     return ''
 
 @register.filter
-def get_slots(value, arg):
-    slot_list = []
-    slots = Timeslot.objects.filter(conf_id=Conference.get_active())
-    for s in slots:
-        if s.get_start_datetime == arg['full']:
-            slot_list.append(s)
-    return slot_list
-
-@register.filter
 def get_event_form(value):
     form = EventCreateForm(instance=value)
     return form

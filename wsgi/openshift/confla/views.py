@@ -74,6 +74,7 @@ class ScheduleView(generic.TemplateView):
         time_list = []
         # Distinct ordered datetime list for the current conference
         start_list = Timeslot.objects.filter(conf_id=conf).order_by("start_time").values_list("start_time", flat=True).distinct()
+        slot_list = Timeslot.objects.filter(conf_id=conf)
         for date in conf.get_date_list():
             time_dict = {}
             time_dict["day"] = date
@@ -83,6 +84,10 @@ class ScheduleView(generic.TemplateView):
                     time = {}
                     time['short'] = start_time.strftime("%H:%M") 
                     time['full'] = start_time.strftime("%x %H:%M") 
+                    time['slots'] = []
+                    for slot in slot_list:
+                        if slot.get_start_datetime == time['full']:
+                            time['slots'].append(slot)
                     time_dict["list"].append(time)
             time_list.append(time_dict)
 
