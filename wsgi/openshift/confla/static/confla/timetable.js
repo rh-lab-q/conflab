@@ -312,7 +312,9 @@ function timetableSubmit(selector) {
     $(".save").hide();
     $(".edit").show();
     $("#event-bar").hide();
-
+    if ($("#event-bar").attr("data-status")==="opened") {
+        $(".toggler").trigger("click")
+    }
 }
 
 function popoverInit(selector) {
