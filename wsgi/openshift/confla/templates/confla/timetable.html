@@ -54,10 +54,10 @@
 {% endblock %}
 
 {% block content %}
-<ul class='nav nav-tabs'>
+<ul id="sched-tabs" class='nav nav-tabs'>
     <li><a id="tab-usersched" href="#">View schedule</a></li>
     <li class="active"><a id="tab-adminsched" href="#">Edit schedule</a></li>
-    <li><a href="#">New schedule</a></li>
+    <li><a id="tab-fillsched"href="#">New schedule</a></li>
 </ul>
 {% csrf_token %}
 <div class="sched-wrap">

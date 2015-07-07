@@ -1,0 +1,15 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+    Add the form here
+</div>
+{% endblock %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="{% static 'confla/datetime.js' %}"></script>
+{% endblock %}
