@@ -136,6 +136,12 @@ td {
     height: 100%;
 }
 
+.fa-spinner {
+    width: 100%;
+    text-align: center;
+    margin-top: 1em;
+}
+
 #event-bar > div > div > h3 {
     font-size: 14px;
     font-weight: bold;
