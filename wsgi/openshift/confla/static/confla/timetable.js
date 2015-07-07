@@ -27,6 +27,8 @@ function showUsersched() {
             wrap.className = "user-wrap";
             $(wrap).append($(data).find(".display-style"));
             $(wrap).append($(data).find(".sched-wrap"));
+            // Get user view js and run it
+            $.getScript("/static/confla/userview.js")
             $(".fa-spinner").remove();
             $(".sched-wrap:hidden").parent().append(wrap);
         });

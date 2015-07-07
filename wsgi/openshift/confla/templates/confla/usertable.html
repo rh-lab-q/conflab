@@ -15,21 +15,13 @@
 {% endblock %}
 
 {% block content %}
-{% if perms.confla.can_organize %}
-<ul class='nav nav-tabs'>
-    <li class="active"><a href="{% url 'confla:schedule' %}">View schedule</a></li>
-    <li><a href="{% url 'confla:adminsched' %}">Edit schedule</a></li>
-    <li><a href="#">New schedule</a></li>
-</ul>
-{% endif %}
 {% csrf_token %}
 <div class="display-style">
 <h3>{% trans "Display as" %}
-<select class="sel-view form-control" onchange="changeView()" style="width:100px">
+<select class="sel-view form-control" onchange="changeView()" style="width:100px" autocomplete="off">
     <option selected="selected">{% trans "Grid" %}</option>
     <option>{% trans "List" %}</option>
 </select></h3>
-<script type="text/javascript" src="{% static 'confla/userview.js' %}"></script>
 </div>
 <div class="sched-wrap">
     {% for day in time_list %}
@@ -91,6 +83,7 @@
 
 {% endblock %}
 {% block extrascripts %}
+<script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>
 {% endblock %}
 
 {% block sidenav %}
