@@ -16,6 +16,7 @@
 {% block content %}
 {% csrf_token %}
 <div class="schedlist-wrap">
+<link rel="stylesheet" type="text/css" href="{% static 'confla/schedlist.css' %}" />
     {% for day in time_list %}
     <div class="day-wrap">
         <h4>{{day.day}}</h4>

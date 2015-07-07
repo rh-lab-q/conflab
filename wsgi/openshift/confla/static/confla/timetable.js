@@ -11,6 +11,41 @@ $.expr[':'].Contains = function(a, i, m) {
     return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
 }
 
+function showUsersched() {
+    $("#tab-usersched").off("click");
+    $(this).parent().parent().find("li").removeClass("active");
+    $(this).parent().addClass("active");
+    $(".edit-btns").hide();
+    $(".sched-wrap").hide();
+    spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+    $(".sched-wrap:hidden").parent().append(spinner);
+    // Save the schedule and wait until it finishes
+    // TODO: Better use .then() when checking failstates later
+    $.when(timetableSubmit(".table")).done(function (){
+        $.get( "/sched/", function( data ) {
+            var wrap = document.createElement('div');
+            wrap.className = "user-wrap";
+            $(wrap).append($(data).find(".display-style"));
+            $(wrap).append($(data).find(".sched-wrap"));
+            $(".fa-spinner").remove();
+            $(".sched-wrap:hidden").parent().append(wrap);
+        });
+    });
+    $("#tab-adminsched").off("click").click(showAdminsched);
+}
+
+function showAdminsched() {
+    $("#tab-adminsched").off("click");
+    $(this).parent().parent().find("li").removeClass("active");
+    $(this).parent().addClass("active");
+    $(".edit-btns").show();
+    $(".user-wrap").remove();
+    $(".fa-spinner").remove();
+    timetableEdit();
+    $(".sched-wrap").show();
+    $("#tab-usersched").off("click").click(showUsersched);
+}
+
 function listFilter(input, list, elem) {
     $(input)
         .change(function() {
@@ -304,7 +339,7 @@ function timetableEdit() {
 function timetableSubmit(selector) {
     // generate JSON and submit to DB
     var toSend = timetableToJson(selector);
-    $.post("saveTable/", {
+    def = $.post("saveTable/", {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: toSend});
 
@@ -315,6 +350,7 @@ function timetableSubmit(selector) {
     if ($("#event-bar").attr("data-status")==="opened") {
         $(".toggler").trigger("click")
     }
+    return def;
 }
 
 function popoverInit(selector) {
@@ -514,6 +550,10 @@ $(document).ready(function() {
         var len = $(this).attr("deltalen")-1;
         return this.clientHeight+cellSize*len
     });
+
+    // Setup nav tabs
+    $("#tab-usersched").click(showUsersched);
+    $("#tab-adminsched").click(showAdminsched);
 
     // Setup BootSideMenu
     $('#event-bar').BootSideMenu({

@@ -46,7 +46,7 @@
         {% endfor %}
     </div>
 </div>
-<div style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
+<div class="edit-btns" style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
     <button type="button" class="btn btn-success edit" onclick="timetableEdit()">Edit</button>
     <button type="button" class="btn btn-success save" onclick="timetableSubmit('.table')" style="display:none">Save</button>
 </div>
@@ -55,8 +55,8 @@
 
 {% block content %}
 <ul class='nav nav-tabs'>
-    <li><a href="{% url 'confla:schedule' %}">View schedule</a></li>
-    <li class="active"><a href="{% url 'confla:adminsched' %}">Edit schedule</a></li>
+    <li><a id="tab-usersched" href="#">View schedule</a></li>
+    <li class="active"><a id="tab-adminsched" href="#">Edit schedule</a></li>
     <li><a href="#">New schedule</a></li>
 </ul>
 {% csrf_token %}
