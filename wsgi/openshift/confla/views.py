@@ -300,6 +300,7 @@ class AddRoomsView(generic.TemplateView):
 class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
 
+    @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
         #TODO: Check if organizer before creating a conf form
         if len(Conference.objects.all()) == 0:
@@ -369,6 +370,7 @@ class TimetableView(generic.TemplateView):
             TimetableView.json_to_timeslots(request.POST['data'])
             return HttpResponseRedirect(reverse('confla:thanks'))
 
+    @permission_required('confla.can_organize', raise_exception=True)
     def save_event(request):
         if request.method == 'POST':
             if request.POST['event_id'] == "0":
