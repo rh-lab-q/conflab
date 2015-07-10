@@ -17,6 +17,7 @@
 {% csrf_token %}
 <div class="schedlist-wrap">
 <link rel="stylesheet" type="text/css" href="{% static 'confla/schedlist.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'confla/usertable.css' %}" />
     {% for day in time_list %}
     <div class="day-wrap">
         <h4>{{day.day}}</h4>
@@ -32,7 +33,7 @@
             {% if s.event_id %}
             {% with e=s.event_id %}
                 <div class="item">
-                    <div class="event">
+                    <div class="event" event-id={{e.id}}>
                         <div class="event-visible {{e|tag_class}}">
                             <p class="topic">{{e.topic}}</p>
                             <p class="author">{{e.get_users}}</p>

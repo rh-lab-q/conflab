@@ -24,6 +24,7 @@
 </select></h3>
 </div>
 <div class="sched-wrap">
+<link rel="stylesheet" type="text/css" href="{% static 'confla/usertable.css' %}" />
     {% for day in time_list %}
     <div class="day-wrap">
         <h4>{{ day.day }}</h4>
@@ -51,16 +52,10 @@
                     {% if s.event_id %}
                         <div class="item" style="height: {{ s.length|set_height:"31"}}">
                         {% with e=s.event_id %}
-                            <div class="event" style="position:absolute">
+                        <div class="event" style="position:absolute" event-id={{e.id}}>
                                 <div class="event-visible {{e|tag_class}}">
                                     <p class="topic">{{e.topic}}</p>
                                     <p class="author">{{e.get_users}}</p>
-                                </div>
-                                <div class="pop-title" style="display:none">
-                                    <span>{% trans "Edit event" %}</span>
-                                    <span class="pop-close glyphicon glyphicon-remove"></span>
-                                </div>
-                                <div class="pop-content" style="display:none">
                                 </div>
                             </div>
                         {% endwith %}

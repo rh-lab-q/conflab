@@ -3,7 +3,7 @@ import json
 import random
 
 from django.template.loader import render_to_string
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth import authenticate, login, logout
@@ -25,6 +25,15 @@ class VolunteerView(generic.TemplateView):
     @permission_required('confla.can_volunteer', raise_exception=True)
     def my_view(request):
         return render(request, VolunteerView.template_name)
+
+class EventView(generic.TemplateView):
+
+    def get_popover(request):
+        template_name = 'confla/event_popover.html'
+        if not(request.method == "POST"):
+            raise Http404
+        event = Event.objects.get(id=int(request.POST['data']))
+        return render(request, template_name, {'event': event})
 
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/usertable.html'

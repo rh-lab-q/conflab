@@ -1,0 +1,18 @@
+.popover {
+    top:10px !important;
+    left:0px !important;
+}
+
+.popover > .arrow {
+    left: 10% !important;
+}
+
+.popover-title {
+    display:none;
+}
+
+.popover-content > .fa-spinner {
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+}

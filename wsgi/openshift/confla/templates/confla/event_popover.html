@@ -1,0 +1,14 @@
+<p>{{ event.topic }}</p>
+<p>{{ event.description }}</p>
+<div class="speakers">
+    {% for speaker in event.speaker.all %}
+    <div class="speaker">
+        <p>{{ speaker.first_name }} {{ speaker.last_name }}</p>
+    </div>
+    {% endfor%}
+</div>
+<div class="tags">
+    {% for tag in event.tags.all %}
+    <span class="etag">{{tag.name}}</span>
+    {% endfor %}
+</div>
