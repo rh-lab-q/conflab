@@ -5,7 +5,7 @@ function changeView() {
             $.get( "/sched/list/", function( data ) {
                 $(".sched-wrap:visible").html($(data).find(".schedlist-wrap").html());
                 $(".sched-wrap:visible").removeClass().addClass("schedlist-wrap");
-                popoverInit();
+                userPopoverInit();
             })
             break; 
         };
@@ -13,7 +13,7 @@ function changeView() {
             $.get( "/sched/", function( data ) {
                 $(".schedlist-wrap").html($(data).find(".sched-wrap").html());
                 $(".schedlist-wrap").removeClass().addClass("sched-wrap");
-                popoverInit();
+                userPopoverInit();
             });
             break;
         }
