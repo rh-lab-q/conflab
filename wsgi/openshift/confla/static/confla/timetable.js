@@ -11,53 +11,6 @@ $.expr[':'].Contains = function(a, i, m) {
     return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
 }
 
-function showUsersched() {
-    $("#tab-usersched").off("click");
-    if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
-        $(".edit-btns").hide();
-        $(".sched-wrap").hide();
-        spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
-        $(".sched-wrap:hidden").parent().append(spinner);
-        // Save the schedule and wait until it finishes
-        // TODO: Better use .then() when checking failstates later
-        $.when(timetableSubmit(".table")).done(function (){
-            $.get( "/sched/", function( data ) {
-                var wrap = document.createElement('div');
-                wrap.className = "user-wrap";
-                $(wrap).append($(data).find(".display-style"));
-                $(wrap).append($(data).find(".sched-wrap"));
-                // Get user view js and run it
-                $.getScript("/static/confla/userview.js")
-                $(".fa-spinner").remove();
-                $(".sched-wrap:hidden").parent().append(wrap);
-            });
-        });
-        $("#tab-adminsched").off("click").click(showAdminsched);
-    } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
-        // Went from fillsched to usersched
-        $("#tab-fillsched").off("click").click(showFillsched);
-    } 
-    $("#sched-tabs").find("li.active").removeClass("active");
-    $(this).parent().addClass("active");
-}
-
-function showAdminsched() {
-    $("#tab-adminsched").off("click");
-    if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
-        $(".edit-btns").show();
-        $(".user-wrap").remove();
-        $(".fa-spinner").remove();
-        timetableEdit();
-        $(".sched-wrap").show();
-        $("#tab-usersched").off("click").click(showUsersched);
-    } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
-        // Went from fillsched to usersched
-        $("#tab-fillsched").off("click").click(showFillsched);
-    }
-    $("#sched-tabs").find("li.active").removeClass("active");
-    $(this).parent().addClass("active");
-}
-
 function listFilter(input, list, elem) {
     $(input)
         .change(function() {
@@ -351,7 +304,7 @@ function timetableEdit() {
 function timetableSubmit(selector) {
     // generate JSON and submit to DB
     var toSend = timetableToJson(selector);
-    def = $.post("saveTable/", {
+    def = $.post("/admin/sched/saveTable/", {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: toSend});
 
@@ -563,9 +516,6 @@ $(document).ready(function() {
         return this.clientHeight+cellSize*len
     });
 
-    // Setup nav tabs
-    $("#tab-usersched").click(showUsersched);
-    $("#tab-adminsched").click(showAdminsched);
 
     // Setup BootSideMenu
     $('#event-bar').BootSideMenu({

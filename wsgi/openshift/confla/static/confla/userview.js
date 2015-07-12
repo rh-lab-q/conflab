@@ -21,28 +21,102 @@ function changeView() {
 }
 
 function popoverInit() {
-    $(".item").popover({
-        placement: "bottom",
-        html: "true",
-        title: " ",
-        content: function () {
-            var itemp = this;
-            spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
-            def = $.post("/events/popover/", {
-                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-                data: $(".event", this).attr("event-id"),
-            });
-            // TODO: Better use .then() when checking failstates later
-            $.when(def).done(function (response){
-                var popid = "#" + $(itemp).attr("aria-describedby");
-                $(popid).find(".fa-spinner").remove();
-                $(popid).find(".popover-content").append(response);
-            });
-            return spinner;
-        }
+    $(".user-wrap .item").each (function () {
+        var itemp = this;
+        $(itemp).popover({
+            placement: "bottom",
+            html: "true",
+            title: " ",
+            content: function () {
+                console.log($(itemp).position());
+                spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+                def = $.post("/events/popover/", {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    data: $(".event", this).attr("event-id"),
+                });
+                // TODO: Better use .then() when checking failstates later
+                $.when(def).done(function (response){
+                    var popid = "#" + $(itemp).attr("aria-describedby");
+                    $(popid).find(".fa-spinner").remove();
+                    $(popid).find(".popover-content").append(response);
+                });
+                return spinner;
+            }
+        }).on("inserted.bs.popover", function (){
+            console.log("serepes");
+        });
     });
+}
+
+
+function showUsersched() {
+    $("#tab-usersched").off("click");
+    if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
+        $(".edit-btns").hide();
+        $(".admin-wrap").hide();
+        spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+        $(".admin-wrap").parent().append(spinner);
+        // Save the schedule and wait until it finishes
+        // TODO: Better use .then() when checking failstates later
+        $.when(timetableSubmit(".table")).done(function (){
+            $.get( "/sched/", function( data ) {
+                var wrap = document.createElement('div');
+                wrap.className = "user-wrap";
+                $(wrap).append($(data).find(".display-style"));
+                $(wrap).append($(data).find(".sched-wrap"));
+                // Get user view js and run it
+                $.getScript("/static/confla/userview.js")
+                $(".fa-spinner").remove();
+                $(".admin-wrap").parent().append(wrap);
+            });
+        });
+        $("#tab-adminsched").off("click").click(showAdminsched);
+    } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
+        // Went from fillsched to usersched
+        $("#tab-fillsched").off("click").click(showFillsched);
+    } 
+    $("#sched-tabs").find("li.active").removeClass("active");
+    $(this).parent().addClass("active");
+}
+
+function showAdminsched() {
+    $("#tab-adminsched").off("click");
+    if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
+        if ($(".admin-wrap").length) {
+            $(".edit-btns").show();
+            $(".user-wrap").remove();
+            timetableEdit();
+            $(".admin-wrap").show();
+        }
+        else {
+            orig = $(".user-wrap");
+            content = $(orig).parent();
+            spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+            $(orig).remove();
+            $(content).append(spinner);
+            $.get( "/admin/sched/", function( data ) {
+                var wrap = document.createElement('div');
+                wrap.className = "admin-wrap";
+                $(wrap).append($(data).find(".sched-wrap"));
+                // Get admin view js and run it
+                $.when($.getScript("/static/confla/timetable.js")).done(function () {
+                    timetableEdit();
+                });
+                $(".fa-spinner").remove();
+                $(content).append(wrap);
+            })
+        }
+        $("#tab-usersched").off("click").click(showUsersched);
+    } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
+        // Went from fillsched to usersched
+        $("#tab-fillsched").off("click").click(showFillsched);
+    }
+    $("#sched-tabs").find("li.active").removeClass("active");
+    $(this).parent().addClass("active");
 }
 
 $(document).ready(function() {
     popoverInit();
+    // Setup nav tabs
+    $("#tab-adminsched").click(showAdminsched);
 })

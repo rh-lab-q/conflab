@@ -54,11 +54,6 @@
 {% endblock %}
 
 {% block content %}
-<ul id="sched-tabs" class='nav nav-tabs'>
-    <li><a id="tab-usersched" href="#">View schedule</a></li>
-    <li class="active"><a id="tab-adminsched" href="#">Edit schedule</a></li>
-    <li><a id="tab-fillsched"href="#">New schedule</a></li>
-</ul>
 {% csrf_token %}
 <div class="sched-wrap">
     {% for day in time_list %}
@@ -158,7 +153,15 @@
     </div><!-- table-wrap -->
 </div><!-- day-wrap -->
 {% endfor %}
+<script class="js-setup">
+var tags = {{ tag_list|safe }}
+var users = {{ user_list|safe }};
+var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}{{event_create.speaker|escapejs}}{{event_create.tags|escapejs}}';
+var form_action = "{% url 'confla:saveEvent' %}";
+</script>
 </div><!-- sched-wrap -->
+
+
 
 {% endblock %}
 
@@ -168,10 +171,5 @@
 
 {% block extrascripts %}
 <script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
-<script type="text/javascript">
-var tags = {{ tag_list|safe }}
-var users = {{ user_list|safe }};
-var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}{{event_create.speaker|escapejs}}{{event_create.tags|escapejs}}';
-var form_action = "{% url 'confla:saveEvent' %}";
-</script>
+
 {% endblock %}
