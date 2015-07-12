@@ -37,11 +37,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
-                {% if perms.confla.can_organize %}
-                <li><a href="{% url 'confla:adminsched' %}">{% trans "Schedule" %}</a></li>
-                {% else %}
                 <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
-                {% endif %}
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
                 {% if perms.confla.can_volunteer %}

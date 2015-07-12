@@ -20,15 +20,15 @@ function changeView() {
     } 
 }
 
-function popoverInit() {
+function userPopoverInit() {
     $(".user-wrap .item").each (function () {
         var itemp = this;
         $(itemp).popover({
             placement: "bottom",
             html: "true",
             title: " ",
+            template: '<div class="popover pop-user" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>', 
             content: function () {
-                console.log($(itemp).position());
                 spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
                 def = $.post("/events/popover/", {
                     csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
@@ -42,8 +42,6 @@ function popoverInit() {
                 });
                 return spinner;
             }
-        }).on("inserted.bs.popover", function (){
-            console.log("serepes");
         });
     });
 }
@@ -116,7 +114,23 @@ function showAdminsched() {
 }
 
 $(document).ready(function() {
-    popoverInit();
+    userPopoverInit();
     // Setup nav tabs
     $("#tab-adminsched").click(showAdminsched);
+
+    // Close all popovers if clicked outside of a popover or an event
+    sel = ".user-wrap .item";
+    $('html').on('click', function(e) {
+        // If the target is not an event or topic
+        if (!$(e.target).hasClass("event-visible") && !$(e.target).hasClass("topic")
+            // If the target is not a popover
+            && $(e.target).parents('.popover.in').length === 0) {
+                $(sel).each( function () {
+                // If there is an open popover, hide it
+                if ($(this).attr("aria-describedby")) {
+                   $(this).popover('hide');
+                }
+            });
+        }
+    });
 })

@@ -552,7 +552,9 @@ $(document).ready(function() {
 
     // Close all edit popovers if clicked outside of a popover or edit icon
     $('html').on('click', function(e) {
+        // If the target is not the edit icon
         if (!$(e.target).parent().hasClass("editsign")
+            // If the target is not a popover
             && $(e.target).parents('.popover.in').length === 0) {
                 $('.editsign').each( function () {
                 // If there is an open popover, hide it

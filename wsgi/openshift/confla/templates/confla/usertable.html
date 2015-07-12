@@ -15,11 +15,13 @@
 {% endblock %}
 
 {% block content %}
+{% if perms.confla.can_organize %}
 <ul id="sched-tabs" class='nav nav-tabs'>
     <li class="active"><a id="tab-usersched" href="#">View schedule</a></li>
     <li><a id="tab-adminsched" href="#">Edit schedule</a></li>
     <li><a id="tab-fillsched"href="#">New schedule</a></li>
 </ul>
+{% endif %}
 {% csrf_token %}
 <div class="user-wrap">
     <div class="display-style">
