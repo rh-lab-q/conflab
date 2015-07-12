@@ -454,7 +454,7 @@ function popoverInit(selector) {
         $(form).ajaxSubmit({
             success: function(response) {
                 var event_id = form.find("[name=event_id]");
-                if (event_id.attr("value") == 0) {
+                if (event_id.attr("value") == 0 && response !== "-1") {
                     event_id.attr("value", response);
                 }
             }

@@ -46,7 +46,6 @@ function userPopoverInit() {
     });
 }
 
-
 function showUsersched() {
     $("#tab-usersched").off("click");
     if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
@@ -96,6 +95,7 @@ function showAdminsched() {
                 var wrap = document.createElement('div');
                 wrap.className = "admin-wrap";
                 $(wrap).append($(data).find(".sched-wrap"));
+                $("body").append($(data).filter("#event-bar"));
                 // Get admin view js and run it
                 $.when($.getScript("/static/confla/timetable.js")).done(function () {
                     timetableEdit();
