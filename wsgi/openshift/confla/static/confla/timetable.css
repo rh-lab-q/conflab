@@ -184,6 +184,15 @@ td > .ui-state-hover {
     width: 100%;
 }
 
+.pop-user .arrow {
+    display: none;
+}
+
+.sched-wrap .pop-user {;
+    min-width: 125%;
+    left: 0 !important;
+}
+
 /* Thicken jQuery-UI resizable handle */
 .ui-resizable-s {
     bottom: 0;

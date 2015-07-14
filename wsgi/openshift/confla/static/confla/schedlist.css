@@ -1,5 +1,5 @@
 .schedlist-wrap #table-wrap, #dummy-wrap {
-    overflow: auto;
+    overflow: visible;
 }
 
 .schedlist-wrap .events-wrap {
@@ -15,6 +15,7 @@
 .schedlist-wrap .event {
     width: auto;
     margin: 3px;
+    position: relative;
 }
 
 .schedlist-wrap .event-visible {
@@ -43,4 +44,9 @@
 #table-wrap > ul > li {
     border-bottom: 1px dotted #999;
     padding: 5px 0;
+    position: relative;
+}
+
+.pop-user {
+    max-width: 366px;
 }
