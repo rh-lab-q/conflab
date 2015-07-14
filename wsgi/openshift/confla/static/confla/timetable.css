@@ -184,6 +184,10 @@ td > .ui-state-hover {
     width: 100%;
 }
 
+.drag-help {
+    opacity: 0.7;
+}
+
 /* Thicken jQuery-UI resizable handle */
 .ui-resizable-s {
     bottom: 0;
