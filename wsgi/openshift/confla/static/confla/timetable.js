@@ -353,7 +353,6 @@ function timetableEdit() {
     $(".save").show();
     $(".edit").hide();
     $("#event-bar").show();
-    $(".toggler").trigger("click")
 }
 
 function timetableSubmit(selector) {
@@ -367,9 +366,6 @@ function timetableSubmit(selector) {
     $(".save").hide();
     $(".edit").show();
     $("#event-bar").hide();
-    if ($("#event-bar").attr("data-status")==="opened") {
-        $(".toggler").trigger("click")
-    }
     return def;
 }
 
