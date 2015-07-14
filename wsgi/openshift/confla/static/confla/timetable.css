@@ -191,6 +191,7 @@ td > .ui-state-hover {
 .sched-wrap .pop-user {;
     min-width: 125%;
     left: 0 !important;
+}
 
 .drag-help {
     opacity: 0.7;

@@ -593,7 +593,7 @@ $(document).ready(function() {
                 var nevent = createEvent();
                 $(ui.draggable).parent().append(nevent);
             }
-            $(this).find("#event-list").append($(ui.draggable));
+            $(this).find("#event-list").append($(ui.draggable).show());
             $("#filter_input").change();
             $(".item").droppable("enable");
         },
@@ -602,9 +602,12 @@ $(document).ready(function() {
             // Remove drag helpers from all items and show original events
             $(".drag-help").parent().find(".event").show();
             $(".drag-help").remove();
+            // Then hide the dragged event
+            $(ui.draggable).hide();
         },
         out: function(event, ui) {
             $(".item").droppable("enable");
+            $(ui.draggable).show();
         }
     });
 
