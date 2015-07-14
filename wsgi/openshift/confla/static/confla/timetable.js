@@ -62,29 +62,35 @@ function countEndtime(tr_array, rownumber) {
 }
 
 function eventInit(selector) {
-    $(selector).draggable({
-        revert: "invalid",
-        containment: "body",
-        cursor: "grabbing",
-        opacity: 0.7,
-        stack: ".item",
-        appendTo: "body",
-        zIndex: 100000,
-        cursorAt: { top: 20, left: 20 },
-        helper: function () {
-            var helper = $(this).find(".event-visible").clone()
-            $(helper).height(50);
-            $(helper).width($(this).parent().width()/2);
-            return helper;
-        }
-    });
-    $(selector).find(".event-visible").css("cursor", "grab");
-    // Setup primary tag in tag select
-    $(selector).find(".event-visible").each(function () {
-        tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
-        if (tagId) {
-            select = $(this).parent().find(".sel-tag");
-            select.prepend($(select).find("[value=" + tagId + "]"));
+    $(selector).each( function() {
+        $(this).draggable({
+            revert: "invalid",
+            containment: "body",
+            cursor: "grabbing",
+            opacity: 0.7,
+            stack: ".item",
+            appendTo: "body",
+            zIndex: 100000,
+            cursorAt: { top: 20, left: 20 },
+            helper: function () {
+                var helper = $(this).find(".event-visible").clone();
+                $(helper).height(50);
+                $(helper).width($(this).parent().width()/2);
+                return helper;
+            }
+        });
+        if ($(this).find(".topic").text()) {
+            $(this).find(".event-visible").css("cursor", "grab");
+            // Setup primary tag in tag select
+            $(this).find(".event-visible").each(function () {
+                tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
+                if (tagId) {
+                    select = $(this).parent().find(".sel-tag");
+                    select.prepend($(select).find("[value=" + tagId + "]"));
+                }
+            });
+        } else {
+            $(this).draggable("disable");
         }
     });
 }
@@ -116,17 +122,62 @@ function itemInit(selector) {
     }).droppable({
         accept: ".event",
         tolerance: "pointer",
-        hoverClass: "ui-state-hover",
         drop: function( event, ui ) {
-            // Don't append empty events to event list
-            if ($(ui.draggable).parent().is("#event-list") &&
-                    $(this).find(".topic").text() === "") {
-                $(this).find(".event").remove();
+            // Dont drop into itself
+            if (!$(this).is($(ui.draggable).parent())) {
+                // Don't append empty events to event list
+                if ($(ui.draggable).parent().is("#event-list") &&
+                        !$(this).find(".topic:hidden").text()) {
+                    $(this).find(".event").remove();
+                    $(this).append($(ui.draggable));
+                }
+                else if ($(ui.draggable).parent().is("#event-list")) {
+                    // Dragged from event list
+                    $(ui.draggable).parent().append($(this).find(".event:hidden").show());
+                    $(this).find(".drag-help").remove();
+                    $(this).append($(ui.draggable));
+                } else {
+                    // Dragged from a different item
+                    $(this).find(".drag-help").remove();
+                    $(ui.draggable).parent().find(".drag-help").remove();
+                    $(ui.draggable).parent().append($(this).find(".event").show());
+                    $(this).append($(ui.draggable).show());
+                }
+            }
+        },
+        over: function(event, ui) {
+            if (!$(ui.draggable).parent().is("#event-list")) {
+                // Dragged from a different item
+                if (!$(this).is($(ui.draggable).parent())) {
+                    // Dragged over a different item
+                    $(ui.draggable).parent().append($(this).find(".event").clone().addClass("drag-help"));
+                    $(this).find(".event").hide();
+                    $(this).append($(ui.draggable).clone().addClass("drag-help"));
+                    $(ui.draggable).hide();
+                }
             }
             else {
-                $(ui.draggable).parent().append($(this).find(".event"));
+                // Dragged from event list
+                $(this).find(".event").hide();
+                $(this).append($(ui.draggable).clone().addClass("drag-help"));
             }
-            $(this).append($(ui.draggable));
+        },
+        out: function(event, ui) {
+            if (!$(ui.draggable).parent().is("#event-list")) {
+                // Dragged from a different item
+                if (!$(this).is($(ui.draggable).parent())) {
+                    // Dragged out of a different item
+                    $(this).find(".drag-help").remove();
+                    $(ui.draggable).parent().find(".drag-help").remove();
+                    $(ui.draggable).show();
+                    $(this).find(".event").show();
+                }
+            }
+            else {
+                // Dragged from event list
+                $(this).find(".drag-help").remove();
+                $(this).find(".event").show();
+            }
         }
     }).on("dragstart", function (event, ui) {
         $(ui.helper).find(".movesign").css("cursor", "grabbing");
@@ -269,8 +320,12 @@ function timetableEnable() {
     $(".item").resizable("enable").draggable("enable");
     $(".item-buttons").slideDown();
 
-    // enable event dragging
-    $(".event").draggable("enable")
+    // enable event dragging for nonempty events
+    $(".event").each( function() {
+        if ($(this).find(".topic").text()) {
+            $(this).draggable("enable")
+        }
+    });
 
     $(".event-visible").css("cursor", "grab");
 
@@ -459,6 +514,9 @@ function popoverInit(selector) {
                 }
             }
         });
+        // TODO: Check response before enabling
+        $(original).parent().draggable("enable");
+        $(original).parent().find(".event-visible").css("cursor", "grab");
     });
 }
 
@@ -541,9 +599,13 @@ $(document).ready(function() {
             }
             $(this).find("#event-list").append($(ui.draggable));
             $("#filter_input").change();
+            $(".item").droppable("enable");
         },
         over: function(event, ui) {
-            $(".item").droppable("disable").removeClass("ui-state-hover");
+            $(".item").droppable("disable");
+            // Remove drag helpers from all items and show original events
+            $(".drag-help").parent().find(".event").show();
+            $(".drag-help").remove();
         },
         out: function(event, ui) {
             $(".item").droppable("enable");
