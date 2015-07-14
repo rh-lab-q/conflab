@@ -62,29 +62,35 @@ function countEndtime(tr_array, rownumber) {
 }
 
 function eventInit(selector) {
-    $(selector).draggable({
-        revert: "invalid",
-        containment: "body",
-        cursor: "grabbing",
-        opacity: 0.7,
-        stack: ".item",
-        appendTo: "body",
-        zIndex: 100000,
-        cursorAt: { top: 20, left: 20 },
-        helper: function () {
-            var helper = $(this).find(".event-visible").clone();
-            $(helper).height(50);
-            $(helper).width($(this).parent().width()/2);
-            return helper;
-        }
-    });
-    $(selector).find(".event-visible").css("cursor", "grab");
-    // Setup primary tag in tag select
-    $(selector).find(".event-visible").each(function () {
-        tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
-        if (tagId) {
-            select = $(this).parent().find(".sel-tag");
-            select.prepend($(select).find("[value=" + tagId + "]"));
+    $(selector).each( function() {
+        $(this).draggable({
+            revert: "invalid",
+            containment: "body",
+            cursor: "grabbing",
+            opacity: 0.7,
+            stack: ".item",
+            appendTo: "body",
+            zIndex: 100000,
+            cursorAt: { top: 20, left: 20 },
+            helper: function () {
+                var helper = $(this).find(".event-visible").clone();
+                $(helper).height(50);
+                $(helper).width($(this).parent().width()/2);
+                return helper;
+            }
+        });
+        if ($(this).find(".topic").text()) {
+            $(this).find(".event-visible").css("cursor", "grab");
+            // Setup primary tag in tag select
+            $(this).find(".event-visible").each(function () {
+                tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
+                if (tagId) {
+                    select = $(this).parent().find(".sel-tag");
+                    select.prepend($(select).find("[value=" + tagId + "]"));
+                }
+            });
+        } else {
+            $(this).draggable("disable");
         }
     });
 }
@@ -314,8 +320,12 @@ function timetableEnable() {
     $(".item").resizable("enable").draggable("enable");
     $(".item-buttons").slideDown();
 
-    // enable event dragging
-    $(".event").draggable("enable")
+    // enable event dragging for nonempty events
+    $(".event").each( function() {
+        if ($(this).find(".topic").text()) {
+            $(this).draggable("enable")
+        }
+    });
 
     $(".event-visible").css("cursor", "grab");
 
@@ -504,6 +514,9 @@ function popoverInit(selector) {
                 }
             }
         });
+        // TODO: Check response before enabling
+        $(original).parent().draggable("enable");
+        $(original).parent().find(".event-visible").css("cursor", "grab");
     });
 }
 
