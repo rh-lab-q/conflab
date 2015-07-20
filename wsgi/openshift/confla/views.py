@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, time
 import json
 import random
 
@@ -695,9 +695,25 @@ class ImportView(generic.TemplateView):
         Timeslot.objects.all().delete()
         Event.objects.all().delete()
         EventTag.objects.all().delete()
-        room_list = []
-        for i in Room.objects.all():
-            room_list.append(i.shortname)
+        room_list = ['D0206', 'E104', 'D0207', 'E112', 'D105'] 
+        # Setup a Conference if there is none
+        if not Conference.get_active():
+            newconf = Conference()
+            newconf.start_date = date(2015, 2, 6)
+            newconf.end_date = date(2015, 2, 8)
+            newconf.start_time = time(8, 0, 0)
+            newconf.end_time = time(20, 0, 0)
+            newconf.active = True
+            newconf.name = "Devconf 2015"
+            newconf.save()
+        # Generate rooms from roomlist
+        conf = Conference.get_active()
+        for i in room_list:
+            newroom = Room()
+            newroom.shortname = i
+            newroom.save()
+            hr = HasRoom(room=newroom, conference=conf, slot_length=conf.timedelta)
+            hr.save()
         user_list = []
         tag_list = []
 
