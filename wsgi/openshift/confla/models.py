@@ -14,7 +14,7 @@ class Conference(models.Model):
     end_time = models.TimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
-    rooms = models.ManyToManyField('Room', related_name='room+')
+    rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+')
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
 
@@ -93,6 +93,11 @@ class Room(models.Model):
 
     def __str__(self):
         return self.shortname
+
+class HasRoom(models.Model):
+    room = models.ForeignKey(Room)
+    conference = models.ForeignKey(Conference)
+    slot_length = models.IntegerField(default=10)
 
 class ConflaUser(AbstractUser):
     # name = models.CharField(max_length=32)
