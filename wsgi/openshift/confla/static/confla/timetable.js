@@ -206,6 +206,7 @@ function emptyItemInit(selector) {
                 }
                 $(item).find(".drag-help").remove();
                 $(item).append($(ui.draggable).show());
+                $(item).removeClass("empty");
                 itemInit(item);
             }
         },
@@ -353,14 +354,14 @@ function timetableToJson(selector) {
         var row = {};
         $(this).find('td').each(function(i) {
             if(i > 0) {// omitting the first time-column
-                if($(this).text().match(/[a-z]/i)) {// there is actually some text in the cell
+                if($(this).text().match(/[a-z]/i) // there is actually some text in the cell
+                   && $(this).find(".event").length != 0) { // there is an event inside the cell
                     var rowName = cols[i];
                     var cell = {};
                     // The numbers 10 and 8 are the lenght of "Starts at: ", "Ends at: "
                     cell["day"] = $(this).closest(".day-wrap").find("h4").text()
                     cell["start"] = $($(this).find("span.start")).text().slice(11,16);
                     cell["end"] = $($(this).find("span.end")).text().slice(9,14);
-                    cell["id"] = $(this).find("div.item").attr("slot-id");
                     cell["event"] = $(this).find("[name=event_id]").attr("value")
                     row[rowName] = cell;
                 }

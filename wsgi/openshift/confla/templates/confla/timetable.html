@@ -80,7 +80,7 @@
                     <td>
                         <div class="wrap">
                         {% if s %}
-                        <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover">
+                        <div class="item" deltalen={{s.length}} data-toggle="popover">
                             <span class="start" style=" display:none">Starts at: {{t.short}}</span>
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}

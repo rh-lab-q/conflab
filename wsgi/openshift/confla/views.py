@@ -415,22 +415,15 @@ class TimetableView(generic.TemplateView):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
         conf = Conference.get_active()
         json_obj = json.loads(json_string)
-        ids = []
+        # Delete all existing timeslots
+        Timeslot.objects.filter(conf_id=conf).delete()
         # Create new timeslots from JSON
         for row in json_obj:
             # row: one row in the timeslot table
             # key: room shortname, also dictionary key for timeslots
             for key in row:
-                # Check if its a new slot or an edited existing one
-                if row[key]['id'] == '0':
-                    newslot = Timeslot()
-                else:
-                    newslot = Timeslot.objects.get(id=int(row[key]['id']))
-                # If the slot has an event bound to it
-                if row[key]['event'] != "0":
-                    newslot.event_id = Event.objects.get(id=row[key]['event'])
-                else:
-                    newslot.event_id = None
+                newslot = Timeslot()
+                newslot.event_id = Event.objects.get(id=row[key]['event'])
                 newslot.room_id = Room.objects.get(shortname=key)
                 newslot.conf_id = conf
                 # Has to be like this or else django complains!
@@ -457,9 +450,7 @@ class TimetableView(generic.TemplateView):
                     else:
                         raise e
                 newslot.save()
-                ids.append(newslot.id)
 
-        Timeslot.objects.exclude(id__in=ids).delete()
 
 class ImportView(generic.TemplateView):
     template_name = "confla/import.html"
