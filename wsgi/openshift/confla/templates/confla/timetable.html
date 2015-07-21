@@ -81,23 +81,23 @@
                         <div class="wrap">
                         {% if s %}
                         <div class="item" deltalen={{s.length}} slot-id={{s.id}} data-toggle="popover">
-                            <div class="item-buttons" style="display:none">
-                                <div class="removesign">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                </div>
-                                <div class="editsign">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                </div>
-                                <div class="movesign">
-                                    <span class="glyphicon glyphicon-move"></span>
-                                </div>
-                            </div><!-- item-buttons -->
                             <span class="start" style=" display:none">Starts at: {{t.short}}</span>
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}
                             {% with e=s.event_id %}
                             <div class="event">
                                 <div class="event-visible {{e|tag_class}}">
+                                    <div class="item-buttons" style="display:none">
+                                        <div class="removesign">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </div>
+                                        <div class="editsign">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </div>
+                                        <div class="movesign">
+                                            <span class="glyphicon glyphicon-move"></span>
+                                        </div>
+                                    </div><!-- item-buttons -->
                                     <p class="topic">{{e.topic}}</p>
                                     <p class="author">{{e.get_users}}</p>
                                 </div>
@@ -119,28 +119,12 @@
                                 </div><!-- pop-content -->
                             </div><!-- event -->
                             {% endwith %}
-                            {% else %}
-                            <div class="event">
-                                <div class="event-visible tag0">
-                                    <p class="topic"></p>
-                                    <p class="author"></p>
-                                </div>
-                                <div class="pop-title"style="display:none">
-                                    <span>{% trans "Add event" %}</span>
-                                    <span class="pop-close glyphicon glyphicon-remove"></span>
-                                </div>
-                                <div class="pop-content" style="display:none">
-                                    <form method="post" action="{% url 'confla:saveEvent' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="event_id" value="0" />
-                                    {{ event_create.topic }}
-                                    {{ event_create.description }}
-                                    {{ event_create.speaker }}
-                                    {{ event_create.tags }}
-                                    </form>
-                                </div><!-- pop-content -->
-                            </div><!-- event -->
                             {% endif %}
+                        </div><!-- item -->
+                        {% else %}
+                        <div class="item empty" deltalen="default" slot-id=0 data-toggle="popover">
+                            <span class="start" style=" display:none">Starts at: {{t.short}}</span>
+                            <span class="end" style=" display:none">Ends at: {{t.short}}</span>
                         </div><!-- item -->
                         {% endif %}
                     </div><!-- wrap -->

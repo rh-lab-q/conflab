@@ -68,9 +68,9 @@ function eventInit(selector) {
             containment: "body",
             cursor: "grabbing",
             opacity: 0.7,
-            stack: ".item",
+            //stack: ".item",
             appendTo: "body",
-            zIndex: 100000,
+            zIndex: 10000,
             cursorAt: { top: 20, left: 20 },
             helper: function () {
                 var helper = $(this).find(".event-visible").clone();
@@ -89,8 +89,6 @@ function eventInit(selector) {
                     select.prepend($(select).find("[value=" + tagId + "]"));
                 }
             });
-        } else {
-            $(this).draggable("disable");
         }
     });
 }
@@ -110,73 +108,74 @@ function itemInit(selector) {
             var endtime_text = countEndtime(tr_array, row+rowdiff+1)
             $(endspan).text("Ends at: " + endtime_text);
         }
-    }).draggable({
-        handle: "div.movesign",
-        revert: "invalid",
-        containment: ".table",
-        cursorAt: { top: 20},
-        opacity: 0.7,
-        stack: ".item",
-        start: function( event, ui ) {},
-        stop: function( event, ui ) {}
-    }).droppable({
+    })
+    // Setup wrap as the droppable
+    $(selector).parent().droppable({
         accept: ".event",
         tolerance: "pointer",
         drop: function( event, ui ) {
+            item = $(this).find(".item");
             // Dont drop into itself
-            if (!$(this).is($(ui.draggable).parent())) {
+            if (!$(item).is($(ui.draggable).parent())) {
                 // Don't append empty events to event list
                 if ($(ui.draggable).parent().is("#event-list") &&
-                        !$(this).find(".topic:hidden").text()) {
-                    $(this).find(".event").remove();
-                    $(this).append($(ui.draggable));
+                        !$(item).find(".topic:hidden").text()) {
+                    $(item).find(".event").remove();
+                    $(item).append($(ui.draggable));
                 }
                 else if ($(ui.draggable).parent().is("#event-list")) {
                     // Dragged from event list
-                    $(ui.draggable).parent().append($(this).find(".event:hidden").show());
-                    $(this).find(".drag-help").remove();
-                    $(this).append($(ui.draggable));
+                    $(ui.draggable).parent().append($(item).find(".event:hidden").show());
+                    $(item).find(".drag-help").remove();
+                    $(item).append($(ui.draggable));
                 } else {
                     // Dragged from a different item
-                    $(this).find(".drag-help").remove();
+                    $(item).find(".drag-help").remove();
                     $(ui.draggable).parent().find(".drag-help").remove();
-                    $(ui.draggable).parent().append($(this).find(".event").show());
-                    $(this).append($(ui.draggable).show());
+                    $(ui.draggable).parent().append($(item).find(".event").show());
+                    $(item).append($(ui.draggable).show());
                 }
             }
         },
         over: function(event, ui) {
-            if (!$(ui.draggable).parent().is("#event-list")) {
-                // Dragged from a different item
-                if (!$(this).is($(ui.draggable).parent())) {
-                    // Dragged over a different item
-                    $(ui.draggable).parent().append($(this).find(".event").clone().addClass("drag-help"));
-                    $(this).find(".event").hide();
-                    $(this).append($(ui.draggable).clone().addClass("drag-help"));
-                    $(ui.draggable).hide();
-                }
-            }
-            else {
-                // Dragged from event list
-                $(this).find(".event").hide();
-                $(this).append($(ui.draggable).clone().addClass("drag-help"));
+            var item = $(this).find(".item");
+            // Ignore over event from yourself
+            if (!$(item).is($(ui.draggable).parent())) {
+                // Ensure the code is run after out finishes
+                setTimeout(function () {
+                    if (!$(ui.draggable).parent().is("#event-list")) {
+                        // Dragged from a different item
+                        if (!$(item).is($(ui.draggable).parent())) {
+                            // Dragged over a different item
+                            $(ui.draggable).parent().append($(item).find(".event").clone().addClass("drag-help").show());
+                            $(item).find(".event").hide();
+                            $(item).append($(ui.draggable).clone().addClass("drag-help").show());
+                            $(ui.draggable).hide();
+                        }
+                    }
+                    else {
+                        // Dragged from event list
+                        $(item).find(".event").hide();
+                        $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                    }
+                }, 0);
             }
         },
         out: function(event, ui) {
+            item = $(this).find(".item");
             if (!$(ui.draggable).parent().is("#event-list")) {
                 // Dragged from a different item
-                if (!$(this).is($(ui.draggable).parent())) {
+                if (!$(item).is($(ui.draggable).parent())) {
                     // Dragged out of a different item
-                    $(this).find(".drag-help").remove();
-                    $(ui.draggable).parent().find(".drag-help").remove();
-                    $(ui.draggable).show();
-                    $(this).find(".event").show();
+                    $(".event:hidden").show(); //ui.draggable
+                    $(".drag-help").remove();
+                    //$(item).find(".event").show();
                 }
             }
             else {
                 // Dragged from event list
-                $(this).find(".drag-help").remove();
-                $(this).find(".event").show();
+                $(item).find(".drag-help").remove();
+                $(item).find(".event").show();
             }
         }
     }).on("dragstart", function (event, ui) {
@@ -186,6 +185,70 @@ function itemInit(selector) {
     }).find("div.removesign").click(function() {
         // add closing functionality
         $(this).closest(".item").remove();
+    });
+}
+
+function emptyItemInit(selector) {
+    $(selector).parent().droppable({
+        accept: ".event",
+        tolerance: "pointer",
+        drop: function( event, ui ) {
+            var item = $(this).find(".item");
+            // Dont drop into itself
+            if (!$(item).is($(ui.draggable).parent())) {
+                if (!$(ui.draggable).parent().is("#event-list")) {
+                    // Dragged from a different item
+                    var slot = $(ui.draggable).parent();
+                    slot.addClass("empty");
+                    slot.resizable("destroy");
+                    slot.parent().droppable("destroy");
+                    emptyItemInit(slot);
+                }
+                $(item).find(".drag-help").remove();
+                $(item).append($(ui.draggable).show());
+                itemInit(item);
+            }
+        },
+        over: function(event, ui) {
+            var item = $(this).find(".item");
+            // Ignore over event from yourself
+            if (!$(item).is($(ui.draggable).parent())) {
+                // Ensure the code is run after out finishes
+                setTimeout(function () {
+                    if (!$(ui.draggable).parent().is("#event-list")) {
+                        // Dragged from a different item
+                        $(ui.draggable).parent().addClass("empty");
+                        if (!$(item).is($(ui.draggable).parent())) {
+                            // Dragged over a different item
+                            $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                            $(ui.draggable).hide();
+                        }
+                    }
+                    else {
+                        // Dragged from event list
+                        $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                    }
+                    //$(item).removeClass("empty");
+                }, 0);
+            }
+        },
+        out: function(event, ui) {
+            var item = $(this).find(".item");
+            if (!$(ui.draggable).parent().is("#event-list")) {
+                $(ui.draggable).parent().removeClass("empty");
+                // Dragged from a different item
+                if (!$(item).is($(ui.draggable).parent())) {
+                    // Dragged out of a different item
+                    $(".drag-help").remove();
+                    $(".event:hidden").show();
+                }
+            }
+            else {
+                // Dragged from event list
+                $(item).find(".drag-help").remove();
+            }
+            //$(item).addClass("empty");
+        }
     });
 }
 
@@ -316,9 +379,8 @@ function timetableToJson(selector) {
 }
 
 function timetableEnable() {
-    // enable resize, drag and remove removal icon from timeslots
-    $(".item").resizable("enable").draggable("enable");
-    $(".item-buttons").slideDown();
+    // enable resize
+    $(".item:not(.empty)").resizable("enable");
 
     // enable event dragging for nonempty events
     $(".event").each( function() {
@@ -328,14 +390,11 @@ function timetableEnable() {
     });
 
     $(".event-visible").css("cursor", "grab");
-
-    $("td").on("click", ".wrap", createSlot);
 }
 
 function timetableDisable() {
-    // disable resize, drag and remove removal icon from timeslots
-    $(".item").resizable("disable").draggable("disable");
-    $(".item-buttons").slideUp();
+    // disable resize
+    $(".item:not(.empty)").resizable("disable");
 
     // disable event dragging
     $(".event").draggable("disable")
@@ -344,8 +403,6 @@ function timetableDisable() {
     $(".ui-resizable-handle").css('display', '');
 
     $(".event-visible").css("cursor", "auto");
-
-    $("td").off("click", ".wrap");
 }
 
 function timetableEdit() {
@@ -517,56 +574,23 @@ function popoverInit(selector) {
 }
 
 function timetableInit() {
-    // Go through all .item objects and make them resizable, deletable, draggable and droppable
-    itemInit(".item");
+// Go through all .item objects and make them resizable and droppable
+itemInit(".item:not(.empty)");
+// Make all empty items droppable
+emptyItemInit(".item.empty");
 
-    // Make all events draggable
-    eventInit(".event");
+// Make all events draggable
+eventInit(".event");
 
-    // Make all .wrap divs droppable
-    $(".wrap").droppable({
-        accept: ".item",
-        tolerance: "pointer",
-        hoverClass: "ui-state-hover",
-        drop: function( event, ui ) {
-            var height = $(ui.draggable).height();
-            var row = $(ui.draggable).parent().parent().parent().parent().children().index($(this).parent().parent());
-            var rownum = $(ui.draggable).parent().parent().parent().parent().children().length
-            var rowdiff = (height-itemHeight)/cellSize;
-
-            // Check if the item is not partly outside the table
-            if ((rownum - row) > rowdiff) {
-                // Append the item to the droppable
-                $(this).append($(ui.draggable));
-
-                // Delete all styles but save height
-                $(ui.draggable).removeAttr("style").height(height);
-
-                // Setup new start and end times
-                var endspan = $(ui.draggable).find("span.end");
-                var startspan = $(ui.draggable).find("span.start");
-                var tr_array = $(ui.draggable).parent().parent().parent().parent().find('tr');
-                var my_tr = $(this).parent().parent();
-                var endtime_text = countEndtime(tr_array, row+rowdiff+1)
-                $(startspan).text("Starts at: " + $(my_tr.children('td')[0]).text())
-                $(endspan).text("Ends at: " + endtime_text);
-            }
-            else {
-                // Revert to original position
-                ui.draggable.draggable('option', 'revert', true);
-            }
-        }
-    });
-
-    // Create a new slot
-    $("td").on("click", ".wrap", createSlot);
-    timetableDisable();
+timetableDisable();
 }
 
 $(document).ready(function() {
     // Go through all .item objects and make them the right size
     $(".item").height(function(){
-        var len = $(this).attr("deltalen")-1;
+        var len = $(this).attr("deltalen");
+        if (len == "default") len = 0;
+        else len = len-1;
         return this.clientHeight+cellSize*len
     });
 

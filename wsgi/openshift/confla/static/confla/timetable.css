@@ -73,9 +73,6 @@ td {
 
 .item {
     border: 1px solid #999;
-/*    -webkit-border-radius: 5px;
-     -moz-border-radius: 5px;
-          border-radius: 5px; */
     width: 250px; /* 166px; */
     height: 28px;
     position: absolute;
@@ -83,18 +80,21 @@ td {
     left: 0;
     padding: 0;
     margin: 0;
-    background: #d6d6d6;
     overflow: hidden;
     z-index: 100;
 }
 
+.item > .event > .event-visible {
+    border: none;
+}
+
+.item.empty {
+    border: 1px solid transparent;
+    z-index: auto;
+}
 
 .item > .item-buttons {
     margin: auto 10px;
-}
-
-.item > .event > .event-visible {
-    border: none;
 }
 
 .wrap {
@@ -194,7 +194,9 @@ td > .ui-state-hover {
 }
 
 .drag-help {
+    position: absolute;
     opacity: 0.7;
+    z-index: 5000;
 }
 
 /* Thicken jQuery-UI resizable handle */
