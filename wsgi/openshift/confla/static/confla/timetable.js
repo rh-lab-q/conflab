@@ -4,7 +4,7 @@
     @author: Petr Kubat <petr.kubat.hb@seznam.cz>
 */
 
-var cellSize = 31;
+var cellSize = 30;
 var itemHeight = 28;
 $.expr[':'].Contains = function(a, i, m) {
     // m is PROBABLY an array ofcCaller, calling method('Contains'), and content of the call
@@ -590,9 +590,8 @@ $(document).ready(function() {
     // Go through all .item objects and make them the right size
     $(".item").height(function(){
         var len = $(this).attr("deltalen");
-        if (len == "default") len = 0;
-        else len = len-1;
-        return this.clientHeight+cellSize*len
+        if (len == "default") len = 1;
+        return this.clientHeight+cellSize*len+1
     });
 
 

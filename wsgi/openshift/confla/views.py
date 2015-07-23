@@ -9,9 +9,10 @@ from django.views import generic
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.db import transaction
 
 from confla.models import *
 from confla.forms import *
@@ -373,6 +374,7 @@ class TimetableView(generic.TemplateView):
                                              'username' : u.username} for u in users],
                            })
 
+    @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
     def save_timetable(request):
         if(request.method == 'POST'):
@@ -700,11 +702,14 @@ class ImportView(generic.TemplateView):
         # Generate rooms from roomlist
         conf = Conference.get_active()
         for i in room_list:
-            newroom = Room()
-            newroom.shortname = i
-            newroom.save()
-            hr = HasRoom(room=newroom, conference=conf, slot_length=conf.timedelta)
-            hr.save()
+            try:
+                Room.objects.get(shortname=i)
+            except ObjectDoesNotExist:
+                newroom = Room()
+                newroom.shortname = i
+                newroom.save()
+                hr = HasRoom(room=newroom, conference=conf, slot_length=conf.timedelta)
+                hr.save()
         user_list = []
         tag_list = []
 
