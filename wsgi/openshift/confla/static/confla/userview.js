@@ -170,6 +170,20 @@ $(document).ready(function() {
     // Setup nav tabs
     $("#tab-adminsched").click(showAdminsched);
 
+    // Delete empty rooms
+    $(".table").each(function() {
+        var that = this;
+        // For each room name table header except the first one (time)
+        $("th:not(:first-child)", this).each(function() {
+            var index = $(this).index() + 1;
+            // If there are cells in a column given by "index" that dont have any events
+            if (!$("td:nth-child("+ index +") .event", that).length) {
+                $("td:nth-child("+ index +")", that).remove();
+                $(this).remove();
+            }
+        });
+    });
+
     // Close all popovers if clicked outside of a popover or an event
     sel = ".user-wrap .item";
     $('html').on('click', function(e) {
