@@ -22,7 +22,7 @@ function confirm() {
             close: function () {
                 $(this).remove();
             }
-        });
+        }).css("z-index", 10000);
     return defer.promise();
 }
 
@@ -143,12 +143,16 @@ function showAdminsched() {
                 wrap.className = "admin-wrap";
                 $(wrap).append($(data).find(".sched-wrap"));
                 $("body").append($(data).filter("#event-bar"));
+                // Hide the content until fully loaded
+                $(wrap).hide();
                 // Get admin view js and run it
                 $.when($.getScript("/static/confla/timetable.js")).done(function () {
                     timetableEdit();
                     $(".toggler").trigger("click");
+                    $(".fa-spinner").remove();
+                    $(".admin-wrap").show();
                 });
-                $(".fa-spinner").remove();
+
                 $(content).append(wrap);
             })
         }
