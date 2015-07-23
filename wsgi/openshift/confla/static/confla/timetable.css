@@ -199,6 +199,10 @@ td > .ui-state-hover {
     z-index: 5000;
 }
 
+.tag0 {
+    background: #d6d6d6;
+}
+
 /* Thicken jQuery-UI resizable handle */
 .ui-resizable-s {
     bottom: 0;

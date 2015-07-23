@@ -79,8 +79,8 @@ function eventInit(selector) {
                 return helper;
             }
         });
+        $(this).find(".event-visible").css("cursor", "grab");
         if ($(this).find(".topic").text()) {
-            $(this).find(".event-visible").css("cursor", "grab");
             // Setup primary tag in tag select
             $(this).find(".event-visible").each(function () {
                 tagId = $(this)[0].className.split(/\s+/)[1].slice(3);
@@ -287,63 +287,14 @@ function createEvent() {
         return nevent;
 }
 
-function createSlot(e) {
-    if ($(e.target).is("div.wrap") && $(".popover").length === 0) {
-        var row = $(this).parent().parent().parent().children().index($(this).parent().parent());
-        var timestart = $($(this).parent().parent().children('td')[0]).text();
-        // Array of all rows in a table
-        var tr_array = $(this).parent().parent().parent().find('tr');
-
-        // A hack so that the text does not get selected on dblclick
-        if(document.selection && document.selection.empty) {
-            document.selection.empty();
-        }
-        else if(window.getSelection) {
-            var sel = window.getSelection();
-            sel.removeAllRanges();
-        }
-
-        // Generate timeslot and related HTML objects
-        var elem = document.createElement('div');
-        elem.className = "item";
-        $(elem).attr('slot-id', '0');
-        $(elem).css({position: "absolute", top: "0", left: "0"});
-        var buttondiv = document.createElement('div');
-        buttondiv.className="item-buttons";
-        var remove = document.createElement('div');
-        remove.className="removesign";
-        $(remove).append('<span class="glyphicon glyphicon-remove"></span>');
-        $(buttondiv).append(remove);
-        var edit = document.createElement('div');
-        edit.className="editsign";
-        $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
-        $(buttondiv).append(edit);
-        var move = document.createElement('div');
-        move.className="movesign";
-        $(move).append('<span class="glyphicon glyphicon-move"></span>');
-        $(buttondiv).append(move);
-        $(elem).append(buttondiv);
-        $(elem).append('<span class="start" style="display:none">Starts at: ' + timestart + '</span>');
-        var endspan = document.createElement('span');
-        endspan.className = "end";
-        $(endspan).append("Ends at: " + countEndtime(tr_array, row+1)).css('display', 'none');
-        $(elem).append(endspan);
-
-        // Generate event
-        var nevent = createEvent();
-        $(elem).append(nevent);
-
-        // Setup slot removal button
-        $(remove).click(function() {
-            $(this).closest(".item").remove()
-        });
-        // Setup jQuery magic for the slot and event
-        itemInit(elem);
-        eventInit(nevent);
-        // Setup popover for the slot's event
-        popoverInit(edit);
-        $(this).append(elem);
-    }
+function appendEvent(e) {
+    var wrap = $(this).parent();
+    $(this).removeClass("empty");
+    var newevent = createEvent();
+    $(wrap).droppable("destroy");
+    itemInit(this);
+    $(this).append(newevent);
+    $(wrap).parent().off("click");
 }
 
 function timetableToJson(selector) {
@@ -662,4 +613,6 @@ $(document).ready(function() {
         $("#dummy-wrap")
             .scrollLeft($("#table-wrap").scrollLeft());
     });
+
+    $("td .empty").on("click", appendEvent);
 })
