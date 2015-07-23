@@ -87,19 +87,18 @@
                             {% with e=s.event_id %}
                             <div class="event">
                                 <div class="event-visible {{e|tag_class}}">
-                                    <div class="item-buttons" style="display:none">
+                                    <div class="item-buttons">
                                         <div class="removesign">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </div>
                                         <div class="editsign">
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </div>
-                                        <div class="movesign">
-                                            <span class="glyphicon glyphicon-move"></span>
-                                        </div>
                                     </div><!-- item-buttons -->
-                                    <p class="topic">{{e.topic}}</p>
-                                    <p class="author">{{e.get_users}}</p>
+                                    <div>
+                                        <p class="topic">{{e.topic}}</p>
+                                        <p class="author">{{e.get_users}}</p>
+                                    </div>
                                 </div>
                                 <div class="pop-title"style="display:none">
                                     <span>{% trans "Edit event" %}</span>

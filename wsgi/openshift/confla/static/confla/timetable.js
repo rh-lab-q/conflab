@@ -78,6 +78,12 @@ function eventInit(selector) {
                 $(helper).width($(this).parent().width()/2);
                 return helper;
             }
+        }).find("div.removesign").click(function() {
+            // add closing functionality
+            $(this).closest(".item").addClass("empty").resizable("destroy");
+            $(this).closest(".wrap").droppable("destroy");
+            emptyItemInit($(this).closest(".item"));
+            $(this).closest(".event").remove();
         });
         $(this).find(".event-visible").css("cursor", "grab");
         if ($(this).find(".topic").text()) {
@@ -91,6 +97,7 @@ function eventInit(selector) {
             });
         }
     });
+    $(selector).closest("td").off("click");
 }
 
 function itemInit(selector) {
@@ -182,9 +189,6 @@ function itemInit(selector) {
         $(ui.helper).find(".movesign").css("cursor", "grabbing");
     }).on("dragstop", function (event, ui) {
         $(ui.helper).find(".movesign").css("cursor", "grab");
-    }).find("div.removesign").click(function() {
-        // add closing functionality
-        $(this).closest(".item").remove();
     });
 }
 
@@ -251,6 +255,7 @@ function emptyItemInit(selector) {
             //$(item).addClass("empty");
         }
     });
+    $(selector).closest("td").off("click").on("click", ".item", appendEvent);
 }
 
 function createEvent() {
@@ -258,6 +263,17 @@ function createEvent() {
         nevent.className = "event";
         var visevent = document.createElement('div');
         visevent.className = 'event-visible tag0';
+        var buttondiv = document.createElement('div');
+        buttondiv.className="item-buttons";
+        var remove = document.createElement('div');
+        remove.className="removesign";
+        $(remove).append('<span class="glyphicon glyphicon-remove"></span>');
+        $(buttondiv).append(remove);
+        var edit = document.createElement('div');
+        edit.className="editsign";
+        $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
+        $(buttondiv).append(edit);
+        $(visevent).append(buttondiv); 
         $(visevent).append('<p class="topic"></p>');
         $(visevent).append('<p class="author"></p>');
         $(nevent).append(visevent);
@@ -283,6 +299,7 @@ function createEvent() {
         $(popcontent).append(nform);
         $(nevent).append(popcontent);
         // jQuery magic
+        popoverInit(edit);
         eventInit(nevent);
         return nevent;
 }
@@ -294,7 +311,7 @@ function appendEvent(e) {
     $(wrap).droppable("destroy");
     itemInit(this);
     $(this).append(newevent);
-    $(wrap).parent().off("click");
+    $(this).closest("td").off("click");
 }
 
 function timetableToJson(selector) {
@@ -384,10 +401,11 @@ function popoverInit(selector) {
         container: "body",
         html: "true",
         title: function () {
-            return $(this).parent().parent().find(".pop-title").html();
+            console.log($(this).parent().parent().parent());
+            return $(this).parent().parent().parent().find(".pop-title").html();
         },
         content: function () {
-           return $(this).parent().parent().find(".pop-content").html();
+           return $(this).parent().parent().parent().find(".pop-content").html();
         }
     }).on("shown.bs.popover", function() {
         // Set click method for the close icon
@@ -465,10 +483,10 @@ function popoverInit(selector) {
             $("div.sel-tag").removeClass("selectize-input");
         });
     }).on("hide.bs.popover", function () {
-        var original = $(this).parent().parent().find(".pop-content");
+        var original = $(this).parent().parent().parent().find(".pop-content");
         var popoverSelector = "#" + $(this).attr("aria-describedby");
         var content = $(popoverSelector).find(".popover-content");
-        var visible = $(this).parent().parent().find(".event");
+        var visible = $(this).parent().parent();
         var selSpeaker = $(content).find("select.sel-speaker");
         var selTag = $(content).find("select.sel-tag");
 
@@ -542,7 +560,7 @@ $(document).ready(function() {
     $(".item").height(function(){
         var len = $(this).attr("deltalen");
         if (len == "default") len = 1;
-        return this.clientHeight+cellSize*len+1
+        return this.clientHeight+cellSize*len
     });
 
 
@@ -613,6 +631,4 @@ $(document).ready(function() {
         $("#dummy-wrap")
             .scrollLeft($("#table-wrap").scrollLeft());
     });
-
-    $("td .empty").on("click", appendEvent);
 })

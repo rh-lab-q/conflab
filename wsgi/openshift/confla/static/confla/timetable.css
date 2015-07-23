@@ -93,8 +93,10 @@ td {
     z-index: auto;
 }
 
-.item > .item-buttons {
-    margin: auto 10px;
+.table > tbody > tr > td .item .item-buttons {
+    overflow:hidden; 
+    line-height: normal;
+    margin-bottom: 4px;
 }
 
 .wrap {
@@ -111,20 +113,12 @@ td {
 }
 .removesign {
     font-size: 14px;
-    /* margin-right: 5px; */
     float: right;
     cursor: pointer;
 }
-.movesign {
-    font-size: 14px;
-    /* margin-left: 5px; */
-    float: left;
-    cursor: grab;
-}
 .editsign {
     font-size: 14px;
-    margin-right: 10px;
-    float: right;
+    float: left;
     cursor: pointer;
 }
 .start, .end {
@@ -161,7 +155,6 @@ td > .ui-state-hover {
     border-width: 0;
 }
 .event-visible {
-    clear: both;
     border: 1px solid #999;
 /*    -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -173,6 +166,10 @@ td > .ui-state-hover {
     padding-left: 5px;
     padding-right: 5px;
     box-sizing: border-box;
+}
+
+.event-visible > div {
+    clear: both;
 }
 
 .topic {
