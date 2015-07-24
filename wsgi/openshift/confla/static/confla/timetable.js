@@ -563,7 +563,6 @@ $(document).ready(function() {
         return this.clientHeight+cellSize*len
     });
 
-
     // Setup BootSideMenu
     $('#event-bar').BootSideMenu({
         side: "right",
@@ -619,6 +618,19 @@ $(document).ready(function() {
         }
     });
     listFilter($("#filter_input"), $("#event-list"), "p");
+
+    // Setup slot lengths for empty slots
+    that = $(".table:first");
+    // For each room name table header except the first one (time)
+    $("th:not(:first-child)", that).each(function() {
+        var index = $(this).index() + 1;
+        var slot_len = $(this).attr("slot_len")
+        // Setup the length of every empty slot to the rooms default for each column
+        // given by "index"
+        $("td:nth-child("+ index +") .empty").closest(".item").each(function() {
+            $(this).height(this.clientHeight+cellSize*slot_len);
+        });
+    });
 
     // Set up a dummy scrollbar at the top of the table
     $(".table-dummy").width($(".table").width());

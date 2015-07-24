@@ -307,6 +307,14 @@ class AddRoomsView(generic.TemplateView):
             'rooms_form' : form,
         })
 
+class ConfRoomsView(generic.TemplateView):
+    @permission_required('confla.can_organize', raise_exception=True)
+    def get_form(request):
+        return render(request, 'confla/conf_rooms.html', {
+                'rooms' : Room.objects.filter(id__in=Conference.get_active().rooms.all()),
+            })
+
+
 class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
 
@@ -359,7 +367,8 @@ class TimetableView(generic.TemplateView):
                             time['slots'].append(None)
                     time_dict["list"].append(time)
                 time_list.append(time_dict)
-
+            room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
+                          'room' : x} for x in conf.rooms.all()]
             return render(request, TimetableView.template_name,
                           {  'conf'      : conf,
                              'event_create' : EventCreateForm(),
@@ -368,8 +377,7 @@ class TimetableView(generic.TemplateView):
                                             for x in EventTag.objects.all()],
                              'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
                              'time_list' : time_list,
-                             'room_list' : [{'conf' : conf,
-                                             'room' : x} for x in conf.rooms.all()],
+                             'room_list' : room_list,
                              'user_list' : [{'name' : u.first_name + ' ' + u.last_name,
                                              'username' : u.username} for u in users],
                            })
@@ -708,7 +716,7 @@ class ImportView(generic.TemplateView):
                 newroom = Room()
                 newroom.shortname = i
                 newroom.save()
-                hr = HasRoom(room=newroom, conference=conf, slot_length=conf.timedelta)
+                hr = HasRoom(room=newroom, conference=conf, slot_length=4)
                 hr.save()
         user_list = []
         tag_list = []

@@ -122,6 +122,11 @@ function showUsersched() {
     }
 }
 
+function showRoomConfig() {
+    $("#tab-fillsched").off("click");
+    $.get("/rooms/config/");
+}
+
 function showAdminsched() {
     $("#tab-adminsched").off("click");
     if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
@@ -169,6 +174,7 @@ $(document).ready(function() {
     userPopoverInit();
     // Setup nav tabs
     $("#tab-adminsched").click(showAdminsched);
+    $("#tab-fillsched").click(showRoomConfig);
 
     // Delete empty rooms
     $(".table").each(function() {

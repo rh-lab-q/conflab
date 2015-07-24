@@ -68,7 +68,7 @@
                 <tr>
                     <th>{% trans "Time" %}</th>
                     {% for r in room_list %}
-                    <th>{{ r.room.shortname }}</th>
+                    <th slot_len={{r.slot_len}}>{{ r.room.shortname }}</th>
                     {% endfor %}
                 </tr>
             </thead>
