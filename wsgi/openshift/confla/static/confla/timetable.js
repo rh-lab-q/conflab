@@ -185,10 +185,6 @@ function itemInit(selector) {
                 $(item).find(".event").show();
             }
         }
-    }).on("dragstart", function (event, ui) {
-        $(ui.helper).find(".movesign").css("cursor", "grabbing");
-    }).on("dragstop", function (event, ui) {
-        $(ui.helper).find(".movesign").css("cursor", "grab");
     });
 }
 
@@ -620,15 +616,27 @@ $(document).ready(function() {
     listFilter($("#filter_input"), $("#event-list"), "p");
 
     // Setup slot lengths for empty slots
-    that = $(".table:first");
-    // For each room name table header except the first one (time)
-    $("th:not(:first-child)", that).each(function() {
-        var index = $(this).index() + 1;
-        var slot_len = $(this).attr("slot_len")
-        // Setup the length of every empty slot to the rooms default for each column
-        // given by "index"
-        $("td:nth-child("+ index +") .empty").closest(".item").each(function() {
-            $(this).height(this.clientHeight+cellSize*slot_len);
+    var total = $(".table:first tbody tr").length;
+    $(".table").each(function() {
+        var that = this;
+        // For each room name table header except the first one (time)
+        $("th:not(:first-child)", that).each(function() {
+            var index = $(this).index() + 1;
+            var slot_len = $(this).attr("slot_len")
+            $("tr", that).each(function(i){
+                row = this;
+                // Setup the length of every empty slot to the rooms default for a column
+                // given by "index" and a row given by "row"
+                $("td:nth-child("+ index +") .empty", row).closest(".item").each(function() {
+                    // If there is no more room for a slot of given size
+                    // set the item's length to 1
+                    if (total-i < slot_len-1) {
+                        $(this).height(this.clientHeight+cellSize*1);
+                    }
+                    else
+                        $(this).height(this.clientHeight+cellSize*slot_len);
+                });
+            });
         });
     });
 
