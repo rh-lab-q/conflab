@@ -202,19 +202,19 @@ class Timeslot(models.Model):
 
     @property
     def get_start_time(self):
-        return self.start_time.time().strftime("%H:%M")
+        return self.start_time.astimezone(timezone.get_default_timezone()).time().strftime("%H:%M")
 
     @property
     def get_start_datetime(self):
-        return self.start_time.strftime("%x %H:%M")
+        return self.start_time.astimezone(timezone.get_default_timezone()).strftime("%x %H:%M")
 
     @property
     def get_end_time(self):
-        return self.end_time.time().strftime("%H:%M")
+        return self.end_time.astimezone(timezone.get_default_timezone()).time().strftime("%H:%M")
 
     @property
     def get_end_datetime(self):
-        return self.end_time.strftime("%x %H:%M")
+        return self.end_time.astimezone(timezone.get_default.timezone()).strftime("%x %H:%M")
 
     # event length in minutes
     @property

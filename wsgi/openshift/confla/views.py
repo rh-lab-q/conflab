@@ -440,13 +440,9 @@ class TimetableView(generic.TemplateView):
                 start = datetime.strptime(row[key]['start'], "%H:%M")
                 end = datetime.strptime(row[key]['end'], "%H:%M")
                 date = datetime.strptime(row[key]['day'], "%A, %d.%m.")
-                year = conf.start_date.year
-                newslot.start_time = timezone.now().replace(year=year, month=date.month,
-                                                        day=date.day, hour=start.hour, minute=start.minute,
-                                                        second=0, microsecond=0)
-                newslot.end_time = timezone.now().replace(year=year, month=date.month,
-                                                        day=date.day, hour=end.hour, minute=end.minute,
-                                                        second=0, microsecond=0)
+                date = date.replace(year=conf.start_date.year)
+                newslot.start_time = timezone.get_default_timezone().localize(datetime.combine(date, start.time()))
+                newslot.end_time = timezone.get_default_timezone().localize(datetime.combine(date, end.time()))
                 # Add slot to db
                 try:
                     newslot.full_clean()
@@ -595,13 +591,10 @@ class ImportView(generic.TemplateView):
             newslot.id = slot['id']
             newslot.conf_id = Conference.objects.get(id=slot['conf_id'])
             newslot.room_id = Room.objects.get(id=slot['room_id'])
-            # Has to be like this or else django complains!
             start = datetime.strptime(slot['start_t'], "%H:%M")
             end = datetime.strptime(slot['end_t'], "%H:%M")
-            newslot.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
-                                                        second=0, microsecond=0)
-            newslot.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
-                                                        second=0, microsecond=0)
+            newslot.start_time = timezone.get_default_timezone().localize(start)
+            newslot.end_time = timezone.get_default_timezone().localize(end)
             try:
                 newslot.full_clean()
             except ValidationError as e:
@@ -739,17 +732,11 @@ class ImportView(generic.TemplateView):
             newslot.conf_id = Conference.get_active()
             if event['room'] in room_list:
                 newslot.room_id = Room.objects.get(shortname=event['room'])
-            # Has to be like this or else django complains!
             start = datetime.fromtimestamp(int(event['event_start']))
             end = datetime.fromtimestamp(int(event['event_end']))
-            newslot.start_time = timezone.now().replace(year=start.year, month=start.month,
-                                                        day=start.day, hour=start.hour, minute=start.minute,
-                                                        second=0, microsecond=0)
-            newslot.end_time = timezone.now().replace(year=end.year, month=end.month,
-                                                        day=end.day, hour=end.hour, minute=end.minute,
-                                                        second=0, microsecond=0)
+            newslot.start_time = timezone.get_default_timezone().localize(start)
+            newslot.end_time = timezone.get_default_timezone().localize(end)
             newslot.event_id = newevent
-            #if (start.day == 6):
             newslot.full_clean()
             newslot.save()
 
@@ -810,3 +797,26 @@ class ImportView(generic.TemplateView):
 
             newuser.save()
         """
+
+class ExportView(generic.TemplateView):
+    def m_app(request):
+        result = {}
+        result["sessions"] = []
+        conf = Conference.get_active()
+        slots = Timeslot.objects.filter(conf_id=conf)
+        for slot in slots:
+            if slot.room_id:
+                event = slot.event_id
+                session = {}
+                session["lang"] = event.lang
+                session["type"] = event.e_type_id.name
+                session["room_color"] = "#ffffff"
+                session["room"] = slot.room_id.shortname
+                session["room_short"] = slot.room_id.shortname
+                session["speakers"] = [x.first_name for x in event.speaker.all()]
+                session["description"] = event.description
+                session["tags"] = [x.name for x in event.tags.all()]
+                session["topic"] = event.topic
+                result["sessions"].append(session)
+
+        return HttpResponse(json.dumps(result))
