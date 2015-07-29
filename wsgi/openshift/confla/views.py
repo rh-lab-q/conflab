@@ -1,6 +1,7 @@
 from datetime import datetime, date, time
 import json
 import random
+import re
 
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse, Http404
@@ -528,6 +529,7 @@ class ImportView(generic.TemplateView):
                     }]
             }"""
 
+    @transaction.atomic
     def json_to_db(json_string):
         json_obj = json.loads(json_string)
 
@@ -682,11 +684,12 @@ class ImportView(generic.TemplateView):
             newevent.save()
 
     # import json from devconf for testing purposes
+
+    @transaction.atomic
     def dv(json_string):
         # delete everyone excluding admin
         ConflaUser.objects.all().exclude(username="admin").delete()
         json_obj = json.loads(json_string)
-
         Timeslot.objects.all().delete()
         Event.objects.all().delete()
         EventTag.objects.all().delete()
@@ -744,6 +747,7 @@ class ImportView(generic.TemplateView):
             # Create speakers
             for speaker in event['speakers']:
                 username = speaker.replace(" ", "")[:30]
+                username = re.sub('[\W_]+', '', username)
                 if username in user_list:
                     newevent.speaker.add(ConflaUser.objects.get(username=username))
                 else:
@@ -751,17 +755,16 @@ class ImportView(generic.TemplateView):
                     newuser.username = username
                     newuser.password = "blank"
                     newuser.first_name = speaker
-                    try:
-                        newuser.full_clean()
-                    except ValidationError as e:
-                        pass
+                    newuser.full_clean()
                     newuser.save()
                     newevent.speaker.add(newuser)
                     user_list.append(username)
+
             if event['tags']:
                 tags = event['tags'][0].split(",")
             else:
                 tags = ['notag']
+
             # Create tags
             for tag in tags:
                 tag = tag.strip()
@@ -782,42 +785,82 @@ class ImportView(generic.TemplateView):
             newevent.prim_tag = EventTag.objects.get(name=tags[0])
             newevent.save()   
 
-        """
         # Generate users
-        user_list = json_obj['users']
-        for user in user_list:
-            newuser = ConflaUser()
-            newuser.username = user['username']
-            newuser.password = "blank"
-            if 'name' in user:
-                newuser.first_name = user['name']
-            try:
+        users_list = json_obj['users']
+        for user in users_list:
+            username = user['name'].replace(" ", "")[:30]
+            username = re.sub('[\W_]+', '', username)
+            if not username:
+                username = user["username"][:30]
+            if username not in user_list:
+                newuser = ConflaUser()
+                newuser.username = username
+                newuser.password = "blank"
+                newuser.first_name = user['name'][:30]
+                newuser.company = user['company']
+                newuser.position = user['position']
+                newuser.picture = user['avatar']
                 newuser.full_clean()
-            except ValidationError as e:
-                pass
-
-            newuser.save()
-        """
+                newuser.save()
+                user_list.append(username)
+            else:
+                usr = ConflaUser.objects.get(username=username)
+                usr.company = user['company']
+                usr.position = user['position']
+                usr.picture = user['avatar']
+                usr.full_clean()
+                usr.save()
 
 class ExportView(generic.TemplateView):
     def m_app(request):
         result = {}
-        result["sessions"] = []
         conf = Conference.get_active()
+        tz = timezone.get_default_timezone()
+        rfc_time_format = "%a, %d %b %Y %X %z"
+        # Export events
+        result['sessions'] = []
         slots = Timeslot.objects.filter(conf_id=conf)
         for slot in slots:
             if slot.room_id:
                 event = slot.event_id
                 session = {}
-                session["lang"] = event.lang
-                session["type"] = event.e_type_id.name
-                session["room_color"] = "#ffffff"
-                session["room"] = slot.room_id.shortname
-                session["room_short"] = slot.room_id.shortname
-                session["speakers"] = [x.first_name for x in event.speaker.all()]
-                session["description"] = event.description
-                session["tags"] = [x.name for x in event.tags.all()]
-                session["topic"] = event.topic
-                result["sessions"].append(session)
+                session['lang'] = event.lang
+                session['type'] = event.e_type_id.name
+                session['room_color'] = "#ffffff"
+                session['room'] = slot.room_id.shortname
+                session['room_short'] = slot.room_id.shortname
+                session['speakers'] = [x.first_name for x in event.speaker.all()]
+                session['description'] = event.description
+                session['tags'] = [x.name for x in event.tags.all()]
+                session['topic'] = event.topic
+                start_time = slot.start_time.astimezone(tz)
+                end_time = slot.end_time.astimezone(tz)
+                session['event_start'] = int(start_time.timestamp())
+                session['event_start_rfc'] = start_time.strftime(rfc_time_format)
+                session['event_end'] = int(end_time.timestamp())
+                session['event_end_rfc'] = end_time.strftime(rfc_time_format)
+                result['sessions'].append(session)
 
+        # Export days
+        result['days'] = [ int(datetime.combine(x, time()).timestamp())
+                            for x in conf.get_datetime_date_list()]
+
+        # Export users
+        result ['users'] = []
+        for usr in ConflaUser.objects.all().exclude(username="admin"):
+            user = {}
+            user['username'] = usr.username
+            user['name'] = usr.first_name
+            user['position'] = usr.position
+            user['company'] = usr.company
+            user['joined'] = usr.date_joined.astimezone(tz).isoformat()[:19].replace('T', ' ')
+            user['lastactive'] = usr.last_login.astimezone(tz).isoformat()[:19].replace('T', ' ')
+            user['avatar'] = ''
+            result['users'].append(user)
+
+        # Export about
+        # TODO: Proper about section once we have it
+        result['about'] = [{ 'title' : conf.name,
+                             'text'  : 'placeholder'
+                           }]
         return HttpResponse(json.dumps(result))

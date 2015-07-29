@@ -59,14 +59,14 @@ class Conference(models.Model):
                                                 timedelta(minutes=mins))]
         return delta_list
 
-    # Returns a list of times during a day for a defined timedelta
+    # Returns a list of days formated as a string
     def get_date_list(self):
         day_num = (self.end_date - self.start_date).days + 1
         date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
                         for x in range(0, day_num)]
         return date_list
 
-    # Returns a list of times during a day for a defined timedelta
+    # Returns a list of days as a datetime
     def get_datetime_date_list(self):
         day_num = (self.end_date - self.start_date).days + 1
         date_list = [(self.start_date + timedelta(days=x))
