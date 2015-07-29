@@ -2,6 +2,7 @@ from datetime import datetime, date, time
 import json
 import random
 import re
+import hashlib
 
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse, Http404
@@ -863,4 +864,8 @@ class ExportView(generic.TemplateView):
         result['about'] = [{ 'title' : conf.name,
                              'text'  : 'placeholder'
                            }]
+
+        # Generate checksum
+        result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
+
         return HttpResponse(json.dumps(result))
