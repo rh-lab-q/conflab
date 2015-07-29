@@ -90,6 +90,7 @@ class ScheduleView(generic.TemplateView):
             time_dict["day"] = date
             time_dict["list"] = []
             for start_time in start_list:
+                start_time = start_time.astimezone(timezone.get_default_timezone())
                 if start_time.strftime("%A, %d.%m.") == date:
                     time = {}
                     time['short'] = start_time.strftime("%H:%M") 
