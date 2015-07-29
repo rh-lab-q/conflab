@@ -501,7 +501,6 @@ function popoverInit(selector) {
         $(visible).find(".topic").text(($(content).find("#id_topic").val()));
         $(visible).find(".desc").text($(content).find("#id_description").val());
         // Go through all options in the original selects and mark them selected/not selected
-        // TODO: Add the values to visible event
 
         // Speaker select
         $(original).find("select.sel-speaker").children().each(function () {

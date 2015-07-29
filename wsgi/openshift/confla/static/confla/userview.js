@@ -55,20 +55,35 @@ function userPopoverInit() {
             placement: "bottom",
             html: "true",
             title: " ",
-            template: '<div class="popover pop-user" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>', 
+            template: '<div class="popover pop-user" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
             content: function () {
-                spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
-                def = $.post("/events/popover/", {
-                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-                    data: $(".event", this).attr("event-id"),
-                });
-                // TODO: Better use .then() when checking failstates later
-                $.when(def).done(function (response){
-                    var popid = "#" + $(itemp).attr("aria-describedby");
-                    $(popid).find(".fa-spinner").remove();
-                    $(popid).find(".popover-content").append(response);
-                });
-                return spinner;
+                var content = $(itemp).find(".pop-content");
+                // If the content has not been fetched yet
+                if (!content.length) {
+                    spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+                    // Send  a post and monitor the promise object
+                    def = $.post("/events/popover/", {
+                        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                        data: $(".event", this).attr("event-id"),
+                    });
+                    $.when(def).then(function (response){
+                        // Success
+                        var popid = "#" + $(itemp).attr("aria-describedby");
+                        $(popid).find(".fa-spinner").remove();
+                        $(popid).find(".popover-content").append(response);
+                        div = document.createElement("div");
+                        div.className = "pop-content";
+                        $(div).append($(response).clone()).hide();
+                        $(itemp).find(".event").append(div);
+                    }, function(response) {
+                        // Failure
+                        $("[aria-describedby]").popover("hide");
+                        alert("Something went wrong!");
+                    });
+                    return spinner;
+                } else
+                    // Content has already been fetched from the server
+                    return content.clone().show();
             }
         });
     });
