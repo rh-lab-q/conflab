@@ -1,0 +1,19 @@
+css
+- fix slot lengths in css
+- nicify user view popups
+- nicify room slot length edit form
+- nicify conference views
+- fix bouncing spinners in schedule views
+forms
+- fix room and conf create forms to work with the new room model
+- conf creation on demand not only when there is none
+- remake the call for proposal form
+javascript
+- translation of strings in javascript
+- js optimalization in admin view
+other
+- add missing translations
+- better language select
+- ideas for how to manage multiple conferences
+- better home page
+-
