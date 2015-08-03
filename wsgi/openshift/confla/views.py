@@ -865,6 +865,9 @@ class ExportView(generic.TemplateView):
                              'text'  : 'placeholder'
                            }]
 
+        # RSS
+        result['rss'] = []
+
         # Generate checksum
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
 
