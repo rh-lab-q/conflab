@@ -29,6 +29,7 @@ urlpatterns = patterns('',
         url(r'^reg_talk/$', views.RegisterView.send_paper, name='reg_talk'),
         url(r'^export/m_app$', views.ExportView.m_app, name='export_mapp'),
        # url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
+        url(r'^test/$', views.TestingView.slot_view, name='test'),
 
         url(r'^i18n/', include('django.conf.urls.i18n'), name='set_language'),
 )

@@ -19,6 +19,29 @@ from django.db import transaction
 from confla.models import *
 from confla.forms import *
 
+class TestingView(generic.TemplateView):
+    template_name = 'confla/slot_edit.html'
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def slot_view(request):
+        conf = Conference.get_active()
+        rooms = conf.rooms.all()
+        room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
+                      'room' : x} for x in conf.rooms.all()]
+        len_dict = {}
+        for config in room_list:
+            slot_len = int(config['slot_len'])*conf.timedelta
+            try:
+                len_dict[slot_len].append(config['room'])
+            except KeyError:
+                len_dict[slot_len]=[config['room']]
+        config_list = []
+        for key, value in len_dict.items():
+            config_list.append({'slot_len' : key, 'rooms' : value})
+        print(config_list)
+        return render(request, TestingView.template_name, { 'rooms' : rooms,
+                                                'config_list' : config_list })
+
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
 

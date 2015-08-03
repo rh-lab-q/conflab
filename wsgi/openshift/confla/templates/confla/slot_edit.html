@@ -1,0 +1,40 @@
+{% extends "confla/base.html" %}
+
+{% block content %}
+<div id="slot_edit">
+    <form>
+        {% for c in config_list %}
+        <fieldset>
+            <legend>Event length</legend>
+            <div class="fieldset-content">
+                <div class="form-group">
+                    <label>Rooms:</label>
+                    <select class="form-control room-select">
+                        <option disabled> Serpes </option>
+                    <select>
+                </div>
+                <div class="form-group">
+                    <label>Event length (mins):</label>
+                    <input class="form-control" id="defaultLength" value={{c.slot_len}}></input>
+                </div>
+            </div>
+        </fieldset>
+        {% endfor %}
+        <fieldset>
+            <legend>[+] Event length</legend>
+            <div class="fieldset-content" style="display:none">
+                <div class="form-group">
+                    <label>Rooms:</label>
+                    <select class="form-control room-select">
+                        <option disabled> Serpes </option>
+                    <select>
+                </div>
+                <div class="form-group">
+                    <label>Event length (mins):</label>
+                    <input class="form-control" id="defaultLength" value="Placeholder"></input>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
