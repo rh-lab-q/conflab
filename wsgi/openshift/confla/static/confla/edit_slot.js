@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $(".fieldset-content:visible .room-select").each(function() {
+function selectize_setup(selector) {
+    $(selector).each(function() {
         var that = this;
         $(this).selectize({
             persist: false,
@@ -42,4 +42,30 @@ $(document).ready(function() {
             },
         });
     });
+}
+
+
+function new_config() {
+    var conf = $(".fieldset-content:hidden").parent();
+    // Copy the existing new config fieldset and append it to the form
+    $("#slot_edit form").append(conf.clone());
+    $("legend", conf).html("New configuration");
+    // Setup available select options depending on existing selectized selects
+    $(".room-select .selectize-dropdown-content:first").each(function() {
+        if ($("div", this).length) {
+            $("div", this).each(function () {
+                var value = $(this).attr("data-value");
+                var label = $("span", this).text();
+                $(".room-select", conf).append("<option value="+ value + ">" + label + "</option>");
+            });
+        };
+    });
+    // Selectize the new select
+    selectize_setup($(".room-select", conf));
+    $(".fieldset-content", conf).show();
+}
+
+$(document).ready(function() {
+    // Selectize visible selects
+    selectize_setup(".fieldset-content:visible .room-select");
 });

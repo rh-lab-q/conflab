@@ -27,17 +27,16 @@
         </fieldset>
         {% endfor %}
         <fieldset>
-            <legend>[+] New configuration</legend>
+            <legend><a href="#" onclick='new_config()'>[+] New configuration</a></legend>
             <div class="fieldset-content" style="display:none">
                 <div class="form-group">
                     <label>Rooms:</label>
                     <select class="form-control room-select">
-                        <option disabled> Serpes </option>
                     <select>
                 </div>
                 <div class="form-group">
                     <label>Event length (mins):</label>
-                    <input class="form-control" id="defaultLength" value="Placeholder"></input>
+                    <input class="form-control" id="defaultLength" placeholder="Length"></input>
                 </div>
             </div>
         </fieldset>
