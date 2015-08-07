@@ -5,6 +5,7 @@
 {% block content %}
 <div id="slot_edit">
     <form>
+        {% csrf_token %}
         {% for c in config_list %}
         <fieldset>
             <legend>{{c.slot_len}} minutes </legend>
@@ -21,7 +22,7 @@
                 </div>
                 <div class="form-group">
                     <label>Event length (mins):</label>
-                    <input class="form-control" id="defaultLength" value={{c.slot_len}}></input>
+                    <input class="form-control" id="slotLength" value={{c.slot_len}}></input>
                 </div>
             </div>
         </fieldset>
@@ -36,10 +37,11 @@
                 </div>
                 <div class="form-group">
                     <label>Event length (mins):</label>
-                    <input class="form-control" id="defaultLength" placeholder="Length"></input>
+                    <input class="form-control" id="slotLength" placeholder="Length"></input>
                 </div>
             </div>
         </fieldset>
+        <button type="button" class="btn" onclick="save_form()">Save</button>
     </form>
 </div>
 {% endblock %}

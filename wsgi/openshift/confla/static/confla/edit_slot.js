@@ -44,11 +44,11 @@ function selectize_setup(selector) {
     });
 }
 
-
 function new_config() {
     var conf = $(".fieldset-content:hidden").parent();
+    var form = conf.parent();
     // Copy the existing new config fieldset and append it to the form
-    $("#slot_edit form").append(conf.clone());
+    $(form).append(conf.clone());
     $("legend", conf).html("New configuration");
     // Setup available select options depending on existing selectized selects
     $(".room-select .selectize-dropdown-content:first").each(function() {
@@ -62,7 +62,30 @@ function new_config() {
     });
     // Selectize the new select
     selectize_setup($(".room-select", conf));
+    // Make sure the save button is last in the form
+    $(form).append($("button", form));
     $(".fieldset-content", conf).show();
+}
+
+function save_form() {
+    var form = $(form);
+    var post = [];
+    // Get the data from the form
+    $(".fieldset-content:visible").each(function() {
+        var item = {};
+        item['length'] = $("#slotLength", this).attr("value");
+        var room_list = [];
+        $("div.room-select .items div", this).each(function() {
+            room_list.push($(this).attr('data-value'));
+        });
+        item['rooms'] = room_list;
+        post.push(item);
+    });
+    // Create a POST to send the data
+    def = $.post("/rooms/config/save/", {
+        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        data: JSON.stringify(post)});
+    return def;
 }
 
 $(document).ready(function() {
