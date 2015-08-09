@@ -67,13 +67,13 @@ function new_config() {
     $(".fieldset-content", conf).show();
 }
 
-function save_form() {
+function create_json_and_send() {
     var form = $(form);
     var post = [];
     // Get the data from the form
     $(".fieldset-content:visible").each(function() {
         var item = {};
-        item['length'] = $("#slotLength", this).attr("value");
+        item['length'] = $("#slotLength", this).val();
         var room_list = [];
         $("div.room-select .items div", this).each(function() {
             room_list.push($(this).attr('data-value'));
@@ -86,6 +86,18 @@ function save_form() {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: JSON.stringify(post)});
     return def;
+}
+
+function save_form() {
+    def = create_json_and_send();
+    $.when(def).then(function (response) {
+        // Success
+        // refresh the page
+        location.reload(true)
+    }, function(response) {
+        // Failure
+        alert("Something went wrong!");
+    });
 }
 
 $(document).ready(function() {

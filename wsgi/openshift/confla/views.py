@@ -332,14 +332,24 @@ class RoomConfView(generic.TemplateView):
         config_list = []
         for key, value in len_dict.items():
             config_list.append({'slot_len' : key, 'rooms' : value})
-        print(config_list)
         return render(request, TestingView.template_name, { 'rooms' : rooms,
                                                 'config_list' : config_list })
 
+    @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
     def save_config(request):
+        conf = Conference.get_active()
         if request.method == 'POST': # the form was submitted
-            return HttpResponse(request.POST['data'])
+            configs = json.loads(request.POST['data'])
+            for config in configs:
+                length = int(int(config['length']) / conf.timedelta)
+                # Get HasRoom objects for given Conference and Rooms
+                room_confs = HasRoom.objects.filter(room__shortname__in=config['rooms'],
+                                                    conference=conf)
+                for room_conf in room_confs:
+                    room_conf.slot_length = length
+                    room_conf.save()
+            return HttpResponse(0)
 
 class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
