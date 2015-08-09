@@ -41,7 +41,7 @@ function changeView() {
             $.get( "/sched/", function( data ) {
                 $(".schedlist-wrap").html($(data).find(".sched-wrap").html());
                 $(".schedlist-wrap").removeClass().addClass("sched-wrap");
-                userPopoverInit();
+                user_setup();
             });
             break;
         }
@@ -61,7 +61,7 @@ function userPopoverInit() {
                 // If the content has not been fetched yet
                 if (!content.length) {
                     spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
-                    // Send  a post and monitor the promise object
+                    // Send a post and monitor the promise object
                     def = $.post("/events/popover/", {
                         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
                         data: $(".event", this).attr("event-id"),
@@ -95,101 +95,108 @@ function loadUserview() {
         wrap.className = "user-wrap";
         $(wrap).append($(data).find(".display-style"));
         $(wrap).append($(data).find(".sched-wrap"));
-        // Get user view js and run it
-        $.getScript("/static/confla/userview.js")
+        $(wrap).hide();
+        user_setup();
+        $("body > .container:not(#event-bar)").append(wrap);
         $(".fa-spinner").remove();
-        $(".admin-wrap").parent().append(wrap);
+        $(wrap).show();
     });
 }
 
 function showUsersched() {
     if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
-        var that = this;
-        confirm().then(function (answer) {
-            if (answer != "cancel") {
-                $("#tab-usersched").off("click");
-                $("#sched-tabs").find("li.active").removeClass("active");
-                $(that).parent().addClass("active");
-                $("#event-bar").hide();
-                $(".edit-btns").hide();
-                $(".admin-wrap").hide();
-                spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
-                $(".admin-wrap").parent().append(spinner);
-                // Save the schedule and wait until it finishes
-                // TODO: Better use .then() when checking failstates later
-                if (answer == "yes") {
-                    $.when(timetableSubmit(".table")).done(function (){
-                        loadUserview();
-                    });
-                } else {
-                    loadUserview();
-                }
-                $("#tab-adminsched").off("click").click(showAdminsched);
-            };
-        });
+        // Went from adminsched to usersched
+        getUserSched();
+        $("#tab-adminsched").off("click").click(showAdminsched);
     } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
         // Went from fillsched to usersched
         $("#tab-usersched").off("click");
         $("#tab-fillsched").off("click").click(showFillsched);
         $("#sched-tabs").find("li.active").removeClass("active");
         $(this).parent().addClass("active");
-
     }
 }
 
 function showRoomConfig() {
-    $("#tab-fillsched").off("click");
-    $.get("/rooms/config/");
+    console.log("show room config");
 }
 
 function showAdminsched() {
     $("#tab-adminsched").off("click");
     if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
-        if ($(".admin-wrap").length) {
-            $(".edit-btns").show();
-            $(".user-wrap").remove();
-            timetableEdit();
-            $(".admin-wrap").show();
-            $("#event-bar").show();
-        }
-        else {
-            orig = $(".user-wrap");
-            content = $(orig).parent();
-            spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
-            $(orig).remove();
-            $(content).append(spinner);
-            $.get( "/admin/sched/", function( data ) {
-                var wrap = document.createElement('div');
-                wrap.className = "admin-wrap";
-                $(wrap).append($(data).find(".sched-wrap"));
-                $("body").append($(data).filter("#event-bar"));
-                // Hide the content until fully loaded
-                $(wrap).hide();
-                // Get admin view js and run it
-                $.when($.getScript("/static/confla/timetable.js")).done(function () {
-                    timetableEdit();
-                    $(".toggler").trigger("click");
-                    $(".fa-spinner").remove();
-                    $(".admin-wrap").show();
-                });
-
-                $(content).append(wrap);
-            })
-        }
+        // Went from usersched to adminsched
+        getAdminSched();
         $("#tab-usersched").off("click").click(showUsersched);
     } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
-        // Went from fillsched to usersched
+        // Went from confsched to adminsched
         $("#tab-fillsched").off("click").click(showFillsched);
     }
     $("#sched-tabs").find("li.active").removeClass("active");
     $(this).parent().addClass("active");
 }
 
-$(document).ready(function() {
+function getAdminSched() {
+    if ($(".admin-wrap").length) {
+        // Admin view is already present
+        $(".edit-btns").show();
+        $(".user-wrap").remove();
+        timetableEdit();
+        $(".admin-wrap").show();
+        $("#event-bar").show();
+    }
+    else {
+        // Need to load the admin view from the server
+        content = $("body > .container:not(.event-bar)");
+        spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+        $(".user-wrap").remove();
+        $(content).append(spinner);
+        $.get( "/admin/sched/", function( data ) {
+            var wrap = document.createElement('div');
+            wrap.className = "admin-wrap";
+            $(wrap).append($(data).find(".sched-wrap"));
+            $("body").append($(data).filter("#event-bar"));
+            // Hide the content until fully loaded
+            $(wrap).hide();
+            // Get admin view js and run it
+            $.when($.getScript("/static/confla/timetable.js")).done(function () {
+                timetableEdit();
+                $(".toggler").trigger("click");
+                $(".fa-spinner").remove();
+                $(".admin-wrap").show();
+            });
+
+            $(content).append(wrap);
+        })
+    }
+}
+
+function getUserSched() {
+    var that = this;
+    confirm().then(function (answer) {
+        if (answer != "cancel") {
+            $("#sched-tabs").find("li.active").removeClass("active");
+            $("#tab-usersched").off("click");
+            $("#tab-usersched").parent().addClass("active");
+            $("#event-bar").hide();
+            $(".edit-btns").hide();
+            $(".admin-wrap").hide();
+            spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+            $("body > .container:not(.event-bar)").parent().append(spinner);
+            // Save the schedule and wait until it finishes
+            // TODO: Better use .then() when checking failstates later
+            if (answer == "yes") {
+                $.when(timetableSubmit(".table")).done(function (){
+                    loadUserview();
+                });
+            } else {
+                loadUserview();
+            }
+        };
+    });
+}
+
+function user_setup() {
     userPopoverInit();
-    // Setup nav tabs
-    $("#tab-adminsched").click(showAdminsched);
-    $("#tab-fillsched").click(showRoomConfig);
 
     // Delete empty rooms
     $(".table").each(function() {
@@ -204,6 +211,14 @@ $(document).ready(function() {
             }
         });
     });
+}
+
+$(document).ready(function() {
+    // Setup nav tabs
+    $("#tab-adminsched").click(showAdminsched);
+    $("#tab-confsched").click(showRoomConfig);
+
+    user_setup();
 
     // Close all popovers if clicked outside of a popover or an event
     sel = ".user-wrap .item";
@@ -220,4 +235,5 @@ $(document).ready(function() {
             });
         }
     });
+
 })
