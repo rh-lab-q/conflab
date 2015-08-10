@@ -94,7 +94,7 @@ td {
 }
 
 .table > tbody > tr > td .item .item-buttons {
-    overflow:hidden; 
+    overflow:hidden;
     line-height: normal;
     margin-bottom: 4px;
 }
@@ -130,7 +130,7 @@ td {
     height: 100%;
 }
 
-.fa-spinner {
+.spinnerwrap {
     width: 100%;
     text-align: center;
     margin-top: 1em;

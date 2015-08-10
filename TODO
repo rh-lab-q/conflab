@@ -3,7 +3,6 @@ css
 - nicify user view popups
 - nicify room slot length edit form
 - nicify conference views
-- fix bouncing spinners in schedule views
 forms
 - fix room and conf create forms to work with the new room model
 - conf creation on demand not only when there is none

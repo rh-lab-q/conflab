@@ -147,7 +147,7 @@ function getAdminSched() {
     else {
         // Need to load the admin view from the server
         content = $("body > .container:not(.event-bar)");
-        spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+        spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
         $(".user-wrap").remove();
         $(content).append(spinner);
         $.get( "/admin/sched/", function( data ) {
@@ -180,7 +180,7 @@ function getUserSched() {
             $("#event-bar").hide();
             $(".edit-btns").hide();
             $(".admin-wrap").hide();
-            spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+            spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
             $("body > .container:not(.event-bar)").parent().append(spinner);
             // Save the schedule and wait until it finishes
             // TODO: Better use .then() when checking failstates later
