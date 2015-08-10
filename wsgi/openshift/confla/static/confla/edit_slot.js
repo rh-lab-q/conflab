@@ -93,7 +93,7 @@ function save_form() {
     $.when(def).then(function (response) {
         // Success
         // refresh the page
-        location.reload(true)
+//        location.reload(true)
     }, function(response) {
         // Failure
         alert("Something went wrong!");
