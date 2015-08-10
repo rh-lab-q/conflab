@@ -89,50 +89,100 @@ function userPopoverInit() {
     });
 }
 
-function loadUserview() {
-    $.get( "/sched/", function( data ) {
-        var wrap = document.createElement('div');
-        wrap.className = "user-wrap";
-        $(wrap).append($(data).find(".display-style"));
-        $(wrap).append($(data).find(".sched-wrap"));
-        $(wrap).hide();
-        user_setup();
-        $("body > .container:not(#event-bar)").append(wrap);
-        $(".fa-spinner").remove();
-        $(wrap).show();
-    });
-}
-
 function showUsersched() {
     if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
         // Went from adminsched to usersched
-        getUserSched();
+        // Show save dialog
+        confirm().then(function (answer) {
+            if (answer != "cancel") {
+                $("#sched-tabs").find("li.active").removeClass("active");
+                $("#tab-usersched").off("click");
+                $("#tab-usersched").parent().addClass("active");
+                $("#event-bar").hide();
+                $(".edit-btns").hide();
+                $(".admin-wrap").hide();
+                spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
+                $("body > .container:not(.event-bar)").parent().append(spinner);
+                // Save the schedule and wait until it finishes
+                // TODO: Better use .then() when checking failstates later
+                if (answer == "yes") {
+                    $.when(timetableSubmit(".table")).done(function (){
+                        getUserSched();
+                    });
+                } else {
+                    getUserSched();
+                }
+            };
+        });
         $("#tab-adminsched").off("click").click(showAdminsched);
-    } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
-        // Went from fillsched to usersched
+    } else if ($(".active > a", "#sched-tabs").is("#tab-roomconf")) {
+        // Went from roomconf to usersched
         $("#tab-usersched").off("click");
-        $("#tab-fillsched").off("click").click(showFillsched);
+        $("#tab-roomconf").off("click").click(showRoomConfig);
+        $("#sched-tabs").find("li.active").removeClass("active");
+        $("#tab-usersched").off("click");
+        $("#tab-usersched").parent().addClass("active");
+        $(".config-wrap").remove();
+        spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
+        $("body > .container:not(.event-bar)").parent().append(spinner);
+        getUserSched();
         $("#sched-tabs").find("li.active").removeClass("active");
         $(this).parent().addClass("active");
     }
-}
-
-function showRoomConfig() {
-    console.log("show room config");
 }
 
 function showAdminsched() {
     $("#tab-adminsched").off("click");
     if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
         // Went from usersched to adminsched
+        $(".user-wrap").remove();
         getAdminSched();
         $("#tab-usersched").off("click").click(showUsersched);
-    } else if ($(".active > a", "#sched-tabs").is("#tab-fillsched")) {
-        // Went from confsched to adminsched
-        $("#tab-fillsched").off("click").click(showFillsched);
+    } else if ($(".active > a", "#sched-tabs").is("#tab-roomconf")) {
+        // Went from roomconf to adminsched
+        $(".config-wrap").remove();
+        getAdminSched();
+        $("#tab-roomconf").off("click").click(showRoomConfig);
     }
     $("#sched-tabs").find("li.active").removeClass("active");
     $(this).parent().addClass("active");
+}
+
+function showRoomConfig() {
+     if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
+        // Went from adminsched to roomconf
+        // Show save dialog
+        confirm().then(function (answer) {
+            if (answer != "cancel") {
+                $("#sched-tabs").find("li.active").removeClass("active");
+                $("#tab-roomconf").off("click");
+                $("#tab-roomconf").parent().addClass("active");
+                $("#event-bar").hide();
+                $(".edit-btns").hide();
+                $(".admin-wrap").hide();
+                spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
+                $("body > .container:not(.event-bar)").parent().append(spinner);
+                // Save the schedule and wait until it finishes
+                // TODO: Better use .then() when checking failstates later
+                if (answer == "yes") {
+                    $.when(timetableSubmit(".table")).done(function (){
+                        getRoomConfig();
+                    });
+                } else {
+                    getRoomConfig();
+                }
+            };
+        });
+        $("#tab-adminsched").off("click").click(showAdminsched);
+    } else if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
+        // Went from usersched to roomconf
+        $(".user-wrap").remove();
+        getRoomConfig();
+        $("#tab-roomconf").off("click");
+        $("#tab-usersched").off("click").click(showUsersched);
+        $("#sched-tabs").find("li.active").removeClass("active");
+        $(this).parent().addClass("active");
+    }
 }
 
 function getAdminSched() {
@@ -171,27 +221,36 @@ function getAdminSched() {
 }
 
 function getUserSched() {
-    var that = this;
-    confirm().then(function (answer) {
-        if (answer != "cancel") {
-            $("#sched-tabs").find("li.active").removeClass("active");
-            $("#tab-usersched").off("click");
-            $("#tab-usersched").parent().addClass("active");
-            $("#event-bar").hide();
-            $(".edit-btns").hide();
-            $(".admin-wrap").hide();
-            spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
-            $("body > .container:not(.event-bar)").parent().append(spinner);
-            // Save the schedule and wait until it finishes
-            // TODO: Better use .then() when checking failstates later
-            if (answer == "yes") {
-                $.when(timetableSubmit(".table")).done(function (){
-                    loadUserview();
-                });
-            } else {
-                loadUserview();
-            }
-        };
+    $.get( "/sched/", function( data ) {
+        var wrap = document.createElement('div');
+        wrap.className = "user-wrap";
+        $(wrap).append($(data).find(".display-style"));
+        $(wrap).append($(data).find(".sched-wrap"));
+        $(wrap).hide();
+        user_setup();
+        $("body > .container:not(#event-bar)").append(wrap);
+        $(".fa-spinner").remove();
+        $(wrap).show();
+    });
+}
+
+function getRoomConfig() {
+    content = $("body > .container:not(.event-bar)");
+    spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
+    $(content).append(spinner);
+    $.get( "/rooms/config/", function( data ) {
+        var wrap = document.createElement('div');
+        wrap.className = "config-wrap";
+        $(wrap).append($(data).find("#slot_edit"));
+        // Hide the content until fully loaded
+        $(wrap).hide();
+        // Get admin view js and run it
+        $.when($.getScript("/static/confla/edit_slot.js")).done(function () {
+            $(".config-wrap").show();
+            selectize_setup(".fieldset-content:visible .room-select");
+        });
+        $(".fa-spinner").remove();
+        $(content).append(wrap);
     });
 }
 
@@ -216,7 +275,7 @@ function user_setup() {
 $(document).ready(function() {
     // Setup nav tabs
     $("#tab-adminsched").click(showAdminsched);
-    $("#tab-confsched").click(showRoomConfig);
+    $("#tab-roomconf").click(showRoomConfig);
 
     user_setup();
 
