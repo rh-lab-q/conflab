@@ -72,14 +72,16 @@ function create_json_and_send() {
     var post = [];
     // Get the data from the form
     $(".fieldset-content:visible").each(function() {
-        var item = {};
-        item['length'] = $("#slotLength", this).val();
-        var room_list = [];
-        $("div.room-select .items div", this).each(function() {
-            room_list.push($(this).attr('data-value'));
-        });
-        item['rooms'] = room_list;
-        post.push(item);
+        if ($("div.room-select .items div", this).length) {
+            var item = {};
+            item['length'] = $("#slotLength", this).val();
+            var room_list = [];
+            $("div.room-select .items div", this).each(function() {
+                room_list.push($(this).attr('data-value'));
+            });
+            item['rooms'] = room_list;
+            post.push(item);
+        };
     });
     // Create a POST to send the data
     def = $.post("/rooms/config/save/", {

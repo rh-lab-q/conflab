@@ -102,7 +102,7 @@ function showUsersched() {
                 $(".edit-btns").hide();
                 $(".admin-wrap").hide();
                 spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
-                $("body > .container:not(.event-bar)").parent().append(spinner);
+                $("body > .container:not(#event-bar)").parent().append(spinner);
                 // Save the schedule and wait until it finishes
                 // TODO: Better use .then() when checking failstates later
                 if (answer == "yes") {
@@ -124,7 +124,7 @@ function showUsersched() {
         $("#tab-usersched").parent().addClass("active");
         $(".config-wrap").remove();
         spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
-        $("body > .container:not(.event-bar)").parent().append(spinner);
+        $("body > .container:not(#event-bar)").parent().append(spinner);
         getUserSched();
         $("#sched-tabs").find("li.active").removeClass("active");
         $(this).parent().addClass("active");
@@ -196,7 +196,7 @@ function getAdminSched() {
     }
     else {
         // Need to load the admin view from the server
-        content = $("body > .container:not(.event-bar)");
+        content = $("body > .container:not(#event-bar)");
         spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
         $(".user-wrap").remove();
         $(content).append(spinner);
@@ -235,7 +235,7 @@ function getUserSched() {
 }
 
 function getRoomConfig() {
-    content = $("body > .container:not(.event-bar)");
+    content = $("body > .container:not(#event-bar)");
     spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
     $(content).append(spinner);
     $.get( "/rooms/config/", function( data ) {
