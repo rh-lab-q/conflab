@@ -1,0 +1,32 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load confla_filters %}
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/eventedit.css' %}" />
+<style type='text/css'>
+    {% for tag in tag_list %}
+    .tag{{tag.id}} {
+        background : {{tag.color}};
+    }
+    {% endfor %}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h4>Scheduled events</h4>
+    {% for event in event_list.scheduled %}
+    <div class="event {{event|tag_class}}" style="float:left">
+        <div class="topic">{{event.topic}}</div>
+    </div>
+    {% endfor %}
+    <div style="clear:both"></div>
+    <h4>Unscheduled events</h4>
+    {% for event in event_list.unscheduled %}
+    <div class="event {{event|tag_class}}" style="float:left">
+        <div class="topic">{{event.topic}}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

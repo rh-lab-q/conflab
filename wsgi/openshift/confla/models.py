@@ -190,8 +190,12 @@ class Event(models.Model):
     def __str__(self):
         return self.topic
 
-    #def is_Scheduled(self):
-    #    return (self.event_start != None) and (self.event_end != None)
+    def is_scheduled(self):
+        try:
+            if hasattr(self, 'timeslot'):
+                return True
+        except ObjectDoesNotExist:
+            return False
 
 class Timeslot(models.Model):
     start_time = models.DateTimeField()

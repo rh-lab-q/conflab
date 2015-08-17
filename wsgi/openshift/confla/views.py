@@ -1,8 +1,8 @@
-from datetime import datetime, date, time
 import json
 import random
 import re
 import hashlib
+from datetime import datetime, date, time
 
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse, Http404
@@ -20,7 +20,23 @@ from confla.models import *
 from confla.forms import *
 
 class TestingView(generic.TemplateView):
-    template_name = 'confla/slot_edit.html'
+    template_name = 'confla/event_edit.html'
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def event_view(request):
+        conf = Conference.get_active()
+        event_list = { 'scheduled' : [],
+                       'unscheduled' : []
+                       }
+        for event in Event.objects.filter(conf_id=conf):
+            if event.is_scheduled():
+                event_list['scheduled'].append(event)
+            else:
+                event_list['unscheduled'].append(event)
+        return render(request, TestingView.template_name,
+                        { 'event_list' : event_list, 
+                          'tag_list' : EventTag.objects.all(),
+                            })
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
