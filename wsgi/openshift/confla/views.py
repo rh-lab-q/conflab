@@ -727,7 +727,7 @@ class ImportView(generic.TemplateView):
         Timeslot.objects.all().delete()
         Event.objects.all().delete()
         EventTag.objects.all().delete()
-        room_list = ['D0206', 'E104', 'D0207', 'E112', 'D105'] 
+        room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
         # Setup a Conference if there is none
         if not Conference.get_active():
             newconf = Conference()
@@ -768,8 +768,8 @@ class ImportView(generic.TemplateView):
             # Create timeslot for the event
             newslot = Timeslot()
             newslot.conf_id = Conference.get_active()
-            if event['room'] in room_list:
-                newslot.room_id = Room.objects.get(shortname=event['room'])
+            if event['room_short'] in room_list:
+                newslot.room_id = Room.objects.get(shortname=event['room_short'])
             start = datetime.fromtimestamp(int(event['event_start']))
             end = datetime.fromtimestamp(int(event['event_end']))
             newslot.start_time = timezone.get_default_timezone().localize(start)
