@@ -648,10 +648,10 @@ $(document).ready(function() {
                     // If there is no more room for a slot of given size
                     // set the item's length to 1
                     if (total-i < slot_len-1) {
-                        $(this).height(this.clientHeight+cellSize*1);
+                        $(this).height(itemHeight);
                     }
                     else
-                        $(this).height(this.clientHeight+cellSize*slot_len);
+                        $(this).height(itemHeight+cellSize*(slot_len-1));
                 });
             });
         });
