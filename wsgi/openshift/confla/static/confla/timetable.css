@@ -205,3 +205,38 @@ td > .ui-state-hover {
     bottom: 0;
     height: 7px;
 }
+
+.popover h2 {
+    font-size: 120%;
+    font-weight: bold;
+    margin-top: 0.5em;
+    padding-bottom: 0.3em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #999;
+}
+
+.popover h3 {
+    font-size: 100%;
+    font-weight: bold;
+    margin: 0;
+}
+
+.popover-content > div {
+    margin-bottom: 0.8em;
+}
+
+.popover-content > div:last-child {
+    margin-bottom: 0.2em;
+}
+
+.popover .speaker {
+    float: left;
+    margin-right: 0.8em;
+}
+
+.popover .clearer {
+    margin: 0;
+    padding: 0;
+    clear: both;
+    height:0;
+}
