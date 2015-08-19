@@ -53,6 +53,16 @@ class EventCreateForm(forms.ModelForm):
                                                     'style': 'visibility:hidden'})
         self.fields['tags'].widget.attrs.update({'class' : 'sel-tag selectized-input',
                                                     'style': 'visibility:hidden'})
+class EventEditForm(forms.ModelForm):
+    class Meta:
+        model = Event
+
+    def __init__(self, *args, **kwargs):
+        super(EventEditForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({
+                            'class' : 'form-control input-sm'
+            })
 
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,

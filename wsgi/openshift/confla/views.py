@@ -20,6 +20,15 @@ from confla.models import *
 from confla.forms import *
 
 class TestingView(generic.TemplateView):
+    template_name = 'confla/event_modal.html'
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def event_view(request):
+        return render(request, TestingView.template_name,
+                        { 'form' : EventEditForm()
+                        })
+
+class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 
     @permission_required('confla.can_organize', raise_exception=True)
@@ -33,10 +42,19 @@ class TestingView(generic.TemplateView):
                 event_list['scheduled'].append(event)
             else:
                 event_list['unscheduled'].append(event)
-        return render(request, TestingView.template_name,
+        return render(request, EventEditView.template_name,
                         { 'event_list' : event_list, 
                           'tag_list' : EventTag.objects.all(),
                             })
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def event_modal(request):
+        if not(request.method == "POST"):
+            raise Http404
+        event = Event.objects.get(id=int(request.POST['data']))
+        return render(request, 'confla/event_modal.html',
+                        { 'form' : EventEditForm(instance=event)
+                        })
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'

@@ -1,0 +1,27 @@
+{% extends "confla/base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="mod-content">
+    <form>
+        <label for="id_topic">{% trans "Topic" %}</label>
+        {{form.topic}}
+        <label for="id_description">{% trans "Description" %}</label>
+        {{form.description}}
+        <label for="id_e_type_id">{% trans "Event type" %}</label>
+        {{form.e_type_id}}
+        <label for="id_speaker">{% trans "Speaker" %}</label>
+        {{form.speaker}}
+        <label for="id_tags">{% trans "Tags" %}</label>
+        {{form.tags}}
+        <label for="id_lang">{% trans "Language" %}</label>
+        {{form.lang}}
+        <label for="id_slides">{% trans "Presentation" %}</label>
+        {{form.slides}}
+        <label for="id_google_doc_url">{% trans "Google doc" %}</label>
+        {{form.google_doc_url}}
+        <label for="id_video">{% trans "Video" %}</label>
+        {{form.video}}
+    </form>
+</div>
+{% endblock %}
+
