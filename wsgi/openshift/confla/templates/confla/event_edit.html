@@ -17,16 +17,37 @@
 <div class="container">
     <h4>Scheduled events</h4>
     {% for event in event_list.scheduled %}
-    <div class="event {{event|tag_class}}" style="float:left">
+    <div event-id={{event.id}} class="event {{event|tag_class}}" style="float:left">
         <div class="topic">{{event.topic}}</div>
     </div>
     {% endfor %}
     <div style="clear:both"></div>
     <h4>Unscheduled events</h4>
     {% for event in event_list.unscheduled %}
-    <div class="event {{event|tag_class}}" style="float:left">
+    <div event-id={{event.id}} class="event {{event|tag_class}}" style="float:left">
         <div class="topic">{{event.topic}}</div>
     </div>
     {% endfor %}
+    <div class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4>Edit event</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submit btn btn-default" style="float:left">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extrascripts %}
+<script type="text/javascript" src="{% static 'confla/eventedit.js' %}"></script>
 {% endblock %}
