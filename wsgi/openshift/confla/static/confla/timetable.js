@@ -4,7 +4,7 @@
     @author: Petr Kubat <petr.kubat.hb@seznam.cz>
 */
 
-var cellSize = 30;
+var cellSize = 31; // cell height + 1 border
 var itemHeight = 28;
 $.expr[':'].Contains = function(a, i, m) {
     // m is PROBABLY an array ofcCaller, calling method('Contains'), and content of the call
@@ -44,7 +44,7 @@ function countEndtime(tr_array, rownumber) {
         var td_text = $(time_td).text();
         var firstpart = td_text.slice(0,2);
         var secondpart = td_text.slice(3,5);
-        var tdelta = $(tr_array).parent().parent().attr("tdelta")
+        var tdelta = $(tr_array).parent().parent().attr("tdelta");
         secondpart = parseInt(secondpart)+parseInt(tdelta);
         if(secondpart >= 60) {
             firstpart = parseInt(firstpart) + 1;
@@ -278,7 +278,7 @@ function createEvent() {
         edit.className="editsign";
         $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
         $(buttondiv).append(edit);
-        $(visevent).append(buttondiv); 
+        $(visevent).append(buttondiv);
         $(visevent).append('<p class="topic"></p>');
         $(visevent).append('<p class="author"></p>');
         $(nevent).append(visevent);
@@ -564,7 +564,7 @@ $(document).ready(function() {
     $(".item").height(function(){
         var len = $(this).attr("deltalen");
         if (len == "default") len = 1;
-        return this.clientHeight+cellSize*len
+        return itemHeight+cellSize*(len-1)
     });
 
     // Setup BootSideMenu
