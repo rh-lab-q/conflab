@@ -85,6 +85,9 @@ function userPopoverInit() {
                     // Content has already been fetched from the server
                     return content.clone().show();
             }
+        }).on("show.bs.popover", function() {
+            // Hide all other popovers when showing a new one
+            $(".user-wrap .item").not(this).popover("hide");
         });
     });
 }
