@@ -15,3 +15,16 @@
     text-align: center;
     margin-top: 0;
 }
+
+.user-wrap .item {
+    cursor: pointer;
+}
+
+.pop-user {
+    max-width: 366px;
+}
+
+.event-desc {
+    max-height: 200px;
+    overflow-y: auto;
+}
