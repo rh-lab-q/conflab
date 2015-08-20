@@ -52,9 +52,10 @@ function userPopoverInit() {
     $(".user-wrap .item").each (function () {
         var itemp = this;
         $(itemp).popover({
-            placement: "bottom",
+            placement: "auto bottom",
             html: "true",
             title: " ",
+            container: "body",
             template: '<div class="popover pop-user" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
             content: function () {
                 var content = $(itemp).find(".pop-content");
