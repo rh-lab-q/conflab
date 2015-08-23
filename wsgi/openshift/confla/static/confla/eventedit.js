@@ -24,6 +24,8 @@ $(document).ready(function() {
     var modal = $(".modal").modal({
         show: false
     })
+    if ($(".modal-body form").length) modal.modal("show");
+
     $(".submit").click(saveEvent);
 
     // Show modal on click on an event

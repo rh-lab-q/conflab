@@ -190,6 +190,7 @@ class Event(models.Model):
     def __str__(self):
         return self.topic
 
+    @property
     def is_scheduled(self):
         try:
             if hasattr(self, 'timeslot'):

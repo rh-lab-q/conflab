@@ -240,3 +240,8 @@ td > .ui-state-hover {
     clear: both;
     height:0;
 }
+
+.adv-link {
+    float:right;
+    margin-bottom:3px;
+}

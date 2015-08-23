@@ -123,6 +123,7 @@
                                         {{ form.tags }}
                                         {% endwith %}
                                     </form>
+                                    <a class="adv-link" href="{% url 'confla:editEvent' %}{{e.id}}">{% trans "Advanced" %}</a>
                                 </div><!-- pop-content -->
                             </div><!-- event -->
                             {% endwith %}

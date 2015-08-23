@@ -15,19 +15,13 @@
 
 {% block content %}
 <div class="container">
-    <h4>Scheduled events</h4>
-    {% for event in event_list.scheduled %}
-    <div event-id={{event.id}} class="event {{event|tag_class}}" style="float:left">
+    <h4>Events:</h4>
+    {% for event in event_list %}
+    <div scheduled={{event.is_scheduled}} event-id={{event.id}} class="event {{event|tag_class}}" style="float:left">
         <div class="topic">{{event.topic}}</div>
     </div>
     {% endfor %}
     <div style="clear:both"></div>
-    <h4>Unscheduled events</h4>
-    {% for event in event_list.unscheduled %}
-    <div event-id={{event.id}} class="event {{event|tag_class}}" style="float:left">
-        <div class="topic">{{event.topic}}</div>
-    </div>
-    {% endfor %}
     <div class="modal fade">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
@@ -37,6 +31,28 @@
                     <h4>Edit event</h4>
                 </div>
                 <div class="modal-body">
+                    {% if form %}
+                    <form>
+                        <label for="id_topic">{% trans "Topic" %}</label>
+                        {{form.topic}}
+                        <label for="id_description">{% trans "Description" %}</label>
+                        {{form.description}}
+                        <label for="id_e_type_id">{% trans "Event type" %}</label>
+                        {{form.e_type_id}}
+                        <label for="id_speaker">{% trans "Speaker" %}</label>
+                        {{form.speaker}}
+                        <label for="id_tags">{% trans "Tags" %}</label>
+                        {{form.tags}}
+                        <label for="id_lang">{% trans "Language" %}</label>
+                        {{form.lang}}
+                        <label for="id_slides">{% trans "Presentation" %}</label>
+                        {{form.slides}}
+                        <label for="id_google_doc_url">{% trans "Google doc" %}</label>
+                        {{form.google_doc_url}}
+                        <label for="id_video">{% trans "Video" %}</label>
+                        {{form.video}}
+                    </form>
+                    {% endif %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="submit btn btn-default" style="float:left">Submit</button>

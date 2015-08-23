@@ -32,20 +32,17 @@ class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def event_view(request):
+    def event_view(request, id=None):
+        form = None
+        if id:
+            form = EventEditForm(instance=Event.objects.get(id=id))
         conf = Conference.get_active()
-        event_list = { 'scheduled' : [],
-                       'unscheduled' : []
-                       }
-        for event in Event.objects.filter(conf_id=conf):
-            if event.is_scheduled():
-                event_list['scheduled'].append(event)
-            else:
-                event_list['unscheduled'].append(event)
+        event_list = Event.objects.filter(conf_id=conf)
         return render(request, EventEditView.template_name,
                         { 'event_list' : event_list, 
                           'tag_list' : EventTag.objects.all(),
-                            })
+                          'form' : form,
+                          })
 
     @permission_required('confla.can_organize', raise_exception=True)
     def event_modal(request):
