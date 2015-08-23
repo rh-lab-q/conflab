@@ -2,7 +2,8 @@
 {% load i18n %}
 {% block content %}
 <div class="mod-content">
-    <form>
+    <form method="post" action="{% url 'confla:editEvent2' id=event.id %}">
+        {% csrf_token %}
         <label for="id_topic">{% trans "Topic" %}</label>
         {{form.topic}}
         <label for="id_description">{% trans "Description" %}</label>

@@ -1,5 +1,9 @@
 function saveEvent() {
-    console.log("foo");
+    $(".modal-body form").ajaxSubmit({
+        success: function(response) {
+            console.log("ok");
+        }
+    });
     $(".modal").modal("hide");
 }
 
@@ -13,6 +17,7 @@ function showModal(event) {
     $.when(def).then(function (response){
         // Success
         $(".modal-body").html($(".mod-content", response).html());
+        $(".modal-body form").ajaxForm();
     }, function (response){
         $(".modal").modal("hide");
         alert("Something went wrong!");
@@ -24,7 +29,11 @@ $(document).ready(function() {
     var modal = $(".modal").modal({
         show: false
     })
-    if ($(".modal-body form").length) modal.modal("show");
+    var form = $(".modal-body form");
+    if (form.length) {
+        $(form).ajaxForm();
+        modal.modal("show");
+    }
 
     $(".submit").click(saveEvent);
 

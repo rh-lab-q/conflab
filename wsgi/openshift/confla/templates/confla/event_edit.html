@@ -32,7 +32,8 @@
                 </div>
                 <div class="modal-body">
                     {% if form %}
-                    <form>
+                    <form method="post" action="{% url 'confla:editEvent2' event.id %}">
+                        {% csrf_token %}
                         <label for="id_topic">{% trans "Topic" %}</label>
                         {{form.topic}}
                         <label for="id_description">{% trans "Description" %}</label>

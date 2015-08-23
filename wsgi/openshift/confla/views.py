@@ -34,15 +34,45 @@ class EventEditView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def event_view(request, id=None):
         form = None
+        event = None
         if id:
-            form = EventEditForm(instance=Event.objects.get(id=id))
+            event = Event.objects.get(id=id)
+            form = EventEditForm(instance=event)
         conf = Conference.get_active()
         event_list = Event.objects.filter(conf_id=conf)
         return render(request, EventEditView.template_name,
                         { 'event_list' : event_list, 
                           'tag_list' : EventTag.objects.all(),
                           'form' : form,
+                          'event': event,
                           })
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def event_save(request, id):
+        if request.method == 'POST':
+            data = request.POST.copy()
+            data['conf_id'] = str(Conference.get_active().id)
+            event = None
+            try:
+                event = Event.objects.get(id=id)
+            except ObjectDoesNotExist:
+                raise Http404
+            form = EventEditForm(data=data, instance=event)
+            if form.is_valid():
+                event = form.save(commit=False)
+                if "tags" in request.POST:
+                    event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
+                else:
+                    event.prim_tag = None
+                event.save()
+                form.save_m2m()
+            else:
+                #TODO: Proper error handling
+                print(form.errors)
+
+            return HttpResponseRedirect(reverse('confla:editEvent'))
+        else:
+            raise Http404
 
     @permission_required('confla.can_organize', raise_exception=True)
     def event_modal(request):
@@ -50,7 +80,8 @@ class EventEditView(generic.TemplateView):
             raise Http404
         event = Event.objects.get(id=int(request.POST['data']))
         return render(request, 'confla/event_modal.html',
-                        { 'form' : EventEditForm(instance=event)
+                        {   'form' : EventEditForm(instance=event),
+                            'event': event,
                         })
 
 class AboutView(generic.TemplateView):
@@ -485,6 +516,7 @@ class TimetableView(generic.TemplateView):
                     event.save()
                     form.save_m2m()
                 else:
+                    #TODO: Proper error handling
                     print("invalid")
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
