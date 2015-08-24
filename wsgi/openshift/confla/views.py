@@ -394,7 +394,7 @@ class RoomConfView(generic.TemplateView):
         config_list = []
         for key, value in len_dict.items():
             config_list.append({'slot_len' : key, 'rooms' : value})
-        return render(request, TestingView.template_name, { 'rooms' : rooms,
+        return render(request, RoomConfView.template_name, { 'rooms' : rooms,
                                                 'config_list' : config_list })
 
     @transaction.atomic
