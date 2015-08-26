@@ -2,6 +2,7 @@ import json
 import random
 import re
 import hashlib
+import csv
 from datetime import datetime, date, time
 
 from django.template.loader import render_to_string
@@ -781,7 +782,6 @@ class ImportView(generic.TemplateView):
             newevent.save()
 
     # import json from devconf for testing purposes
-
     @transaction.atomic
     def dv(json_string):
         # delete everyone excluding admin
@@ -907,6 +907,111 @@ class ImportView(generic.TemplateView):
                 usr.picture = user['avatar']
                 usr.full_clean()
                 usr.save()
+
+    @transaction.atomic
+    def oa2015(csv_file):
+        # Setup a Conference if there is none
+        if not Conference.get_active():
+            newconf = Conference()
+            newconf.start_date = date(2015, 11, 7)
+            newconf.end_date = date(2015, 11, 8)
+            newconf.start_time = time(8, 0, 0)
+            newconf.end_time = time(20, 0, 0)
+            newconf.active = True
+            newconf.name = "OpenAlt 2015"
+            newconf.save()
+
+        with open(csv_file) as f:
+            if csv.Sniffer().has_header(f.read()):
+                f.seek(0)
+                next(f)
+            else:
+                f.seek(0)
+            reader = csv.reader(f, delimiter=';')
+            for row in reader:
+                # Loop through each row of the csv file
+                # Generate sessions
+
+                # Create the speakers if not already in the db
+                # First speaker
+                username1 = row[9].replace(" ", "")[:30]
+                username1 = re.sub('[\W_]+', '', username1)
+                username2 = ''
+                try:
+                    ConflaUser.objects.get(username=username1)
+                except ObjectDoesNotExist:
+                    newuser = ConflaUser()
+                    newuser.username = username1
+                    newuser.password = "blank"
+                    newuser.first_name = row[9][:30]
+                    newuser.company = row[15]
+                    newuser.position = row[16]
+                    newuser.email = row[10]
+                    #TODO: Basic format checking?
+                    """
+                    newuser.web = row[17]
+                    newuser.facebook = row[18]
+                    newuser.twitter = row[19]
+                    newuser.linkedin= row[20]
+                    newuser.google_plus= row[21]
+                    """
+                    newuser.full_clean()
+                    newuser.save()
+
+                # Second speaker
+                if row[26]:
+                    username2 = row[26].replace(" ", "")[:30]
+                    username2 = re.sub('[\W_]+', '', username2)
+                    try:
+                        ConflaUser.objects.get(username=username2)
+                    except ObjectDoesNotExist:
+                        newuser = ConflaUser()
+                        newuser.username = username2
+                        newuser.password = "blank"
+                        newuser.first_name = row[26][:30]
+                        newuser.company = row[31]
+                        newuser.position = row[32]
+                        newuser.email = row[27]
+                        newuser.web = row[33]
+                        newuser.facebook = row[34]
+                        newuser.twitter = row[35]
+                        newuser.linkedin= row[36]
+                        newuser.google_plus= row[37]
+                        newuser.full_clean()
+                        newuser.save()
+
+                for i in range(0,21,7):
+                    # Loop through all events in the row
+                    # 42 = first event start position
+                    if not row[42+i+1]:
+                        # There are no more events left
+                        break;
+                    newevent = Event()
+                    newevent.conf_id = Conference.get_active()
+                    # Check if the event type exists
+                    # If not, create it
+                    try:
+                        EventType.objects.get(name=row[42+i])
+                    except ObjectDoesNotExist:
+                        newtype = EventType()
+                        newtype.name = row[42+i]
+                        newtype.save()
+                    newevent.e_type_id = EventType.objects.get(name=row[42+i])
+                    newevent.topic = row[43+i]
+                    newevent.description = row[44+i]
+                    newevent.lang = 'CZ'
+                    newevent.full_clean()
+                    # If an event with the same topic already exists
+                    # dont save it
+                    try:
+                        newevent = Event.objects.get(topic=newevent.topic)
+                    except ObjectDoesNotExist:
+                        newevent.save()
+                    # Add speakers
+                    newevent.speaker.add(ConflaUser.objects.get(username=username1))
+                    if username2:
+                        newevent.speaker.add(ConflaUser.objects.get(username=username2))
+                    newevent.save()
 
 class ExportView(generic.TemplateView):
     def m_app(request):
