@@ -94,8 +94,8 @@ function save_form() {
     def = create_json_and_send();
     $.when(def).then(function (response) {
         // Success
-        // refresh the page
-//        location.reload(true)
+        $(".admin-wrap").remove();
+        $("#event-bar").remove();
     }, function(response) {
         // Failure
         alert("Something went wrong!");
