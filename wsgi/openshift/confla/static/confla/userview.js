@@ -1,3 +1,13 @@
+function show_error(name, response) {
+    $(".fa-spinner").remove();
+    // Show Failed to load error message
+    var div = '<div class="alert alert-danger">Failed to load ' + name + '. Please try again.</div>';
+    $("body > .container:not(#event-bar)").append(div);
+    // Show the original error message
+    var resp = $(response.responseText);
+    $("body > .container:not(#event-bar)").append($(resp).filter("div"));
+}
+
 function confirm() {
     var defer = $.Deferred();
     $('<div></div>').html("Save changes?")
@@ -30,18 +40,26 @@ function changeView() {
     var sel = $(".sel-view option:selected").text();
     switch (sel) {
         case "List": {
-            $.get( "/sched/list/", function( data ) {
-                $(".sched-wrap:visible").html($(data).find(".schedlist-wrap").html());
+            $.when($.get( "/sched/list/")).then(function(response) {
+                // Success
+                $(".sched-wrap:visible").html($(response).find(".schedlist-wrap").html());
                 $(".sched-wrap:visible").removeClass().addClass("schedlist-wrap");
                 userPopoverInit();
+            }, function (response){
+                // Failure
+                show_error("schedule list", response);
             })
             break;
         };
         case "Grid": {
-            $.get( "/sched/", function( data ) {
-                $(".schedlist-wrap").html($(data).find(".sched-wrap").html());
+            $.when($.get( "/sched/")).then(function(response) {
+                // Success
+                $(".schedlist-wrap").html($(response).find(".sched-wrap").html());
                 $(".schedlist-wrap").removeClass().addClass("sched-wrap");
                 user_setup();
+            }, function (response){
+                // Failure
+                show_error("schedule grid", response);
             });
             break;
         }
@@ -99,6 +117,7 @@ function showUsersched() {
         // Show save dialog
         confirm().then(function (answer) {
             if (answer != "cancel") {
+                $(".alert").remove();
                 $("#sched-tabs").find("li.active").removeClass("active");
                 $("#tab-usersched").off("click");
                 $("#tab-usersched").parent().addClass("active");
@@ -108,10 +127,21 @@ function showUsersched() {
                 spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
                 $("body > .container:not(#event-bar)").parent().append(spinner);
                 // Save the schedule and wait until it finishes
-                // TODO: Better use .then() when checking failstates later
                 if (answer == "yes") {
-                    $.when(timetableSubmit(".table")).done(function (){
+                    $.when(timetableSubmit(".table")).then(function (){
+                        // Success
                         getUserSched();
+                    }, function (response){
+                        // Failure
+                        var div = '<div class="alert alert-danger">Failed to save schedule. Please try again.</div>';
+                        $(".admin-wrap").prepend(div);
+                        // Rollback changes to the view
+                        $("#sched-tabs").find("li.active").removeClass("active");
+                        $("#tab-adminsched").parent().addClass("active");
+                        $("#event-bar").show();
+                        $(".admin-wrap").show();
+                        $("#tab-usersched").off("click").click(showUsersched);
+                        $(".fa-spinner").remove();
                     });
                 } else {
                     getUserSched();
@@ -165,13 +195,24 @@ function showRoomConfig() {
                 $(".edit-btns").hide();
                 $(".admin-wrap").hide();
                 spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
-                $("body > .container:not(.event-bar)").parent().append(spinner);
+                $("body > .container:not(#event-bar)").parent().append(spinner);
                 // Save the schedule and wait until it finishes
-                // TODO: Better use .then() when checking failstates later
                 if (answer == "yes") {
-                    $.when(timetableSubmit(".table")).done(function (){
-                        getRoomConfig();
-                    });
+                    $.when(timetableSubmit(".table")).then(function (){
+                            // Success
+                            getRoomConfig();
+                        }, function (response){
+                            // Failure
+                            var div = '<div class="alert alert-danger">Failed to save schedule. Please try again.</div>';
+                            $(".admin-wrap").prepend(div);
+                            // Rollback changes to the view
+                            $("#sched-tabs").find("li.active").removeClass("active");
+                            $("#tab-adminsched").parent().addClass("active");
+                            $("#event-bar").show();
+                            $(".admin-wrap").show();
+                            $("#tab-usersched").off("click").click(showUsersched);
+                            $(".fa-spinner").remove();
+                        });
                 } else {
                     getRoomConfig();
                 }
@@ -204,57 +245,74 @@ function getAdminSched() {
         spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
         $(".user-wrap").remove();
         $(content).append(spinner);
-        $.get( "/admin/sched/", function( data ) {
+        $.when($.get( "/admin/sched/")).then(function (response) {
+            // Success
             var wrap = document.createElement('div');
             wrap.className = "admin-wrap";
-            $(wrap).append($(data).find(".sched-wrap"));
-            $("body").append($(data).filter("#event-bar"));
+            $(wrap).append($(response).find(".sched-wrap"));
+            $("body").append($(response).filter("#event-bar"));
             // Hide the content until fully loaded
             $(wrap).hide();
             // Get admin view js and run it
-            $.when($.getScript("/static/confla/timetable.js")).done(function () {
+            $.when($.getScript("/static/confla/timetable.js")).then(function (response) {
+                // Success
                 timetableEdit();
                 $(".toggler").trigger("click");
                 $(".fa-spinner").remove();
                 $(".admin-wrap").show();
+            }, function (response) {
+                // Failure
+                show_error("schedule editor", response);
             });
 
             $(content).append(wrap);
-        })
+        }, function (response){
+            // Failure
+            show_error("schedule editor", response);
+        });
     }
 }
 
 function getUserSched() {
-    $.get( "/sched/", function( data ) {
+    $.when($.get( "/sched/")).then(function(response) {
+        // Success
         var wrap = document.createElement('div');
         wrap.className = "user-wrap";
-        $(wrap).append($(data).find(".display-style"));
-        $(wrap).append($(data).find(".sched-wrap"));
+        $(wrap).append($(response).find(".display-style"));
+        $(wrap).append($(response).find(".sched-wrap"));
         $(wrap).hide();
         $("body > .container:not(#event-bar)").append(wrap);
         user_setup();
         $(".fa-spinner").remove();
         $(wrap).show();
+    }, function (response){
+        // Failure
+        show_error("schedule", response);
     });
 }
 
 function getRoomConfig() {
     content = $("body > .container:not(#event-bar)");
-    spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
-    $(content).append(spinner);
-    $.get( "/rooms/config/", function( data ) {
+    $.when($.get( "/rooms/config/")).then(function(response) {
+        // Success
         var wrap = document.createElement('div');
         wrap.className = "config-wrap";
-        $(wrap).append($(data).find("#slot_edit"));
+        $(wrap).append($(response).find("#slot_edit"));
         // Hide the content until fully loaded
         $(wrap).hide();
         // Get admin view js and run it
-        $.when($.getScript("/static/confla/edit_slot.js")).done(function () {
+        $.when($.getScript("/static/confla/edit_slot.js")).then(function () {
             $(".config-wrap").show();
             selectize_setup(".fieldset-content:visible .room-select");
+        }, function (response){
+            // Failure
+            show_error("configuration", response);
         });
         $(".fa-spinner").remove();
         $(content).append(wrap);
+    }, function (response){
+        // Failure
+        show_error("configuration", response);
     });
 }
 
