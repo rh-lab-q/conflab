@@ -335,7 +335,7 @@ function timetableToJson(selector) {
                     cell["day"] = $(this).closest(".day-wrap").find("h4").text()
                     cell["start"] = $($(this).find("span.start")).text().slice(11,16);
                     cell["end"] = $($(this).find("span.end")).text().slice(9,14);
-                    cell["event"] = $(this).find("[name=event_id]").attr("value")
+                    cell["event"] = $(this).find(".event").attr("event-id")
                     row[rowName] = cell;
                 }
             }
@@ -422,7 +422,6 @@ function popoverInit(selector) {
                 });
                 $.when(def).then(function (response){
                     // Success
-                    console.log(this);
                     var popid = "#" + $(that).attr("aria-describedby");
                     $(popid).find(".fa-spinner").remove();
                     $(popid).find(".popover-content").append(response);
@@ -523,6 +522,9 @@ function popoverInit(selector) {
         var visible = $(this).parent().parent();
         var selSpeaker = $(content).find("select.sel-speaker");
         var selTag = $(content).find("select.sel-tag");
+
+        // If something went wrong when creating the popover
+        if(!selTag.length || selSpeaker.length) return;
 
         // Copy edited content into original html
         $(original).find("#id_topic").attr("value", ($(content).find("#id_topic").val()));
