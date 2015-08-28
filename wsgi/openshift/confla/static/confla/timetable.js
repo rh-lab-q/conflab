@@ -406,11 +406,40 @@ function popoverInit(selector) {
         container: "body",
         html: "true",
         title: function () {
-            console.log($(this).parent().parent().parent());
             return $(this).parent().parent().parent().find(".pop-title").html();
         },
         content: function () {
-           return $(this).parent().parent().parent().find(".pop-content").html();
+            var that = this;
+            var eventp = $(this).closest(".event");
+            var content = $(eventp).find(".pop-content");
+            // If the content has not been fetched yet
+            if (!content.length) {
+                var spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+                // Send a post and monitor the promise object
+                def = $.post("/events/popover/admin/", {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    data: $(eventp).attr("event-id"),
+                });
+                $.when(def).then(function (response){
+                    // Success
+                    console.log(this);
+                    var popid = "#" + $(that).attr("aria-describedby");
+                    $(popid).find(".fa-spinner").remove();
+                    $(popid).find(".popover-content").append(response);
+                    var div = document.createElement("div");
+                    div.className = "pop-content";
+                    $(div).append($(response).clone()).hide();
+                    $(eventp).append(div);
+                }, function(response) {
+                    // Failure
+                    $("[aria-describedby]").popover("hide");
+                    alert("Something went wrong!");
+                });
+                return spinner;
+            } else
+                // Content has already been fetched from the server
+                return content.clone().show();
+
         }
     }).on("shown.bs.popover", function() {
         // Set click method for the close icon

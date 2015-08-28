@@ -1,6 +1,6 @@
 {% extends "confla/base.html" %}
-{% load staticfiles %}
 {% load i18n %}
+{% load staticfiles %}
 {% load confla_filters %}
 {% block title %}Timetable{% endblock %}
 {% block extrastyles %}
@@ -21,7 +21,7 @@
     <input id="filter_input" class="form-control input-sm" type="text" value="" placeholder="Filter" />
     <div class="list-group" id="event-list">
         {% for e in event_list %}
-        <div class="event">
+        <div class="event" event-id={{e.id}}>
             <div class="event-visible {{e|tag_class}}">
                 <div class="item-buttons" style="display:none">
                     <div class="removesign">
@@ -37,18 +37,6 @@
             <div class="pop-title"style="display:none">
                 <span>{% trans "Edit event" %}</span>
                 <span class="pop-close glyphicon glyphicon-remove"></span>
-            </div>
-            <div class="pop-content" style="display:none">
-                <form method="post" action="{% url 'confla:saveEvent' %}">
-                    {% csrf_token %}
-                    {% with form=e|get_event_form %}
-                    <input type="hidden" name="event_id" value={{ e.id }} />
-                    {{ form.topic }}
-                    {{ form.description }}
-                    {{ form.speaker }}
-                    {{ form.tags }}
-                    {% endwith %}
-                </form>
             </div>
         </div>
         {% endfor %}
@@ -93,7 +81,7 @@
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}
                             {% with e=s.event_id %}
-                            <div class="event">
+                            <div class="event" event-id={{e.id}}>
                                 <div class="event-visible {{e|tag_class}}">
                                     <div class="item-buttons">
                                         <div class="removesign">
@@ -112,19 +100,6 @@
                                     <span>{% trans "Edit event" %}</span>
                                     <span class="pop-close glyphicon glyphicon-remove"></span>
                                 </div>
-                                <div class="pop-content" style="display:none">
-                                    <form method="post" action="{% url 'confla:saveEvent' %}">
-                                        {% csrf_token %}
-                                        {% with form=e|get_event_form %}
-                                        <input type="hidden" name="event_id" value={{ e.id }} />
-                                        {{ form.topic }}
-                                        {{ form.description }}
-                                        {{ form.speaker }}
-                                        {{ form.tags }}
-                                        {% endwith %}
-                                    </form>
-                                    <a class="adv-link" href="{% url 'confla:editEvent' %}{{e.id}}">{% trans "Advanced" %}</a>
-                                </div><!-- pop-content -->
                             </div><!-- event -->
                             {% endwith %}
                             {% endif %}

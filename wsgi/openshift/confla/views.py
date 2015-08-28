@@ -104,6 +104,18 @@ class EventView(generic.TemplateView):
         event = Event.objects.get(id=int(request.POST['data']))
         return render(request, template_name, {'event': event})
 
+    @permission_required('confla.can_organize', raise_exception=True)
+    def get_admin_popover(request):
+        template_name = 'confla/event_popover_admin.html'
+        if not(request.method == "POST"):
+            raise Http404
+        event = Event.objects.get(id=int(request.POST['data']))
+        form = EventCreateForm(instance=event)
+        return render(request, template_name,
+                        {'event': event,
+                         'form'  : form,
+                        })
+
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/usertable.html'
 

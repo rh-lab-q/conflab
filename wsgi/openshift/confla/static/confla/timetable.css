@@ -206,6 +206,10 @@ td > .ui-state-hover {
     height: 7px;
 }
 
+.popover {
+    max-width: 366px;
+}
+
 .popover h2 {
     font-size: 120%;
     font-weight: bold;
@@ -227,6 +231,12 @@ td > .ui-state-hover {
 
 .popover-content > div:last-child {
     margin-bottom: 0.2em;
+}
+
+.popover-content > .fa-spinner {
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
 }
 
 .popover .speaker {
