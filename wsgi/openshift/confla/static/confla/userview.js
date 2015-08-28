@@ -231,8 +231,8 @@ function getUserSched() {
         $(wrap).append($(data).find(".display-style"));
         $(wrap).append($(data).find(".sched-wrap"));
         $(wrap).hide();
-        user_setup();
         $("body > .container:not(#event-bar)").append(wrap);
+        user_setup();
         $(".fa-spinner").remove();
         $(wrap).show();
     });
@@ -261,6 +261,22 @@ function getRoomConfig() {
 function user_setup() {
     userPopoverInit();
 
+    // Close all popovers if clicked outside of a popover or an event
+    sel = ".user-wrap .item";
+    $('html').on('click', function(e) {
+        // If the target is not an event or topic
+        if (!$(e.target).hasClass("event-visible") && !$(e.target).hasClass("topic")
+            // If the target is not a popover
+            && $(e.target).parents('.popover.in').length === 0) {
+                $(sel).each( function () {
+                // If there is an open popover, hide it
+                if ($(this).attr("aria-describedby")) {
+                   $(this).popover('hide');
+                }
+            });
+        }
+    });
+
     // Delete empty rooms
     $(".table").each(function() {
         var that = this;
@@ -282,21 +298,4 @@ $(document).ready(function() {
     $("#tab-roomconf").click(showRoomConfig);
 
     user_setup();
-
-    // Close all popovers if clicked outside of a popover or an event
-    sel = ".user-wrap .item";
-    $('html').on('click', function(e) {
-        // If the target is not an event or topic
-        if (!$(e.target).hasClass("event-visible") && !$(e.target).hasClass("topic")
-            // If the target is not a popover
-            && $(e.target).parents('.popover.in').length === 0) {
-                $(sel).each( function () {
-                // If there is an open popover, hide it
-                if ($(this).attr("aria-describedby")) {
-                   $(this).popover('hide');
-                }
-            });
-        }
-    });
-
 })
