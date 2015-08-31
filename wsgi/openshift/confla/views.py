@@ -803,6 +803,13 @@ class ImportView(generic.TemplateView):
         Event.objects.all().delete()
         EventTag.objects.all().delete()
         room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
+        # Setup dummy event type
+        try:
+            EventType.objects.get(id=1)
+        except ObjectDoesNotExist:
+            newetype = EventType()
+            newetype.name = 'Talk'
+            newetype.save()
         # Setup a Conference if there is none
         if not Conference.get_active():
             newconf = Conference()
