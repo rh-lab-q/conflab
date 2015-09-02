@@ -166,6 +166,7 @@ function showUsersched() {
 }
 
 function showAdminsched() {
+    $(".alert").remove();
     $("#tab-adminsched").off("click");
     if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
         // Went from usersched to adminsched
@@ -188,6 +189,7 @@ function showRoomConfig() {
         // Show save dialog
         confirm().then(function (answer) {
             if (answer != "cancel") {
+                $(".alert").remove();
                 $("#sched-tabs").find("li.active").removeClass("active");
                 $("#tab-roomconf").off("click");
                 $("#tab-roomconf").parent().addClass("active");

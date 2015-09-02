@@ -424,10 +424,10 @@ function popoverInit(selector) {
                     // Success
                     var popid = "#" + $(that).attr("aria-describedby");
                     $(popid).find(".fa-spinner").remove();
-                    $(popid).find(".popover-content").append(response);
+                    $(popid).find(".popover-content").append($(response).children());
                     var div = document.createElement("div");
                     div.className = "pop-content";
-                    $(div).append($(response).clone()).hide();
+                    $(div).append($(response).children().clone()).hide();
                     $(eventp).append(div);
                 }, function(response) {
                     // Failure
@@ -437,7 +437,7 @@ function popoverInit(selector) {
                 return spinner;
             } else
                 // Content has already been fetched from the server
-                return content.clone().show();
+                return content.children().clone().show();
 
         }
     }).on("shown.bs.popover", function() {
@@ -484,11 +484,11 @@ function popoverInit(selector) {
         });
 
         // Selectize tags init
-            $(".popover").find(".sel-tag").each( function () {
-                var select = this;
-                var itemlist = [];
-                $(this).find("[selected='selected']").each(function () {
-                    itemlist.push($(this).val());
+        $(".popover").find(".sel-tag").each( function () {
+            var select = this;
+            var itemlist = [];
+            $(this).find("[selected='selected']").each(function () {
+                itemlist.push($(this).val());
             });
             $(this).selectize({
                 plugins: ['drag_drop'],
@@ -524,7 +524,7 @@ function popoverInit(selector) {
         var selTag = $(content).find("select.sel-tag");
 
         // If something went wrong when creating the popover
-        if(!selTag.length || selSpeaker.length) return;
+        if(!selTag.length || !selSpeaker.length) return;
 
         // Copy edited content into original html
         $(original).find("#id_topic").attr("value", ($(content).find("#id_topic").val()));
@@ -569,6 +569,7 @@ function popoverInit(selector) {
                 var event_id = form.find("[name=event_id]");
                 if (event_id.attr("value") == 0 && response !== "-1") {
                     event_id.attr("value", response);
+                    visible.closest(".event").find(".pop-title span:not(.pop-close)").html("Edit event");
                 }
             }
         });
