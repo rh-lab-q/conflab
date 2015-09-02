@@ -471,11 +471,11 @@ function popoverInit(selector) {
                         '</div>';
                     },
                     option: function(item, escape) {
-                        var label = item.username;
-                        var caption = item.name;
+                        var username = item.username;
+                        var name = item.name;
                         return '<div>' +
-                            '<span class="label">' + escape(label) + '</span>' +
-                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                            '<span class="name">' + escape(name) + '</span>' +
+                            '<span class="username">(' + escape(username) + ')</span>' +
                         '</div>';
                     }
                 }
