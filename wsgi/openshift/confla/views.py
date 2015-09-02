@@ -6,7 +6,7 @@ import csv
 from datetime import datetime, date, time
 
 from django.template.loader import render_to_string
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth import authenticate, login, logout
@@ -431,7 +431,6 @@ class TimetableView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request):
-        #TODO: Check if organizer before creating a conf form
         if len(Conference.objects.all()) == 0:
             if request.method == 'POST': # the form was submitted
                 form = ConfCreateForm(request.POST)
@@ -516,7 +515,7 @@ class TimetableView(generic.TemplateView):
                     form.save_m2m()
                     return HttpResponse(new_event.id)
                 else:
-                    return HttpResponse("-1")
+                    return HttpResponseBadRequest(form.errors.as_ul())
             else:
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
@@ -528,10 +527,9 @@ class TimetableView(generic.TemplateView):
                         event.prim_tag = None
                     event.save()
                     form.save_m2m()
+                    return HttpResponseRedirect(reverse('confla:thanks'))
                 else:
-                    #TODO: Proper error handling
-                    print("invalid")
-                return HttpResponseRedirect(reverse('confla:thanks'))
+                    return HttpResponseBadRequest(form.errors.as_ul())
 
     def json_to_timeslots(json_string):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'

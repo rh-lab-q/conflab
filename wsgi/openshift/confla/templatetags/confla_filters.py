@@ -24,7 +24,7 @@ def get_event_form(value):
 
 @register.filter
 def tag_class(value):
-    return "tag" + str(value.prim_tag.id) if value.prim_tag else "0"
+    return "tag" + str(value.prim_tag.id) if value.prim_tag else "tag0"
 
 @register.filter
 def set_height(value, arg):

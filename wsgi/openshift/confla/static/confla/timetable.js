@@ -523,6 +523,9 @@ function popoverInit(selector) {
         var selSpeaker = $(content).find("select.sel-speaker");
         var selTag = $(content).find("select.sel-tag");
 
+        // Remove existing errors
+        $(".alert").remove();
+
         // If something went wrong when creating the popover
         if(!selTag.length || !selSpeaker.length) return;
 
@@ -550,6 +553,7 @@ function popoverInit(selector) {
             select = $(original).find(".sel-tag");
             select.prepend($(select).find("[value=" + tagId + "]"));
         }
+        else tagId = "0";
         // Setup correct css class for the tag
         $(original).parent().find(".event-visible")[0].className = "event-visible tag" + tagId;
         // Tag select
@@ -567,10 +571,20 @@ function popoverInit(selector) {
         $(form).ajaxSubmit({
             success: function(response) {
                 var event_id = form.find("[name=event_id]");
-                if (event_id.attr("value") == 0 && response !== "-1") {
+                if (event_id.attr("value") == 0) {
                     event_id.attr("value", response);
                     visible.closest(".event").find(".pop-title span:not(.pop-close)").html("Edit event");
                 }
+            },
+            error: function(response) {
+                // Create error message and scroll to it
+                var div = $('<div class="alert alert-danger">' + response.responseText + '</div>');
+                $(div).prepend("<span>Error while saving event:</span>");
+                $(".sched-wrap").prepend(div);
+                // Smooth scroll
+                $('html,body').animate({
+                    scrollTop: $(div).offset().top
+                }, 666);
             }
         });
         // TODO: Check response before enabling
