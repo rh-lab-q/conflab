@@ -400,6 +400,77 @@ function timetableSubmit(selector) {
     return def;
 }
 
+function selectizePopover(selector) {
+    // Selectize speaker init
+    $(selector).find(".sel-speaker").each( function () {
+        var select = this;
+        var itemlist = [];
+        // Setup list of selected users
+        $(this).find("[selected='selected']").each(function () {
+            itemlist.push($(this).text());
+        });
+        $(this).selectize({
+            persist: false,
+            maxItems: null,
+            valueField: 'username',
+            labelField: 'name',
+            searchField: ['name', 'username'],
+            options: users,
+            items: itemlist,
+            render: {
+                item: function(item, escape) {
+                    return '<div>' +
+                        (item.name ? '<span class="name">' + escape(item.name) + ' </span>' : '') +
+                        (item.username ? '<span class="username">(' + escape(item.username) + ')</span>' : '') +
+                    '</div>';
+                },
+                option: function(item, escape) {
+                    var username = item.username;
+                    var name = item.name;
+                    return '<div>' +
+                        '<span class="name">' + escape(name) + '</span>' +
+                        '<span class="username">(' + escape(username) + ')</span>' +
+                    '</div>';
+                }
+            }
+        });
+        $("div.sel-speaker").removeClass("selectize-input");
+    });
+
+    // Selectize tags init
+    $(selector).find(".sel-tag").each( function () {
+        var select = this;
+        var itemlist = [];
+        // Setup list of selected tags
+        $(this).find("[selected='selected']").each(function () {
+            itemlist.push($(this).val());
+        });
+        $(this).selectize({
+            plugins: ['drag_drop'],
+            persist: false,
+            maxItems: null,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
+            items: itemlist,
+            render: {
+                item: function(item, escape) {
+                    return '<div>' +
+                        '<span class="name">' + escape(item.name) + ' </span>' +
+                    '</div>';
+                },
+                option: function(item, escape) {
+                    var caption = item.name;
+                    return '<div>' +
+                        '<span class="caption">' + escape(caption) + '</span>' +
+                            '</div>';
+                }
+            }
+        });
+        $("div.sel-tag").removeClass("selectize-input");
+    });
+}
+
 function popoverInit(selector) {
     $(selector).popover({
         placement: "left",
@@ -423,8 +494,10 @@ function popoverInit(selector) {
                 $.when(def).then(function (response){
                     // Success
                     var popid = "#" + $(that).attr("aria-describedby");
+                    var popcontent = $(response).children();
+                    selectizePopover(popcontent);
                     $(popid).find(".fa-spinner").remove();
-                    $(popid).find(".popover-content").append($(response).children());
+                    $(popid).find(".popover-content").append(popcontent);
                     var div = document.createElement("div");
                     div.className = "pop-content";
                     $(div).append($(response).children().clone()).hide();
@@ -437,8 +510,9 @@ function popoverInit(selector) {
                 return spinner;
             } else
                 // Content has already been fetched from the server
-                return content.children().clone().show();
-
+                var popcontent = content.children().clone().show();
+                selectizePopover(popcontent);
+                return popcontent;
         }
     }).on("shown.bs.popover", function() {
         // Set click method for the close icon
@@ -446,74 +520,6 @@ function popoverInit(selector) {
         var popoverSelector = "#" + $(this).attr("aria-describedby");
         $(popoverSelector).find(".pop-close").on("click", function () {
             $(item).popover("hide");
-        });
-
-        // Selectize speaker init
-        $(".popover").find(".sel-speaker").each( function () {
-            var select = this;
-            var itemlist = [];
-            $(this).find("[selected='selected']").each(function () {
-                itemlist.push($(this).text());
-            });
-            $(this).selectize({
-                persist: false,
-                maxItems: null,
-                valueField: 'username',
-                labelField: 'name',
-                searchField: ['name', 'username'],
-                options: users,
-                items: itemlist,
-                render: {
-                    item: function(item, escape) {
-                        return '<div>' +
-                            (item.name ? '<span class="name">' + escape(item.name) + ' </span>' : '') +
-                            (item.username ? '<span class="username">(' + escape(item.username) + ')</span>' : '') +
-                        '</div>';
-                    },
-                    option: function(item, escape) {
-                        var username = item.username;
-                        var name = item.name;
-                        return '<div>' +
-                            '<span class="name">' + escape(name) + '</span>' +
-                            '<span class="username">(' + escape(username) + ')</span>' +
-                        '</div>';
-                    }
-                }
-            });
-            $("div.sel-speaker").removeClass("selectize-input");
-        });
-
-        // Selectize tags init
-        $(".popover").find(".sel-tag").each( function () {
-            var select = this;
-            var itemlist = [];
-            $(this).find("[selected='selected']").each(function () {
-                itemlist.push($(this).val());
-            });
-            $(this).selectize({
-                plugins: ['drag_drop'],
-                persist: false,
-                maxItems: null,
-                valueField: 'id',
-                labelField: 'name',
-                searchField: ['name'],
-                //options: users,
-                items: itemlist,
-                render: {
-                    item: function(item, escape) {
-                        return '<div>' +
-                            '<span class="name">' + escape(item.name) + ' </span>' +
-                        '</div>';
-                    },
-                    option: function(item, escape) {
-                        var caption = item.name;
-                        return '<div>' +
-                            '<span class="caption">' + escape(caption) + '</span>' +
-                                '</div>';
-                    }
-                }
-            });
-            $("div.sel-tag").removeClass("selectize-input");
         });
     }).on("hide.bs.popover", function () {
         var original = $(this).parent().parent().parent().find(".pop-content");
