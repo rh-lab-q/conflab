@@ -69,7 +69,11 @@ function changeView() {
 function userPopoverInit() {
     $(".user-wrap .item").each (function () {
         var itemp = this;
-        $(itemp).popover({
+        var mousepos = {top: 0, left: 0, height: 0, width: 0};
+        $(itemp).click(function(e){
+            mousepos.top = e.pageY;
+            mousepos.left = e.pageX;
+        }).popover({
             placement: "auto bottom",
             html: "true",
             title: " ",
@@ -88,8 +92,16 @@ function userPopoverInit() {
                     $.when(def).then(function (response){
                         // Success
                         var popid = "#" + $(itemp).attr("aria-describedby");
+                        var pop = $(popid)[0];
                         $(popid).find(".fa-spinner").remove();
                         $(popid).find(".popover-content").append(response);
+                        // Compute the popover position using bootstrap's popover prototype
+                        var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
+                                'bottom', mousepos, pop.offsetWidth, pop.offsetHeight);
+                        // Adjust to arrow size
+                        position.top = position.top + 11;
+                        // Save new position
+                        $(popid).offset(position);
                         div = document.createElement("div");
                         div.className = "pop-content";
                         $(div).append($(response).clone()).hide();
@@ -106,12 +118,28 @@ function userPopoverInit() {
             }
         }).on("show.bs.popover", function() {
             // Hide all other popovers when showing a new one
-            $(".user-wrap .item").not(this).popover("hide");
+            $("[aria-describedby]").not(this).popover("hide");
+        }).on("shown.bs.popover", function() {
+            // Adjust the popover position
+            var popid = "#" + $(itemp).attr("aria-describedby");
+            var pop = $(popid)[0];
+            // Compute the popover position using bootstrap's popover prototype
+            var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
+                    'bottom', mousepos, pop.offsetWidth, pop.offsetHeight);
+            // Adjust to arrow size
+            position.top = position.top + 11;
+            // Save new position
+            $(popid).offset(position);
+            $(popid).css('visibility', 'visible');
+        }).on("hide.bs.popover", function() {
+            var popid = "#" + $(itemp).attr("aria-describedby");
+            $(popid).css('visibility', 'hidden');
         });
     });
 }
 
 function showUsersched() {
+    $("[aria-describedby]").popover("hide");
     if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
         // Went from adminsched to usersched
         // Show save dialog
@@ -166,6 +194,7 @@ function showUsersched() {
 }
 
 function showAdminsched() {
+    $("[aria-describedby]").popover("hide");
     $(".alert").remove();
     $("#tab-adminsched").off("click");
     if ($(".active > a", "#sched-tabs").is("#tab-usersched")) {
@@ -184,7 +213,8 @@ function showAdminsched() {
 }
 
 function showRoomConfig() {
-     if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
+    $("[aria-describedby]").popover("hide");
+    if ($(".active > a", "#sched-tabs").is("#tab-adminsched")) {
         // Went from adminsched to roomconf
         // Show save dialog
         confirm().then(function (answer) {

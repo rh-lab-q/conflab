@@ -12,9 +12,10 @@
     cursor: pointer;
 }
 
-.pop-user {
+div.pop-user {
     max-width: 366px;
-    margin-top:-100px !important;
+    visibility: hidden;
+    //    margin-top:-100px !important;
 }
 
 .event-desc {
