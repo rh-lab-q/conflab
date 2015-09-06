@@ -495,9 +495,21 @@ function popoverInit(selector) {
                     // Success
                     var popid = "#" + $(that).attr("aria-describedby");
                     var popcontent = $(response).children();
+                    var e = $(that)[0].getBoundingClientRect();
+                    var pop = $(popid)[0];
+                    var scrollTop = window.pageYOffset
+                    var scrollLeft = window.pageXOffset
                     selectizePopover(popcontent);
                     $(popid).find(".fa-spinner").remove();
                     $(popid).find(".popover-content").append(popcontent);
+                    // Compute the popover position using bootstrap's popover prototype
+                    var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
+                            'left', e, pop.offsetWidth, pop.offsetHeight);
+                    // Create document coordinates from relative ones and apply adjustments
+                    position.top = position.top + scrollTop;
+                    position.left = position.left + scrollLeft - 3*e.width/4;
+                    // Save new position
+                    $(popid).offset(position);
                     var div = document.createElement("div");
                     div.className = "pop-content";
                     $(div).append($(response).children().clone()).hide();
