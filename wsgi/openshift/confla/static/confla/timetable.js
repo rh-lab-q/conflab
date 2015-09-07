@@ -87,10 +87,10 @@ function eventInit(selector) {
                 return helper;
             }
         }).on("dragstart", function () {
-            $(this).css("visibility", "hidden");
+            $(this).css("visibility", "hidden").hide();
             $(this).parent().addClass("empty");
         }).on("dragstop", function () {
-            $(this).css("visibility", "visible");
+            $(this).css("visibility", "visible").show();
             $(this).parent().removeClass("empty");
         }).find("div.removesign").click(function() {
             // add closing functionality
@@ -190,7 +190,7 @@ function itemInit(selector) {
                 else {
                     // Dragged from event list
                     $(item).find(".event").hide();
-                    $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                    $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                     $(".item-buttons", ".drag-help").show();
                 }
             }, 0);
@@ -205,7 +205,7 @@ function itemInit(selector) {
             }
             else {
                 // Dragged from event list
-                $(".event:hidden").show();
+                $(".sched-wrap .event:hidden").show();
                 $(".drag-help").remove();
             }
         }
@@ -243,6 +243,7 @@ function emptyItemInit(selector) {
         },
         over: function(event, ui) {
             var item = $(this).find(".item");
+            $(".drag-help").remove();
             // Ignore over event from yourself
             if (!$(item).is($(ui.draggable).parent())) {
                 // Ensure the code is run after out finishes
@@ -251,13 +252,13 @@ function emptyItemInit(selector) {
                         // Dragged from a different item
                         if (!$(item).is($(ui.draggable).parent())) {
                             // Dragged over a different item
-                            $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible"));
+                            $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                             $(ui.draggable).hide();
                         }
                     }
                     else {
                         // Dragged from event list
-                        $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                        $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                     }
                     $(".item-buttons", ".drag-help").show();
                 }, 0);
@@ -276,7 +277,7 @@ function emptyItemInit(selector) {
             else {
                 // Dragged from event list
                 $(".drag-help").remove();
-                $(".event:hidden").show();
+                $(".sched-wrap .event:hidden").show();
             }
         }
     });
@@ -698,7 +699,6 @@ $(document).ready(function() {
         },
         out: function(event, ui) {
             $(".wrap .empty").closest(".wrap").droppable("enable");
-            $(ui.draggable).show();
             $(ui.draggable).parent().removeClass("empty");
         }
     });
@@ -742,17 +742,5 @@ $(document).ready(function() {
                 });
             });
         });
-    });
-
-    // Set up a dummy scrollbar at the top of the table
-    $(".table-dummy").width($(".table").width());
-    // Propagate scroll events into the proper scrollbar
-    $("#dummy-wrap").scroll(function(){
-        $("#table-wrap")
-            .scrollLeft($("#dummy-wrap").scrollLeft());
-    });
-    $("#table-wrap").scroll(function(){
-        $("#dummy-wrap")
-            .scrollLeft($("#table-wrap").scrollLeft());
     });
 })
