@@ -64,7 +64,15 @@ function countEndtime(tr_array, rownumber) {
 function eventInit(selector) {
     $(selector).each( function() {
         $(this).draggable({
-            revert: "invalid",
+            revert: function(dropped) {
+                if (dropped) return false;
+                else {
+                    $(".drag-help").remove();
+                    $(this).css("visibility", "visible").show();
+                    $(this).parent().removeClass("empty");
+                    return true;
+                }
+            },
             containment: "body",
             cursor: "grabbing",
             opacity: 0.7,
@@ -78,6 +86,12 @@ function eventInit(selector) {
                 $(helper).width($(this).parent().width()/2);
                 return helper;
             }
+        }).on("dragstart", function () {
+            $(this).css("visibility", "hidden");
+            $(this).parent().addClass("empty");
+        }).on("dragstop", function () {
+            $(this).css("visibility", "visible");
+            $(this).parent().removeClass("empty");
         }).find("div.removesign").click(function() {
             // add closing functionality
             $(this).closest(".item").addClass("empty").resizable("destroy");
@@ -122,7 +136,8 @@ function itemInit(selector) {
         tolerance: "pointer",
         drop: function( event, ui ) {
             item = $(this).find(".item");
-            // Dont drop into itself
+            $(".drag-help").remove();
+            // Dropped into another slot
             if (!$(item).is($(ui.draggable).parent())) {
                 // Don't append empty events to event list
                 if ($(ui.draggable).parent().is("#event-list") &&
@@ -144,41 +159,49 @@ function itemInit(selector) {
                     $(item).append($(ui.draggable).show());
                 }
             }
+            // Dropped into itself
+            else {
+                $(ui.draggable).css("visibility", "visible").show();
+                $(ui.draggable).parent().removeClass("empty");
+            }
         },
         over: function(event, ui) {
             var item = $(this).find(".item");
+            $(".drag-help").remove();
             // Ignore over event from yourself
-            if (!$(item).is($(ui.draggable).parent())) {
-                // Ensure the code is run after out finishes
-                setTimeout(function () {
-                    if (!$(ui.draggable).parent().is("#event-list")) {
-                        // Dragged from a different item
-                        if (!$(item).is($(ui.draggable).parent())) {
-                            // Dragged over a different item
-                            $(ui.draggable).parent().append($(item).find(".event").clone().addClass("drag-help").show());
-                            $(item).find(".event").hide();
-                            $(item).append($(ui.draggable).clone().addClass("drag-help").show());
-                            $(ui.draggable).hide();
-                        }
+            // Ensure the code is run after out finishes
+            setTimeout(function () {
+                if (!$(ui.draggable).parent().is("#event-list")) {
+                    // Dragged from an item
+                    if (!$(item).is($(ui.draggable).parent())) {
+                        // Dragged over a different item
+                        $(ui.draggable).parent().removeClass("empty");
+                        $(ui.draggable).parent().append($(item).find(".event").clone().addClass("drag-help").show());
+                        $(item).find(".event").hide();
+                        $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
+                        $(ui.draggable).hide();
                     }
                     else {
-                        // Dragged from event list
-                        $(item).find(".event").hide();
-                        $(item).append($(ui.draggable).clone().addClass("drag-help"));
-                        $(".item-buttons", ".drag-help").show();
+                        // Dragged over itself
+                        $(ui.draggable).parent().append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
+                        $(ui.draggable).hide();
                     }
-                }, 0);
-            }
+                }
+                else {
+                    // Dragged from event list
+                    $(item).find(".event").hide();
+                    $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                    $(".item-buttons", ".drag-help").show();
+                }
+            }, 0);
         },
         out: function(event, ui) {
             item = $(this).find(".item");
             if (!$(ui.draggable).parent().is("#event-list")) {
-                // Dragged from a different item
-                if (!$(item).is($(ui.draggable).parent())) {
-                    // Dragged out of a different item
-                    $(".event:hidden").show();
-                    $(".drag-help").remove();
-                }
+                // Dragged out of a different item
+                $(ui.draggable).parent().addClass("empty");
+                $(".event:hidden").show();
+                $(".drag-help").remove();
             }
             else {
                 // Dragged from event list
@@ -195,6 +218,7 @@ function emptyItemInit(selector) {
         tolerance: "pointer",
         drop: function( event, ui ) {
             var item = $(this).find(".item");
+            $(".drag-help").remove();
             // Dont drop into itself
             if (!$(item).is($(ui.draggable).parent())) {
                 if (!$(ui.draggable).parent().is("#event-list")) {
@@ -225,10 +249,9 @@ function emptyItemInit(selector) {
                 setTimeout(function () {
                     if (!$(ui.draggable).parent().is("#event-list")) {
                         // Dragged from a different item
-                        $(ui.draggable).parent().addClass("empty");
                         if (!$(item).is($(ui.draggable).parent())) {
                             // Dragged over a different item
-                            $(item).append($(ui.draggable).clone().addClass("drag-help"));
+                            $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible"));
                             $(ui.draggable).hide();
                         }
                     }
@@ -237,14 +260,12 @@ function emptyItemInit(selector) {
                         $(item).append($(ui.draggable).clone().addClass("drag-help"));
                     }
                     $(".item-buttons", ".drag-help").show();
-                    //$(item).removeClass("empty");
                 }, 0);
             }
         },
         out: function(event, ui) {
             var item = $(this).find(".item");
             if (!$(ui.draggable).parent().is("#event-list")) {
-                $(ui.draggable).parent().removeClass("empty");
                 // Dragged from a different item
                 if (!$(item).is($(ui.draggable).parent())) {
                     // Dragged out of a different item
@@ -257,7 +278,6 @@ function emptyItemInit(selector) {
                 $(".drag-help").remove();
                 $(".event:hidden").show();
             }
-            //$(item).addClass("empty");
         }
     });
     $(selector).closest("td").off("click").on("click", ".item", appendEvent);
@@ -473,7 +493,7 @@ function selectizePopover(selector) {
 
 function popoverInit(selector) {
     $(selector).popover({
-        placement: "left",
+        placement: "right",
         container: "body",
         html: "true",
         title: function () {
@@ -504,10 +524,10 @@ function popoverInit(selector) {
                     $(popid).find(".popover-content").append(popcontent);
                     // Compute the popover position using bootstrap's popover prototype
                     var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
-                            'left', e, pop.offsetWidth, pop.offsetHeight);
+                            'right', e, pop.offsetWidth, pop.offsetHeight);
                     // Create document coordinates from relative ones and apply adjustments
                     position.top = position.top + scrollTop;
-                    position.left = position.left + scrollLeft - 3*e.width/4;
+                    position.left = position.left + scrollLeft + 10;
                     // Save new position
                     $(popid).offset(position);
                     var div = document.createElement("div");
@@ -526,6 +546,9 @@ function popoverInit(selector) {
                 selectizePopover(popcontent);
                 return popcontent;
         }
+    }).on("show.bs.popover", function() {
+        // Hide all other popovers when showing a new one
+        $("[aria-describedby]").not(this).popover("hide");
     }).on("shown.bs.popover", function() {
         // Set click method for the close icon
         var item = this;

@@ -70,6 +70,7 @@ function userPopoverInit() {
     $(".user-wrap .item").each (function () {
         var itemp = this;
         var mousepos = {top: 0, left: 0, height: 0, width: 0};
+        var arrowsize = 11; // arrow size in pixels
         $(itemp).click(function(e){
             mousepos.top = e.pageY;
             mousepos.left = e.pageX;
@@ -99,7 +100,7 @@ function userPopoverInit() {
                         var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
                                 'bottom', mousepos, pop.offsetWidth, pop.offsetHeight);
                         // Adjust to arrow size
-                        position.top = position.top + 11;
+                        position.top = position.top + arrowsize + 1;
                         // Save new position
                         $(popid).offset(position);
                         div = document.createElement("div");
@@ -127,7 +128,7 @@ function userPopoverInit() {
             var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
                     'bottom', mousepos, pop.offsetWidth, pop.offsetHeight);
             // Adjust to arrow size
-            position.top = position.top + 11;
+            position.top = position.top + arrowsize + 1;
             // Save new position
             $(popid).offset(position);
             $(popid).css('visibility', 'visible');
