@@ -67,4 +67,8 @@
 
 {% block extrascripts %}
 <script type="text/javascript" src="{% static 'confla/eventedit.js' %}"></script>
+<script class="js-setup">
+var users = {{ user_list|safe }};
+</script>
+
 {% endblock %}
