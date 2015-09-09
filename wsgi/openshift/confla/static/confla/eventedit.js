@@ -80,7 +80,7 @@ function showModal(event) {
     modal.modal("show");
     $.when(def).then(function (response){
         // Success
-        $(".modal-body").html($(".mod-content", response).html());
+        $(".modal-body").html($(".modal-body", response).html());
         selectizeModal(".modal-body");
         $(".modal-body form").ajaxForm();
     }, function (response){
@@ -89,12 +89,11 @@ function showModal(event) {
     });
 }
 
-$(document).ready(function() {
-    // Setup modal
-    var modal = $(".modal").modal({
+function setupModal(selector) {
+    var modal = $(selector).modal({
         show: false
     })
-    var form = $(".modal-body form");
+    var form = $("form", modal);
     if (form.length) {
         $(form).ajaxForm();
         selectizeModal(form);
@@ -103,8 +102,15 @@ $(document).ready(function() {
 
     $(".submit").click(saveEvent);
 
-    // Show modal on click on an event
-    $(".event").click(function () {
-        showModal(this);
-    });
+}
+
+$(document).ready(function() {
+    // Setup modal
+    if ($(".event-edit .modal").length) {
+        setupModal(".modal");
+        // Show modal on click on an event
+        $(".event").click(function () {
+            showModal(this);
+        });
+    }
 })

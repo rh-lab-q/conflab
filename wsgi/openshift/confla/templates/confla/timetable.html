@@ -120,6 +120,7 @@
     </div><!-- table-wrap -->
 </div><!-- day-wrap -->
 {% endfor %}
+{% include_modal %}
 <script class="js-setup">
 var tags = {{ tag_list|safe }}
 var users = {{ user_list|safe }};
@@ -127,8 +128,6 @@ var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}
 var form_action = "{% url 'confla:saveEvent' %}";
 </script>
 </div><!-- sched-wrap -->
-
-
 
 {% endblock %}
 
@@ -138,5 +137,5 @@ var form_action = "{% url 'confla:saveEvent' %}";
 
 {% block extrascripts %}
 <script type="text/javascript" src="{% static 'confla/timetable.js' %}"></script>
-
+<script type="text/javascript" src="{% static 'confla/eventedit.js' %}"></script>
 {% endblock %}

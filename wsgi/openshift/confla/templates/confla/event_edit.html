@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="event-edit">
     <h4>Events:</h4>
     {% for event in event_list %}
     <div scheduled={{event.is_scheduled}} event-id={{event.id}} class="event {{event|tag_class}}" style="float:left">
@@ -22,46 +22,7 @@
     </div>
     {% endfor %}
     <div style="clear:both"></div>
-    <div class="modal fade">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4>Edit event</h4>
-                </div>
-                <div class="modal-body">
-                    {% if form %}
-                    <form method="post" action="{% url 'confla:editEvent2' event.id %}">
-                        {% csrf_token %}
-                        <label for="id_topic">{% trans "Topic" %}</label>
-                        {{form.topic}}
-                        <label for="id_description">{% trans "Description" %}</label>
-                        {{form.description}}
-                        <label for="id_e_type_id">{% trans "Event type" %}</label>
-                        {{form.e_type_id}}
-                        <label for="id_speaker">{% trans "Speaker" %}</label>
-                        {{form.speaker}}
-                        <label for="id_tags">{% trans "Tags" %}</label>
-                        {{form.tags}}
-                        <label for="id_lang">{% trans "Language" %}</label>
-                        {{form.lang}}
-                        <label for="id_slides">{% trans "Presentation" %}</label>
-                        {{form.slides}}
-                        <label for="id_google_doc_url">{% trans "Google doc" %}</label>
-                        {{form.google_doc_url}}
-                        <label for="id_video">{% trans "Video" %}</label>
-                        {{form.video}}
-                    </form>
-                    {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="submit btn btn-default" style="float:left">Submit</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include_modal event %}
 </div>
 {% endblock %}
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from django import template
 
 from confla.models import Event, Timeslot, Conference
-from confla.forms import EventCreateForm
+from confla.forms import EventCreateForm, EventEditForm
 
 
 register = template.Library()
@@ -30,6 +30,12 @@ def tag_class(value):
 def set_height(value, arg):
     size = int(arg)
     return str(size*value-2) + "px" # 2 is border size in pixels
+
+@register.inclusion_tag('confla/event_modal.html')
+def include_modal(event=None):
+    if event:
+        form = EventEditForm(instance=event)
+        return { 'form' : form, 'event' : event }
 
 """
 @register.filter

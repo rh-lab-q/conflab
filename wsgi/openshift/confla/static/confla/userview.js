@@ -286,6 +286,8 @@ function getAdminSched() {
             $("body").append($(response).filter("#event-bar"));
             // Hide the content until fully loaded
             $(wrap).hide();
+            // TODO: More error checking?
+            $.getScript("/static/confla/eventedit.js");
             // Get admin view js and run it
             $.when($.getScript("/static/confla/timetable.js")).then(function (response) {
                 // Success

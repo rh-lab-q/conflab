@@ -534,7 +534,16 @@ function popoverInit(selector) {
                     var div = document.createElement("div");
                     div.className = "pop-content";
                     $(div).append($(response).children().clone()).hide();
+                    $(".adv-link", popid).click(function(event) {
+                        $(that).popover("hide");
+                        showModal(eventp);
+                    });
+                    $(".adv-link", div).click(function(event) {
+                        $(that).popover("hide");
+                        showModal(eventp);
+                    });
                     $(eventp).append(div);
+
                 }, function(response) {
                     // Failure
                     $("[aria-describedby]").popover("hide");
@@ -543,7 +552,7 @@ function popoverInit(selector) {
                 return spinner;
             } else
                 // Content has already been fetched from the server
-                var popcontent = content.children().clone().show();
+                var popcontent = content.children().clone(true).show();
                 selectizePopover(popcontent);
                 return popcontent;
         }
@@ -708,11 +717,11 @@ $(document).ready(function() {
         // If the target is not the edit icon
         if (!$(e.target).parent().hasClass("editsign")
             // If the target is not a popover
-            && $(e.target).parents('.popover.in').length === 0) {
+            && !$(e.target.closest(".popover")).length) {
                 $('.editsign').each( function () {
                 // If there is an open popover, hide it
                 if ($(this).attr("aria-describedby")) {
-                   $(this).popover('hide');
+                    $(this).popover('hide');
                 }
             });
         }
@@ -743,4 +752,6 @@ $(document).ready(function() {
             });
         });
     });
+    // Setup modal
+    setupModal(".modal");
 })

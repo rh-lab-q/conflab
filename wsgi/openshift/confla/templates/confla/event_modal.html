@@ -1,28 +1,45 @@
-{% extends "confla/base.html" %}
 {% load i18n %}
 {% block content %}
-<div class="mod-content">
-    <form method="post" action="{% url 'confla:editEvent2' id=event.id %}">
-        {% csrf_token %}
-        <label for="id_topic">{% trans "Topic" %}</label>
-        {{form.topic}}
-        <label for="id_description">{% trans "Description" %}</label>
-        {{form.description}}
-        <label for="id_e_type_id">{% trans "Event type" %}</label>
-        {{form.e_type_id}}
-        <label for="id_speaker">{% trans "Speaker" %}</label>
-        {{form.speaker}}
-        <label for="id_tags">{% trans "Tags" %}</label>
-        {{form.tags}}
-        <label for="id_lang">{% trans "Language" %}</label>
-        {{form.lang}}
-        <label for="id_slides">{% trans "Presentation" %}</label>
-        {{form.slides}}
-        <label for="id_google_doc_url">{% trans "Google doc" %}</label>
-        {{form.google_doc_url}}
-        <label for="id_video">{% trans "Video" %}</label>
-        {{form.video}}
-    </form>
+<div class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Edit event</h4>
+            </div>
+            <div class="modal-body">
+                {% if form %}
+                <form method="post" action="{% url 'confla:editEvent2' event.id %}">
+                    {% csrf_token %}
+                    <label for="id_topic">{% trans "Topic" %}</label>
+                    {{form.topic}}
+                    <label for="id_description">{% trans "Description" %}</label>
+                    {{form.description}}
+                    <label for="id_e_type_id">{% trans "Event type" %}</label>
+                    {{form.e_type_id}}
+                    <label for="id_speaker">{% trans "Speaker" %}</label>
+                    {{form.speaker}}
+                    <label for="id_tags">{% trans "Tags" %}</label>
+                    {{form.tags}}
+                    <label for="id_lang">{% trans "Language" %}</label>
+                    {{form.lang}}
+                    <label for="id_slides">{% trans "Presentation" %}</label>
+                    {{form.slides}}
+                    <label for="id_google_doc_url">{% trans "Google doc" %}</label>
+                    {{form.google_doc_url}}
+                    <label for="id_video">{% trans "Video" %}</label>
+                    {{form.video}}
+                </form>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submit btn btn-default" style="float:left">Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
+
 {% endblock %}
 

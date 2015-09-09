@@ -34,20 +34,16 @@ class EventEditView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def event_view(request, id=None):
-        form = None
         event = None
         if id:
             event = Event.objects.get(id=id)
-            form = EventEditForm(instance=event)
         conf = Conference.get_active()
         event_list = Event.objects.filter(conf_id=conf)
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
-
         return render(request, EventEditView.template_name,
                         { 'event_list' : event_list, 
                           'tag_list' : EventTag.objects.all(),
-                          'form' : form,
                           'event': event,
                           'user_list' : [{ 'name' : u.first_name + ' ' + u.last_name,
                                            'username' : u.username} for u in users],
