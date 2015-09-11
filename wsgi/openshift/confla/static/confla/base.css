@@ -1,0 +1,9 @@
+/*
+ * @file: base.css
+ * @author: Petr Kubat <petr.kubat.hb@seznam.cz>
+ *
+ */
+
+#language .dropdown-menu {
+    min-width: 80px;
+}

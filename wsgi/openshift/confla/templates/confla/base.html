@@ -15,7 +15,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'selectize/selectize.bootstrap3.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bootsidemenu/BootSideMenu.css' %}" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    {% block extrastyles %}{% endblock %}
+    {% block extrastyles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'confla/base.css' %}" />
+    {% endblock %}
 </head>
 
 <body {% block bodyattr %}{% endblock %}>
@@ -47,19 +49,22 @@
                 {% else %}
                 <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
                 {% endif %}
-                <li>
-                    <form class="navbar-form" action="{% url 'confla:set_language' %}" method="post">
-                        {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ redirect_to }}" />
-                        <select class="form-control" onchange="this.form.submit();" name="language">
-                        {% get_language_info_list for LANGUAGES as languages %}
-                        {% for language in languages %}
-                        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
-                            {{ language.name_local }}
-                        </option>
-                        {% endfor %}
-                        </select>
-                    </form>
+                <li class="dropdown" id="language">
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% get_language_info for LANGUAGE_CODE as lang %}
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ lang.name_local }}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <form action="{% url 'confla:set_language' %}" method="post">
+                            {% csrf_token %}
+                            {% for language in languages %}
+                            <li><button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-default" style="border-width:0;" title="{{ language.name_local }}" >
+    {{ language.name_local }}</button></li>
+                            {% endfor %}
+                        </form>
+                    </ul>
                 </li>
             </ul>
         </div>
