@@ -35,20 +35,30 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Submit your talk" %}</strong></a></li>
+                <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Call for Participation" %}</strong></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
                 <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
-                {% if perms.confla.can_volunteer %}
-                <li><a href="{% url 'confla:volunteer' %}">{% trans "Volunteer" %}</a></li>
-                {% endif %}
-                <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
+                <li class="dropdown" id="user">
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user.get_username }}
+                        <i class="fa fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
+                        <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
+                        {% if perms.confla.can_organize %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">{% trans "Administration" %}</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
                 {% else %}
                 <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
                 {% endif %}
+
                 <li class="dropdown" id="language">
                     {% get_language_info_list for LANGUAGES as languages %}
                     {% get_language_info for LANGUAGE_CODE as lang %}
