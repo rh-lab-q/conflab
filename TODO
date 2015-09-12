@@ -2,6 +2,7 @@ css
 - nicify user view popups
 - nicify room slot length edit form
 - nicify conference views
+- nicify dropdowns in the header
 - admin view popup positioning
 forms
 - fix room and conf create forms to work with the new room model

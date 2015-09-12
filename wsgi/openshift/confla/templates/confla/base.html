@@ -53,15 +53,15 @@
                     {% get_language_info_list for LANGUAGES as languages %}
                     {% get_language_info for LANGUAGE_CODE as lang %}
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ lang.name_local }}
-                        <span class="caret"></span>
+                        {{ lang.name_local|capfirst }}
+                        <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <form action="{% url 'confla:set_language' %}" method="post">
                             {% csrf_token %}
                             {% for language in languages %}
                             <li><button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-default" style="border-width:0;" title="{{ language.name_local }}" >
-    {{ language.name_local }}</button></li>
+    {{ language.name_local|capfirst }}</button></li>
                             {% endfor %}
                         </form>
                     </ul>
