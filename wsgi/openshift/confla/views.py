@@ -88,6 +88,52 @@ class EventEditView(generic.TemplateView):
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
+    def my_view(request, url_id):
+        return render(request, AboutView.template_name, {'url_id' : url_id})
+
+class IndexView(generic.TemplateView):
+    template_name = 'confla/base.html'
+    def my_view(request):
+        return render(request, IndexView.template_name)
+
+class CfpView(generic.TemplateView):
+    # TODO: Combine these two methods
+    # TODO: Conference.objects.get(url_id=url_id) to get conference
+    def save_form_and_register(request, url_id):
+        if request.method == 'POST':
+            user_form = RegisterForm(request.POST)
+            paper_form = PaperForm(request.POST)
+            if user_form.is_valid() and paper_form.is_valid():
+                user = user_form.save()
+                paper = paper_form.save(commit=False)
+                paper.user_id = user.id;
+                paper.save()
+                return HttpResponseRedirect(reverse('confla:thanks'))
+        else:
+            user_form = RegisterForm()
+            paper_form = PaperForm()
+
+        return render(request, 'confla/reg_talk.html', {
+            'user_form': user_form,
+            'paper_form': paper_form,
+            'url_id' : url_id,
+        })
+
+    @login_required
+    def save_form(request, url_id):
+        if request.method == 'POST':
+            paper_form = PaperForm(request.POST)
+            if paper_form.is_valid():
+                paper = paper_form.save(commit=False)
+                paper.user_id = request.user.id
+                paper.save()
+                return HttpResponseRedirect(reverse('confla:thanks'))
+        else:
+            paper_form = PaperForm()
+
+        return render(request, 'confla/reg_talk.html', {
+            'paper_form': paper_form,
+        })
 
 class VolunteerView(generic.TemplateView):
     template_name = 'confla/volunteer.html'
@@ -106,7 +152,7 @@ class EventView(generic.TemplateView):
         return render(request, template_name, {'event': event})
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def get_admin_popover(request):
+    def get_admin_popover(request, url_id):
         template_name = 'confla/event_popover_admin.html'
         if not(request.method == "POST"):
             raise Http404
@@ -115,20 +161,22 @@ class EventView(generic.TemplateView):
         return render(request, template_name,
                         {'event': event,
                          'form'  : form,
+                         'url_id' : url_id,
                         })
 
 class ScheduleView(generic.TemplateView):
     template_name = 'confla/usertable.html'
 
-    def my_view(request):
+    def my_view(request, url_id):
         #TODO: Add compatibility with archived conferences
-        conf = Conference.get_active()
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         slot_list = {}
         rooms = conf.rooms.all()
         for room in rooms:
             slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
-        if not(conf):
-            return HttpResponse("Currently no conferences.")
         time_list = []
         start_list = conf.get_datetime_time_list()
         for date in conf.get_datetime_date_list():
@@ -155,13 +203,14 @@ class ScheduleView(generic.TemplateView):
                          'tag_list' : EventTag.objects.all(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
+                         'url_id' : url_id,
                     })
 
-    def list_view(request):
-        #TODO: Add compatibility with archived conferences
-        conf = Conference.get_active()
-        if not(conf):
-            return HttpResponse("Currently no conferences.")
+    def list_view(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         time_list = []
         # Distinct ordered datetime list for the current conference
         start_list = Timeslot.objects.filter(conf_id=conf).order_by("start_time").values_list("start_time", flat=True).distinct()
@@ -305,22 +354,6 @@ class UserView(generic.TemplateView):
             'email_form' : email_form,
             })
 
-    @login_required
-    def send_paper(request):
-        if request.method == 'POST':
-            paper_form = PaperForm(request.POST)
-            if paper_form.is_valid():
-                paper = paper_form.save(commit=False)
-                paper.user_id = request.user.id
-                paper.save()
-                return HttpResponseRedirect(reverse('confla:thanks'))
-        else:
-            paper_form = PaperForm()
-
-        return render(request, 'confla/reg_talk.html', {
-            'paper_form': paper_form,
-        })
-
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'
 
@@ -353,25 +386,6 @@ class RegisterView(generic.TemplateView):
             'form' : form,
         })
 
-    def send_paper(request):
-        if request.method == 'POST':
-            user_form = RegisterForm(request.POST)
-            paper_form = PaperForm(request.POST)
-            if user_form.is_valid() and paper_form.is_valid():
-                user = user_form.save()
-                paper = paper_form.save(commit=False)
-                paper.user_id = user.id;
-                paper.save()
-                return HttpResponseRedirect(reverse('confla:thanks'))
-        else:
-            user_form = RegisterForm()
-            paper_form = PaperForm()
-
-        return render(request, 'confla/reg_talk.html', {
-            'user_form': user_form,
-            'paper_form': paper_form,
-        })
-
 class AddRoomsView(generic.TemplateView):
     template_name="confla/add_rooms.html"
 
@@ -393,8 +407,11 @@ class RoomConfView(generic.TemplateView):
     template_name = 'confla/slot_edit.html'
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def slot_view(request):
-        conf = Conference.get_active()
+    def slot_view(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         rooms = conf.rooms.all()
         room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
                       'room' : x} for x in conf.rooms.all()]
@@ -409,12 +426,17 @@ class RoomConfView(generic.TemplateView):
         for key, value in len_dict.items():
             config_list.append({'slot_len' : key, 'rooms' : value})
         return render(request, RoomConfView.template_name, { 'rooms' : rooms,
-                                                'config_list' : config_list })
+                                                'config_list' : config_list,
+                                                'url_id' : url_id
+                                                })
 
     @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
-    def save_config(request):
-        conf = Conference.get_active()
+    def save_config(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         if request.method == 'POST': # the form was submitted
             configs = json.loads(request.POST['data'])
             for config in configs:
@@ -431,83 +453,73 @@ class TimetableView(generic.TemplateView):
     template_name = "confla/timetable.html"
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def view_timetable(request):
-        if len(Conference.objects.all()) == 0:
-            if request.method == 'POST': # the form was submitted
-                form = ConfCreateForm(request.POST)
-                if form.is_valid():
-                    conf = form.save(commit=False)
-                    conf.active = True
-                    conf.save()
-                    form.save_m2m()
-                    return HttpResponseRedirect(reverse('confla:thanks'))
-            else:
-                form = ConfCreateForm()
-
-            return render(request, 'confla/newconf.html', {
-                'form' : form,
-            })
-        else:
-            #TODO: Add compatibility with archived conferences
-            conf = Conference.get_active()
-            if not(conf):
-                return HttpResponse("Currently no conferences.")
-            users = ConflaUser.objects.all()
-            tags = EventTag.objects.all()
-            rooms = conf.rooms.all()
-            slot_list = {}
-            for room in rooms:
-                slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
-            time_list = []
-            start_list = conf.get_datetime_time_list()
-            for date in conf.get_datetime_date_list():
-                time_dict = {}
-                time_dict["day"] = date.strftime("%A, %d.%m.")
-                time_dict["list"] = []
-                for start_time in start_list:
-                    time = {}
-                    time['short'] = start_time.strftime("%H:%M") 
-                    time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
-                    time['slots'] = []
-                    for room in rooms:
-                        for slot in slot_list[room.shortname]:
-                            if slot.get_start_datetime == time['full']:
-                                time['slots'].append(slot)
-                                break
-                        else:
-                            time['slots'].append(None)
-                    time_dict["list"].append(time)
-                time_list.append(time_dict)
-            room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
-                          'room' : x} for x in conf.rooms.all()]
-            return render(request, TimetableView.template_name,
-                          {  'conf'      : conf,
-                             'event_create' : EventCreateForm(),
-                             'tag_list' : [{'id' : x.id,
-                                            'color' : x.color}
-                                            for x in EventTag.objects.all()],
-                             'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
-                             'time_list' : time_list,
-                             'room_list' : room_list,
-                             'user_list' : [{'name' : u.first_name + ' ' + u.last_name,
-                                             'username' : u.username} for u in users],
-                           })
+    def view_timetable(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        users = ConflaUser.objects.all()
+        tags = EventTag.objects.all()
+        rooms = conf.rooms.all()
+        slot_list = {}
+        for room in rooms:
+            slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
+        time_list = []
+        start_list = conf.get_datetime_time_list()
+        for date in conf.get_datetime_date_list():
+            time_dict = {}
+            time_dict["day"] = date.strftime("%A, %d.%m.")
+            time_dict["list"] = []
+            for start_time in start_list:
+                time = {}
+                time['short'] = start_time.strftime("%H:%M") 
+                time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                time['slots'] = []
+                for room in rooms:
+                    for slot in slot_list[room.shortname]:
+                        if slot.get_start_datetime == time['full']:
+                            time['slots'].append(slot)
+                            break
+                    else:
+                        time['slots'].append(None)
+                time_dict["list"].append(time)
+            time_list.append(time_dict)
+        room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
+                      'room' : x} for x in conf.rooms.all()]
+        return render(request, TimetableView.template_name,
+                      {  'conf'      : conf,
+                         'event_create' : EventCreateForm(),
+                         'tag_list' : [{'id' : x.id,
+                                        'color' : x.color}
+                                        for x in EventTag.objects.all()],
+                         'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
+                         'time_list' : time_list,
+                         'room_list' : room_list,
+                         'user_list' : [{'name' : u.first_name + ' ' + u.last_name,
+                                         'username' : u.username} for u in users],
+                         'url_id' : url_id,
+                     })
 
     @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
-    def save_timetable(request):
+    def save_timetable(request, url_id):
         if(request.method == 'POST'):
-            TimetableView.json_to_timeslots(request.POST['data'])
+            TimetableView.json_to_timeslots(request.POST['data'], url_id)
             return HttpResponseRedirect(reverse('confla:thanks'))
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def save_event(request):
+    def save_event(request, url_id):
         if request.method == 'POST':
             if request.POST['event_id'] == "0":
+                # New event
+                try:
+                    conf = Conference.objects.get(url_id=url_id)
+                except ObjectDoesNotExist:
+                    raise Http404
                 form = EventCreateForm(request.POST)
                 if form.is_valid():
                     new_event = form.save(commit=False)
-                    new_event.conf_id = Conference.get_active()
+                    new_event.conf_id = conf
                     new_event.e_type_id = EventType.objects.get(id=1)
                     new_event.lang = "cz"
                     if "tags" in request.POST:
@@ -518,6 +530,7 @@ class TimetableView(generic.TemplateView):
                 else:
                     return HttpResponseBadRequest(form.errors.as_ul())
             else:
+                # Existing event
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
                 if form.is_valid():
@@ -532,9 +545,12 @@ class TimetableView(generic.TemplateView):
                 else:
                     return HttpResponseBadRequest(form.errors.as_ul())
 
-    def json_to_timeslots(json_string):
+    def json_to_timeslots(json_string, url_id):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
-        conf = Conference.get_active()
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         json_obj = json.loads(json_string)
         # Delete all existing timeslots
         Timeslot.objects.filter(conf_id=conf).delete()
@@ -810,17 +826,21 @@ class ImportView(generic.TemplateView):
             newetype.name = 'Talk'
             newetype.save()
         # Setup a Conference if there is none
-        if not Conference.get_active():
+        try:
+            conf = Conference.objects.get(url_id='2015')
+        except ObjectDoesNotExist:
             newconf = Conference()
             newconf.start_date = date(2015, 2, 6)
             newconf.end_date = date(2015, 2, 8)
             newconf.start_time = time(8, 0, 0)
             newconf.end_time = time(20, 0, 0)
+            newconf.url_id = '2015'
             newconf.active = True
             newconf.name = "Devconf 2015"
             newconf.save()
+            conf = newconf
+
         # Generate rooms from roomlist
-        conf = Conference.get_active()
         for i in room_list:
             try:
                 Room.objects.get(shortname=i)
@@ -929,15 +949,19 @@ class ImportView(generic.TemplateView):
     @transaction.atomic
     def oa2015(csv_file):
         # Setup a Conference if there is none
-        if not Conference.get_active():
+        try:
+            conf = Conference.objects.get(url_id='oa2015')
+        except ObjectDoesNotExist:
             newconf = Conference()
             newconf.start_date = date(2015, 11, 7)
             newconf.end_date = date(2015, 11, 8)
             newconf.start_time = time(8, 0, 0)
             newconf.end_time = time(20, 0, 0)
+            newconf.url_id = 'oa2015'
             newconf.active = True
-            newconf.name = "OpenAlt 2015"
+            newconf.name = "Openalt 2015"
             newconf.save()
+            conf = newconf
 
         with open(csv_file) as f:
             if csv.Sniffer().has_header(f.read()):
@@ -1005,7 +1029,7 @@ class ImportView(generic.TemplateView):
                         # There are no more events left
                         break;
                     newevent = Event()
-                    newevent.conf_id = Conference.get_active()
+                    newevent.conf_id = conf
                     # Check if the event type exists
                     # If not, create it
                     try:

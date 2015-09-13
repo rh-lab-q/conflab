@@ -15,6 +15,7 @@ class Conference(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+')
+    url_id = models.CharField(max_length=256, unique=True)
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
 

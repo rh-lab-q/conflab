@@ -278,7 +278,7 @@ function getAdminSched() {
         spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
         $(".user-wrap").remove();
         $(content).append(spinner);
-        $.when($.get( "/admin/sched/")).then(function (response) {
+        $.when($.get(edit_link)).then(function (response) {
             // Success
             var wrap = document.createElement('div');
             wrap.className = "admin-wrap";
@@ -309,7 +309,7 @@ function getAdminSched() {
 }
 
 function getUserSched() {
-    $.when($.get( "/sched/")).then(function(response) {
+    $.when($.get(user_link)).then(function(response) {
         // Success
         var wrap = document.createElement('div');
         wrap.className = "user-wrap";
@@ -328,7 +328,7 @@ function getUserSched() {
 
 function getRoomConfig() {
     content = $("body > .container:not(#event-bar)");
-    $.when($.get( "/rooms/config/")).then(function(response) {
+    $.when($.get(config_link)).then(function(response) {
         // Success
         var wrap = document.createElement('div');
         wrap.className = "config-wrap";

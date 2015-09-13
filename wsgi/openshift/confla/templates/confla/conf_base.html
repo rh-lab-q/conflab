@@ -1,0 +1,12 @@
+{% extends "confla/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block cfp %}
+<li><a href="{% url 'confla:cfp' url_id %}"><strong>{% trans "Call for Participation" %}</strong></a></li>
+{% endblock cfp %}
+
+{% block confbar %}
+<li><a href="{% url 'confla:about' url_id %}">{% trans "About" %}</a></li>
+<li><a href="{% url 'confla:schedule' url_id %}">{% trans "Schedule" %}</a></li>
+{% endblock confbar %}

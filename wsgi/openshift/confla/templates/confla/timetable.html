@@ -1,4 +1,4 @@
-{% extends "confla/base.html" %}
+{% extends "confla/conf_base.html" %}
 {% load i18n %}
 {% load staticfiles %}
 {% load confla_filters %}
@@ -125,7 +125,9 @@
 var tags = {{ tag_list|safe }}
 var users = {{ user_list|safe }};
 var form = '{{event_create.topic|escapejs}}{{event_create.description|escapejs}}{{event_create.speaker|escapejs}}{{event_create.tags|escapejs}}';
-var form_action = "{% url 'confla:saveEvent' %}";
+var form_action = "{% url 'confla:saveEvent' url_id %}";
+var save_link = "{% url 'confla:saveTable' url_id %}"
+var popover_link = "{% url 'confla:eventPop_admin' url_id %}"
 </script>
 </div><!-- sched-wrap -->
 

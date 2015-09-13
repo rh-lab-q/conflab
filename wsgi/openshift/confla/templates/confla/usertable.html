@@ -1,4 +1,4 @@
-{% extends "confla/base.html" %}
+{% extends "confla/conf_base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
@@ -87,6 +87,12 @@
 {% endblock %}
 {% block extrascripts %}
 <script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>
+<script class="js-setup">
+var user_link = "{% url 'confla:schedule' url_id %}"
+var edit_link = "{% url 'confla:adminsched' url_id %}";
+var config_link = "{% url 'confla:conf_rooms' url_id %}";
+</script>
+
 {% endblock %}
 
 {% block sidenav %}

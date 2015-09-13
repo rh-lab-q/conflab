@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="popover-content">
-    <form method="post" action="{% url 'confla:saveEvent' %}">
+    <form method="post" action="{% url 'confla:saveEvent' url_id %}">
         {% csrf_token %}
         <input type="hidden" name="event_id" value={{ event.id }} />
         {{ form.topic }}

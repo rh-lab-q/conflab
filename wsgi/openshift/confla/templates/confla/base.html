@@ -15,8 +15,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'selectize/selectize.bootstrap3.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bootsidemenu/BootSideMenu.css' %}" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'confla/base.css' %}" />
     {% block extrastyles %}
-        <link rel="stylesheet" type="text/css" href="{% static 'confla/base.css' %}" />
     {% endblock %}
 </head>
 
@@ -35,11 +35,10 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}{% else %}{% url 'confla:user_reg_talk' %}{% endif %}"><strong>{% trans "Call for Participation" %}</strong></a></li>
+                {% block cfp %}{% endblock cfp %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'confla:about' %}">{% trans "About" %}</a></li>
-                <li><a href="{% url 'confla:schedule' %}">{% trans "Schedule" %}</a></li>
+                {% block confbar %}{% endblock confbar %}
                 {% if user.is_authenticated %}
                 <li class="dropdown" id="user">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

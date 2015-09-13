@@ -1,4 +1,4 @@
-{% extends "confla/base.html" %}
+{% extends "confla/conf_base.html" %}
 
 {% load staticfiles %}
 
@@ -48,4 +48,7 @@
 
 {% block extrascripts %}
 <script type="text/javascript" src="{% static 'confla/edit_slot.js' %}"></script>
+<script class="js-setup">
+var form_action = "{% url 'confla:rooms_conf_save' url_id %}";
+</script>
 {% endblock %}

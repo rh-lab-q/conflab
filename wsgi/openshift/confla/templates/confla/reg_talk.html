@@ -1,11 +1,11 @@
-{% extends 'confla/base.html' %}
+{% extends 'confla/conf_base.html' %}
 {% load i18n %}
 {% load staticfiles %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
 {% endblock %}
 {% block content %}
-<form action="{% if not user.is_authenticated %}{% url 'confla:reg_talk' %}
-    {% else %}{% url 'confla:user_reg_talk' %}{% endif %}" method="post">{% csrf_token %}
+<form action="{% url 'confla:cfp' url_id %}" method="post">
+    {% csrf_token %}
     {% if not user.is_authenticated %}{{ user_form.as_p }}{% endif %}
     {{ paper_form.as_p}}
     <button class="btn btn-default" type="submit">{% trans "Submit" %}</button>

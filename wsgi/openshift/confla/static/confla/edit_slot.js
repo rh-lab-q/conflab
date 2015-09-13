@@ -84,7 +84,7 @@ function create_json_and_send() {
         };
     });
     // Create a POST to send the data
-    def = $.post("/rooms/config/save/", {
+    def = $.post(form_action, {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: JSON.stringify(post)});
     return def;

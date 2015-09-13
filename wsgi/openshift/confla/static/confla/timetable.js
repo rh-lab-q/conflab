@@ -410,7 +410,7 @@ function timetableEdit() {
 function timetableSubmit(selector) {
     // generate JSON and submit to DB
     var toSend = timetableToJson(selector);
-    def = $.post("/admin/sched/saveTable/", {
+    def = $.post(save_link, {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: toSend});
 
@@ -508,7 +508,7 @@ function popoverInit(selector) {
             if (!content.length) {
                 var spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
                 // Send a post and monitor the promise object
-                def = $.post("/events/popover/admin/", {
+                def = $.post(popover_link, {
                     csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
                     data: $(eventp).attr("event-id"),
                 });
