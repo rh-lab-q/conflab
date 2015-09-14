@@ -13,7 +13,7 @@
             <div class="panel-body">
                 <form action="{% url 'confla:register' %}" method="post">{% csrf_token %}
                 {{ form.as_p }}
-                <input type="submit" value="Submit" />
+                <button class="btn btn-default" type="submit"/>{% trans "Submit" %}</button>
             </div>
         </div>
     </form>

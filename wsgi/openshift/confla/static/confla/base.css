@@ -7,3 +7,7 @@
 #language .dropdown-menu {
     min-width: 80px;
 }
+
+.dropdown-menu button.lang {
+    width: 100%;
+}

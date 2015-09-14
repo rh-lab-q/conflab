@@ -42,16 +42,17 @@
                 {% if user.is_authenticated %}
                 <li class="dropdown" id="user">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ user.get_username }}
                         <i class="fa fa-user"></i>
+                        {{ user.get_username }}
+                        <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        {% if perms.confla.can_organize %}
+                        <li><a href="#">{% trans "Administration" %}</a></li>
+                        <li role="separator" class="divider"></li>
+                        {% endif %}
                         <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
                         <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
-                        {% if perms.confla.can_organize %}
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">{% trans "Administration" %}</a></li>
-                        {% endif %}
                     </ul>
                 </li>
                 {% else %}
@@ -65,11 +66,11 @@
                         {{ lang.name_local|capfirst }}
                         <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <ul class="dropdown-menu" aria-labelledby="languageMenu">
                         <form action="{% url 'confla:set_language' %}" method="post">
                             {% csrf_token %}
                             {% for language in languages %}
-                            <li><button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-default" style="border-width:0;" title="{{ language.name_local }}" >
+                            <li><button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-default lang" style="border-width:0;" title="{{ language.name_local }}" >
     {{ language.name_local|capfirst }}</button></li>
                             {% endfor %}
                         </form>
