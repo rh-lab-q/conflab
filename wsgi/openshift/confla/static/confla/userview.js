@@ -371,7 +371,7 @@ function user_setup() {
     });
 
     // Delete empty rooms
-    $(".table").each(function() {
+    $(".user-wrap .table").each(function() {
         var that = this;
         // For each room name table header except the first one (time)
         $("th:not(:first-child)", this).each(function() {
