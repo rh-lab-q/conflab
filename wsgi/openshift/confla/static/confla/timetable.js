@@ -745,9 +745,15 @@ $(document).ready(function() {
                     // set the item's length to 1
                     if (total-i < slot_len-1) {
                         $(this).height(itemHeight);
+                        // TODO: Setup end time for slots of length 1 here
                     }
-                    else
+                    else {
                         $(this).height(itemHeight+cellSize*(slot_len-1));
+                        // Setup end time for timetable update
+                        endIndex = $(row).index() + parseInt(slot_len) + 1;
+                        endTime = $("tbody tr:nth-child(" + endIndex + ") td:first", that).text();
+                        $(this).find(".end").text("Ends at: " + endTime);
+                    }
                 });
             });
         });
