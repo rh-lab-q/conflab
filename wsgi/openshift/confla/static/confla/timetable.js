@@ -624,6 +624,7 @@ function popoverInit(selector) {
                 var event_id = form.find("[name=event_id]");
                 if (event_id.attr("value") == 0) {
                     event_id.attr("value", response);
+                    visible.closest(".event").attr("event-id", response);
                     visible.closest(".event").find(".pop-title span:not(.pop-close)").html("Edit event");
                 }
             },
