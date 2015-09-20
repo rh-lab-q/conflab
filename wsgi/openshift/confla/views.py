@@ -49,7 +49,8 @@ class EventEditView(generic.TemplateView):
                           'tag_list' : EventTag.objects.all(),
                           'event': event,
                           'user_list' : [{ 'name' : u.first_name + ' ' + u.last_name,
-                                           'username' : u.username} for u in users],
+                                           'username' : u.username,
+                                           'id' : u.id } for u in users],
                           })
 
     @permission_required('confla.can_organize', raise_exception=True)

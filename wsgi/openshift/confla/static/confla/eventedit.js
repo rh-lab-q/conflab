@@ -13,12 +13,12 @@ function selectizeModal(selector) {
     var speakerlist = [];
     // Setup list of selected users
     $(speaker).find("[selected='selected']").each(function () {
-        speakerlist.push($(this).text());
+        speakerlist.push($(this).attr("value"));
     });
     $(speaker).selectize({
         persist: false,
         maxItems: null,
-        valueField: 'username',
+        valueField: 'id',
         labelField: 'name',
         searchField: ['name', 'username'],
         options: users,
