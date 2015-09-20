@@ -274,7 +274,7 @@ function getAdminSched() {
     }
     else {
         // Need to load the admin view from the server
-        content = $("body > .container:not(#event-bar)");
+        content = $(".admin-page");
         spinner = '<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>';
         $(".user-wrap").remove();
         $(content).append(spinner);
@@ -283,7 +283,7 @@ function getAdminSched() {
             var wrap = document.createElement('div');
             wrap.className = "admin-wrap";
             $(wrap).append($(response).find(".sched-wrap"));
-            $("body").append($(response).filter("#event-bar"));
+            $(content).append($(response).filter("#event-bar"));
             // Hide the content until fully loaded
             $(wrap).hide();
             // TODO: More error checking?

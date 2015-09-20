@@ -1,0 +1,8 @@
+body > .container:not(#navbar-container) {
+    width: 100%; !important
+}
+
+#admin-menu {
+    float:left;
+}
+

@@ -1,4 +1,4 @@
-.sidebar{
+.sidebar:not(#admin-menu){
       z-index: 9999;
       position: fixed;
       top: 5%;

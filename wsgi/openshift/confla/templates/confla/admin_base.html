@@ -1,0 +1,17 @@
+{% extends "confla/conf_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/adminview.css' %}" />
+<div class="sidebar col-sm-3 col-md-2" id="admin-menu">
+    <ul class="nav nav-sidebar">
+        <li><a href="#">Schedule<span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Edit schedule</a></li>
+        <li><a href="#">Configuration</a></li>
+        <li><a href="#">Export</a></li>
+    </ul>
+</div>
+{% block admin_page %}
+{% endblock %}
+{% endblock %}

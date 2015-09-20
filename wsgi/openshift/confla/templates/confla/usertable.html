@@ -1,4 +1,4 @@
-{% extends "confla/conf_base.html" %}
+{% extends "confla/admin_base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
@@ -14,74 +14,76 @@
 </style>
 {% endblock %}
 
-{% block content %}
-{% if perms.confla.can_organize %}
-<ul id="sched-tabs" class='nav nav-tabs'>
-    <li class="active"><a id="tab-usersched" href="#">View schedule</a></li>
-    <li><a id="tab-adminsched" href="#">Edit schedule</a></li>
-    <li><a id="tab-roomconf"href="#">Configure</a></li>
-</ul>
-{% endif %}
-{% csrf_token %}
-<div class="user-wrap">
-    <div class="display-style">
-    <h3>{% trans "Display as" %}
-    <select class="sel-view form-control" onchange="changeView()" style="width:100px" autocomplete="off">
-        <option selected="selected">{% trans "Grid" %}</option>
-        <option>{% trans "List" %}</option>
-    </select></h3>
-    </div>
-    <div class="sched-wrap">
-    <link rel="stylesheet" type="text/css" href="{% static 'confla/usertable.css' %}" />
-        {% for day in time_list %}
-        <div class="day-wrap">
-            <h4>{{ day.day }}</h4>
-            <div id="dummy-wrap">
-                <div class="table-dummy"></div>
-            </div>
-            <div id="table-wrap">
-            <table class="table" tdelta="{{conf.timedelta}}">
-                <thead>
-                    <tr>
-                        <th>{% trans "Time" %}</th>
-                        {% for r in room_list %}
-                        <th>{{ r.room.shortname }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-            <tbody>
-                {% for t in day.list %}
-                    <tr>
-                        <td>{{ t.short }}</td>
-                        {% for s in t.slots %}
-                        {% if s %}
-                        <td>
-                        <div class="wrap">
-                        {% if s.event_id %}
-                            <div class="item" style="height: {{ s.length|set_height:"31"}}">
-                            {% with e=s.event_id %}
-                            <div class="event" style="position:absolute" event-id={{e.id}}>
-                                    <div class="event-visible {{e|tag_class}}">
-                                        <p class="topic">{{e.topic}}</p>
-                                        <p class="author">{{e.get_users}}</p>
-                                    </div>
-                                </div>
-                            {% endwith %}
-                            </div>
-                        {% endif %}
-                        </div><!-- wrap -->
-                        </td>
-                        {% else %}
-                        <td></td>
-                        {% endif %}
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-            </table>
-            </div>
+{% block admin_page %}
+<div class="admin-page col-sm-9 col-md-10" style="float:left">
+    {% if perms.confla.can_organize %}
+    <ul id="sched-tabs" class='nav nav-tabs'>
+        <li class="active"><a id="tab-usersched" href="#">View schedule</a></li>
+        <li><a id="tab-adminsched" href="#">Edit schedule</a></li>
+        <li><a id="tab-roomconf"href="#">Configure</a></li>
+    </ul>
+    {% endif %}
+    {% csrf_token %}
+    <div class="user-wrap">
+        <div class="display-style">
+        <h3>{% trans "Display as" %}
+        <select class="sel-view form-control" onchange="changeView()" style="width:100px" autocomplete="off">
+            <option selected="selected">{% trans "Grid" %}</option>
+            <option>{% trans "List" %}</option>
+        </select></h3>
         </div>
-        {% endfor %}
+        <div class="sched-wrap">
+        <link rel="stylesheet" type="text/css" href="{% static 'confla/usertable.css' %}" />
+            {% for day in time_list %}
+            <div class="day-wrap">
+                <h4>{{ day.day }}</h4>
+                <div id="dummy-wrap">
+                    <div class="table-dummy"></div>
+                </div>
+                <div id="table-wrap">
+                <table class="table" tdelta="{{conf.timedelta}}">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Time" %}</th>
+                            {% for r in room_list %}
+                            <th>{{ r.room.shortname }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                <tbody>
+                    {% for t in day.list %}
+                        <tr>
+                            <td>{{ t.short }}</td>
+                            {% for s in t.slots %}
+                            {% if s %}
+                            <td>
+                            <div class="wrap">
+                            {% if s.event_id %}
+                                <div class="item" style="height: {{ s.length|set_height:"31"}}">
+                                {% with e=s.event_id %}
+                                <div class="event" style="position:absolute" event-id={{e.id}}>
+                                        <div class="event-visible {{e|tag_class}}">
+                                            <p class="topic">{{e.topic}}</p>
+                                            <p class="author">{{e.get_users}}</p>
+                                        </div>
+                                    </div>
+                                {% endwith %}
+                                </div>
+                            {% endif %}
+                            </div><!-- wrap -->
+                            </td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}
