@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 {% if form %}
-                <form method="post" action="{% url 'confla:editEvent2' event.id %}">
+                <form method="post" action="{% url 'confla:editEvent2' event.conf_id.url_id event.id %}">
                     {% csrf_token %}
                     <label for="id_topic">{% trans "Topic" %}</label>
                     {{form.topic}}

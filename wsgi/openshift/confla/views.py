@@ -33,11 +33,14 @@ class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def event_view(request, id=None):
+    def event_view(request, url_id, id=None):
         event = None
         if id:
             event = Event.objects.get(id=id)
-        conf = Conference.get_active()
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         event_list = Event.objects.filter(conf_id=conf)
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
@@ -50,10 +53,14 @@ class EventEditView(generic.TemplateView):
                           })
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def event_save(request, id):
+    def event_save(request, url_id, id):
         if request.method == 'POST':
             data = request.POST.copy()
-            data['conf_id'] = str(Conference.get_active().id)
+            try:
+                conf = Conference.objects.get(url_id=url_id)
+            except ObjectDoesNotExist:
+                raise Http404
+            data['conf_id'] = conf
             event = None
             try:
                 event = Event.objects.get(id=id)
@@ -72,7 +79,7 @@ class EventEditView(generic.TemplateView):
                 #TODO: Proper error handling
                 print(form.errors)
 
-            return HttpResponseRedirect(reverse('confla:editEvent'))
+            return HttpResponseRedirect(reverse('confla:editEvent', kwargs={'url_id' : url_id}))
         else:
             raise Http404
 
@@ -80,7 +87,10 @@ class EventEditView(generic.TemplateView):
     def event_modal(request):
         if not(request.method == "POST"):
             raise Http404
-        event = Event.objects.get(id=int(request.POST['data']))
+        try:
+            event = Event.objects.get(id=int(request.POST['data']))
+        except ObjectDoesNotExist:
+                raise Http404
         return render(request, 'confla/event_modal.html',
                         {   'form' : EventEditForm(instance=event),
                             'event': event,
@@ -857,7 +867,7 @@ class ImportView(generic.TemplateView):
         event_list = json_obj['sessions']
         for event in event_list:
             newevent = Event()
-            newevent.conf_id = Conference.get_active()
+            newevent.conf_id = conf
             newevent.e_type_id = EventType.objects.get(id=1)
             newevent.topic = event['topic']
             newevent.description = event['description']
@@ -868,7 +878,7 @@ class ImportView(generic.TemplateView):
 
             # Create timeslot for the event
             newslot = Timeslot()
-            newslot.conf_id = Conference.get_active()
+            newslot.conf_id = conf
             if event['room_short'] in room_list:
                 newslot.room_id = Room.objects.get(shortname=event['room_short'])
             start = datetime.fromtimestamp(int(event['event_start']))
@@ -1056,9 +1066,12 @@ class ImportView(generic.TemplateView):
                     newevent.save()
 
 class ExportView(generic.TemplateView):
-    def m_app(request):
+    def m_app(request, url_id):
         result = {}
-        conf = Conference.get_active()
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         tz = timezone.get_default_timezone()
         rfc_time_format = "%a, %d %b %Y %X %z"
         # Export events
