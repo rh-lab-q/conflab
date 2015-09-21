@@ -1025,11 +1025,14 @@ class ImportView(generic.TemplateView):
                         newuser.company = row[31]
                         newuser.position = row[32]
                         newuser.email = row[27]
+                        #TODO: Basic format checking?
+                        """
                         newuser.web = row[33]
                         newuser.facebook = row[34]
                         newuser.twitter = row[35]
                         newuser.linkedin= row[36]
                         newuser.google_plus= row[37]
+                        """
                         newuser.full_clean()
                         newuser.save()
 
