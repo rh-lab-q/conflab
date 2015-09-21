@@ -283,7 +283,7 @@ function getAdminSched() {
             var wrap = document.createElement('div');
             wrap.className = "admin-wrap";
             $(wrap).append($(response).find(".sched-wrap"));
-            $(content).append($(response).filter("#event-bar"));
+            $("body > .container").append($(response).filter("#event-bar"));
             // Hide the content until fully loaded
             $(wrap).hide();
             // TODO: More error checking?
