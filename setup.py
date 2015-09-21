@@ -11,6 +11,7 @@ packages = ['Django<=1.6',
             # 'pymongo',
              'psycopg2',
              'pillow',
+             'pytz',
            ]
 
 if 'REDISCLOUD_URL' in os.environ and 'REDISCLOUD_PORT' in os.environ and 'REDISCLOUD_PASSWORD' in os.environ:
