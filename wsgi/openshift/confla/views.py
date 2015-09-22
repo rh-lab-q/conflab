@@ -110,6 +110,7 @@ class IndexView(generic.TemplateView):
 class CfpView(generic.TemplateView):
     # TODO: Combine these two methods
     # TODO: Conference.objects.get(url_id=url_id) to get conference
+    @login_required
     def save_form_and_register(request, url_id):
         if request.method == 'POST':
             user_form = RegisterForm(request.POST)
