@@ -154,6 +154,7 @@ function itemInit(selector) {
                     $(item).find(".drag-help").remove();
                     $(".item-buttons", ui.draggable).show();
                     $(item).append($(ui.draggable));
+                    $(".toggler").trigger("click");
                 } else {
                     // Dragged from a different item
                     $(item).find(".drag-help").remove();
@@ -237,6 +238,7 @@ function emptyItemInit(selector) {
                     $(".item-buttons", ui.draggable).show();
                     $(this).removeClass("empty");
                     $(this).droppable("destroy");
+                    $(".toggler").trigger("click");
                 }
                 $(item).find(".drag-help").remove();
                 $(item).append($(ui.draggable).show());
@@ -713,6 +715,7 @@ $(document).ready(function() {
         out: function(event, ui) {
             $(".wrap .empty").closest(".wrap").droppable("enable");
             $(ui.draggable).parent().removeClass("empty");
+            $(".toggler").trigger("click");
         }
     });
 
