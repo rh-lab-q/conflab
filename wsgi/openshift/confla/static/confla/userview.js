@@ -40,7 +40,7 @@ function changeView() {
     var sel = $(".sel-view option:selected").text();
     switch (sel) {
         case "List": {
-            $.when($.get( "/sched/list/")).then(function(response) {
+            $.when($.get(list_link)).then(function(response) {
                 // Success
                 $(".sched-wrap:visible").html($(response).find(".schedlist-wrap").html());
                 $(".sched-wrap:visible").removeClass().addClass("schedlist-wrap");
@@ -52,7 +52,7 @@ function changeView() {
             break;
         };
         case "Grid": {
-            $.when($.get( "/sched/")).then(function(response) {
+            $.when($.get(user_link)).then(function(response) {
                 // Success
                 $(".schedlist-wrap").html($(response).find(".sched-wrap").html());
                 $(".schedlist-wrap").removeClass().addClass("sched-wrap");
