@@ -1,4 +1,4 @@
-{% extends "confla/conf_base.html" %}
+{% extends "confla/admin_base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
@@ -14,8 +14,8 @@
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="admin-page col-sm-9 col-md-10" style="float:left">
+{% block admin_page %}
+<div class="admin-page col-sm-11" style="float:left">
     {% if perms.confla.can_organize %}
     <ul id="sched-tabs" class='nav nav-tabs'>
         <li class="active"><a id="tab-usersched" href="#">View schedule</a></li>
