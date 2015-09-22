@@ -115,21 +115,24 @@ function eventInit(selector) {
 }
 
 function itemInit(selector) {
-    $(selector).resizable({
-        grid: cellSize,
-        containment: "tbody",
-        handles: "s",
-        resize: function(event, ui) {
-            // New end time on resize
-            var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
-            var height = $(this).height();
-            var rowdiff = (height-itemHeight)/cellSize;
-            var endspan = $(this).find("span.end")
-            var tr_array = $(this).parent().parent().parent().parent().find('tr');
-            var endtime_text = countEndtime(tr_array, row+rowdiff+1)
-            $(endspan).text("Ends at: " + endtime_text);
-        }
-    })
+    $(selector).each( function() {
+        var container = $(this).closest("tbody");
+        $(this).resizable({
+            grid: cellSize,
+            containment: container,
+            handles: "s",
+            resize: function(event, ui) {
+                // New end time on resize
+                var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
+                var height = $(this).height();
+                var rowdiff = (height-itemHeight)/cellSize;
+                var endspan = $(this).find("span.end")
+                var tr_array = $(this).parent().parent().parent().parent().find('tr');
+                var endtime_text = countEndtime(tr_array, row+rowdiff+1)
+                $(endspan).text("Ends at: " + endtime_text);
+            }
+        })
+    });
     // Setup wrap as the droppable
     $(selector).parent().droppable({
         accept: ".event",

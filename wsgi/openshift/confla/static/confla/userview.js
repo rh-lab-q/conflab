@@ -316,7 +316,7 @@ function getUserSched() {
         $(wrap).append($(response).find(".display-style"));
         $(wrap).append($(response).find(".sched-wrap"));
         $(wrap).hide();
-        $("body > .container:not(#event-bar)").append(wrap);
+        $(".admin-page").append(wrap);
         user_setup();
         $(".fa-spinner").remove();
         $(wrap).show();
@@ -327,7 +327,7 @@ function getUserSched() {
 }
 
 function getRoomConfig() {
-    content = $("body > .container:not(#event-bar)");
+    content = $(".admin-page");
     $.when($.get(config_link)).then(function(response) {
         // Success
         var wrap = document.createElement('div');
