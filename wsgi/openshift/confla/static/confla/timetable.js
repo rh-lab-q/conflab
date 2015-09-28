@@ -122,9 +122,11 @@ function itemInit(selector) {
             containment: container,
             handles: "s",
             resize: function(event, ui) {
+                // Repair inaccuracies in size difference when zoomed in/out
+                ui.size.height = Math.round((ui.size.height-itemHeight) / (cellSize)) * (cellSize) + itemHeight;
                 // New end time on resize
                 var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
-                var height = $(this).height();
+                var height = ui.size.height;
                 var rowdiff = (height-itemHeight)/cellSize;
                 var endspan = $(this).find("span.end")
                 var tr_array = $(this).parent().parent().parent().parent().find('tr');
