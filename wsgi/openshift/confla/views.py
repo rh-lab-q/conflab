@@ -177,7 +177,7 @@ class EventView(generic.TemplateView):
                         })
 
 class ScheduleView(generic.TemplateView):
-    template_name = 'confla/usertable.html'
+    template_name = 'confla/user_sched.html'
 
     def my_view(request, url_id):
         #TODO: Add compatibility with archived conferences

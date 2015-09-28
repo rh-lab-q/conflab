@@ -1,0 +1,41 @@
+{% extends "confla/admin_base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load confla_filters %}
+{% block title %}Timetable{% endblock %}
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
+<style type='text/css'>
+    {% for tag in tag_list %}
+    .tag{{tag.id}} {
+        background : {{tag.color}};
+    }
+    {% endfor %}
+</style>
+{% endblock %}
+
+{% block admin_page %}
+<div class="admin-page col-sm-11" style="float:left">
+    <ul id="sched-tabs" class='nav nav-tabs'>
+        <li class="active"><a id="tab-usersched" href="#">View schedule</a></li>
+        <li><a id="tab-adminsched" href="#">Edit schedule</a></li>
+        <li><a id="tab-roomconf"href="#">Configure</a></li>
+    </ul>
+    {% csrf_token %}
+    {% include "confla/user_table.html" %}
+</div>
+{% endblock %}
+{% block extrascripts %}
+<script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>
+<script class="js-setup">
+var user_link = "{% url 'confla:schedule' url_id %}"
+var list_link = "{% url 'confla:listsched' url_id %}"
+var edit_link = "{% url 'confla:adminsched' url_id %}";
+var config_link = "{% url 'confla:conf_rooms' url_id %}";
+</script>
+
+{% endblock %}
+
+{% block sidenav %}
+
+{% endblock %}

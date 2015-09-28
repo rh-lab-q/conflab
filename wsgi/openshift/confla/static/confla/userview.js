@@ -66,6 +66,16 @@ function changeView() {
     }
 }
 
+function changeDay() {
+    var active = $("#sched-tabs .active");
+    $(".day-wrap[day-id=" + $(this).attr("day-id") + "]").show();
+    $(".day-wrap[day-id=" + active.attr("day-id") + "]").hide();
+    active.removeClass("active");
+    $(this).addClass("active");
+    $(this).off("click");
+    active.click(changeDay);
+}
+
 function userPopoverInit() {
     $(".user-wrap .item").each (function () {
         var itemp = this;
@@ -354,6 +364,9 @@ function getRoomConfig() {
 function user_setup() {
     userPopoverInit();
 
+    // Setup tabs for days
+    $("#sched-tabs li:not(.active)").click(changeDay);
+
     // Close all popovers if clicked outside of a popover or an event
     sel = ".user-wrap .item";
     $('html').on('click', function(e) {
@@ -389,6 +402,5 @@ $(document).ready(function() {
     // Setup nav tabs
     $("#tab-adminsched").click(showAdminsched);
     $("#tab-roomconf").click(showRoomConfig);
-
     user_setup();
 })
