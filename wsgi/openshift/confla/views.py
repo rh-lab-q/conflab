@@ -532,7 +532,7 @@ class TimetableView(generic.TemplateView):
                 if form.is_valid():
                     new_event = form.save(commit=False)
                     new_event.conf_id = conf
-                    new_event.e_type_id = EventType.objects.get(id=1)
+                    new_event.e_type_id = EventType.objects.all()[0]
                     new_event.lang = "cz"
                     if "tags" in request.POST:
                         new_event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
