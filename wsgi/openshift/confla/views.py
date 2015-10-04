@@ -29,6 +29,53 @@ class TestingView(generic.TemplateView):
                         { 'form' : EventEditForm()
                         })
 
+class AdminView(generic.TemplateView):
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def dashboard(request, url_id):
+        return render(request, "confla/admin/admin_base.html",
+                        {   'url_id' : url_id,
+                        })
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def schedule(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
+        slot_list = {}
+        rooms = conf.rooms.all()
+        for room in rooms:
+            slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
+        time_list = []
+        start_list = conf.get_datetime_time_list()
+        for date in conf.get_datetime_date_list():
+            time_dict = {}
+            time_dict["day"] = date.strftime("%A, %d.%m.")
+            time_dict["list"] = []
+            for start_time in start_list:
+                time = {}
+                time['short'] = start_time.strftime("%H:%M") 
+                time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                time['slots'] = []
+                for room in rooms:
+                    for slot in slot_list[room.shortname]:
+                        if slot.get_start_datetime == time['full']:
+                            time['slots'].append(slot)
+                            break
+                    else:
+                        time['slots'].append(None)
+                time_dict["list"].append(time)
+            time_list.append(time_dict)
+
+        return render(request, "confla/admin/user_sched.html",
+                    {    'time_list' : time_list,
+                         'tag_list' : EventTag.objects.all(),
+                         'room_list' : [{'conf' : conf,
+                                         'room' : x} for x in rooms],
+                         'url_id' : url_id,
+                    })
+
 class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 
@@ -462,7 +509,7 @@ class RoomConfView(generic.TemplateView):
             return HttpResponse(0)
 
 class TimetableView(generic.TemplateView):
-    template_name = "confla/timetable.html"
+    template_name = "confla/admin/edit_sched.html"
 
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request, url_id):

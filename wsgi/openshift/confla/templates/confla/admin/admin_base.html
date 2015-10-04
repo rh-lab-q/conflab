@@ -4,16 +4,11 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/adminview.css' %}" />
-<div class="col-sm-1" id="admin-menu">
-<!--
-    <ul class="nav nav-sidebar">
-        <li><a href="#">Schedule<span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Edit schedule</a></li>
-        <li><a href="#">Configuration</a></li>
-        <li><a href="#">Export</a></li>
-    </ul>
-    -->
-</div>
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" with active="overview" %}
+{% endblock %}
+<div class="admin-page col-sm-11" style="float:left">
 {% block admin_page %}
+</div>
 {% endblock %}
 {% endblock %}

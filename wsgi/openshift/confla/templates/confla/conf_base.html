@@ -10,3 +10,7 @@
 <li><a href="{% url 'confla:about' url_id %}">{% trans "About" %}</a></li>
 <li><a href="{% url 'confla:schedule' url_id %}">{% trans "Schedule" %}</a></li>
 {% endblock confbar %}
+{% block admin_link %}
+<li><a href={% url 'confla:dashboard' url_id %}>{% trans "Administration" %}</a></li>
+<li role="separator" class="divider"></li>
+{% endblock %}

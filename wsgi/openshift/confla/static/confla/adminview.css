@@ -4,5 +4,21 @@ body > .container:not(#navbar-container) {
 
 #admin-menu {
     float:left;
+    background-color: #f8f8f8;
+    padding: 10px;
+    margin-top: -20px;
+    margin-left: -15px;
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
+    border-color: #e7e7e7;
 }
 
+.nav-inner-sidebar {
+    padding: 0% 10%;
+    font-size: 12px;
+}
+
+.nav-sidebar .cf-active > a, .nav-sidebar .cf-active > a:hover {
+    background-color: #428bca;
+    color: #fff;
+}

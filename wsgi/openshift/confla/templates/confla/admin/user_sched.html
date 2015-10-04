@@ -1,4 +1,4 @@
-{% extends "confla/admin_base.html" %}
+{% extends "confla/admin/admin_base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
@@ -13,17 +13,12 @@
     {% endfor %}
 </style>
 {% endblock %}
-
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" with active="schedule" %}
+{% endblock %}
 {% block admin_page %}
-<div class="admin-page col-sm-11" style="float:left">
-    <ul id="sched-tabs" class='nav nav-tabs'>
-        <li class="active"><a id="tab-usersched" href="#">View schedule</a></li>
-        <li><a id="tab-adminsched" href="#">Edit schedule</a></li>
-        <li><a id="tab-roomconf"href="#">Configure</a></li>
-    </ul>
     {% csrf_token %}
     {% include "confla/user_table.html" %}
-</div>
 {% endblock %}
 {% block extrascripts %}
 <script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>

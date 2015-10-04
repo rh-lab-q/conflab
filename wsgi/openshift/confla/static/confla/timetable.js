@@ -769,4 +769,7 @@ $(document).ready(function() {
     });
     // Setup modal
     setupModal(".modal");
+    timetableEdit();
+    $(".spinnerwrap").remove();
+    $(".sched-wrap").show();
 })

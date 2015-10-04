@@ -1,4 +1,4 @@
-{% extends "confla/conf_base.html" %}
+{% extends "confla/admin/admin_base.html" %}
 {% load i18n %}
 {% load staticfiles %}
 {% load confla_filters %}
@@ -14,8 +14,11 @@
 </style>
 {% endblock %}
 
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" with active="editschedule" %}
+{% endblock %}
+
 {% block extranav %}
-{% if perms.confla.can_organize %}
 <div id="event-bar" style="display:none">
     <h3>List of events</h3>
     <input id="filter_input" class="form-control input-sm" type="text" value="" placeholder="Filter" />
@@ -46,12 +49,12 @@
     <button type="button" class="btn btn-success edit" onclick="timetableEdit()">Edit</button>
     <button type="button" class="btn btn-success save" onclick="timetableSubmit('.table')" style="display:none">Save</button>
 </div>
-{% endif %}
 {% endblock %}
 
-{% block content %}
+{% block admin_page %}
+<div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>
 {% csrf_token %}
-<div class="sched-wrap">
+<div class="sched-wrap" style="display:none">
     {% for day in time_list %}
     <div class="day-wrap">
         <h4>{{ day.day }}</h4>
