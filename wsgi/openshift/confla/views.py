@@ -147,6 +147,10 @@ class EventEditView(generic.TemplateView):
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
     def my_view(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
         return render(request, AboutView.template_name, {'url_id' : url_id})
 
 class IndexView(generic.TemplateView):
