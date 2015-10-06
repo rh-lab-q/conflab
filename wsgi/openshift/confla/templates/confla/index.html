@@ -1,0 +1,17 @@
+{% extends "confla/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/index.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="confswrap">
+    {% for conf in conf_list %}
+    <div>
+        <a href={% url 'confla:splash' conf.url_id %}>{{conf.name}}</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -154,9 +154,10 @@ class AboutView(generic.TemplateView):
         return render(request, AboutView.template_name, {'url_id' : url_id})
 
 class IndexView(generic.TemplateView):
-    template_name = 'confla/base.html'
+    template_name = 'confla/index.html'
     def my_view(request):
-        return render(request, IndexView.template_name)
+        conf_list = Conference.objects.all();
+        return render(request, IndexView.template_name, {'conf_list' : conf_list})
 
 class CfpView(generic.TemplateView):
     # TODO: Combine these two methods
