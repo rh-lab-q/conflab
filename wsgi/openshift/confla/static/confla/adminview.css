@@ -1,4 +1,4 @@
-body > .container:not(#navbar-container) {
+body > #page-container {
     width: 100%;
 }
 
