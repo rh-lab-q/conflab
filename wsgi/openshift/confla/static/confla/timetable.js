@@ -356,7 +356,8 @@ function timetableToJson(selector) {
         $(this).find('td').each(function(i) {
             if(i > 0) {// omitting the first time-column
                 if($(this).text().match(/[a-z]/i) // there is actually some text in the cell
-                   && $(this).find(".event").length != 0) { // there is an event inside the cell
+                   && $(this).find(".item .event").length != 0 // there is an event inside the cell
+                   && $(this).find(".item .event").attr("event-id")) { // the event has been properly saved
                     var rowName = cols[i];
                     var cell = {};
                     // The numbers 10 and 8 are the lenght of "Starts at: ", "Ends at: "
