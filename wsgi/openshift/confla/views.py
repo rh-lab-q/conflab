@@ -1109,7 +1109,7 @@ class ImportView(generic.TemplateView):
                     newevent.topic = row[43+i]
                     newevent.description = row[44+i]
                     newevent.lang = 'CZ'
-                    #notes = notes + 'Pozadavky na ucastniky: ' + row[47+i] + '\n'
+                    newevent.reqs = row[47+i]
                     notes = 'Delka prednasky: ' + row[46+i] + '\n'
                     # Get preferred day from both speakers if possible
                     notes = notes + 'Preferovany den: ' + row[12]
