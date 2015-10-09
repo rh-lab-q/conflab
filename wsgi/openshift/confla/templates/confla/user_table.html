@@ -2,6 +2,18 @@
 {% load i18n %}
 {% load confla_filters %}
 
+<noscript>
+    <!-- Hide tabs, show schedule for every day with javascript off -->
+    <style type='text/css'>
+        .display-style, #sched-tabs {
+            display:none;
+        }
+        .day-wrap, .day-wrap > h4 {
+            display:inline !important;
+        }
+    </style>
+</noscript>
+
 <div class="user-wrap">
         <div class="display-style">
         <h3>{% trans "Display as" %}
@@ -19,9 +31,7 @@
         </ul>
         {% for day in time_list %}
         <div class="day-wrap" day-id={{ forloop.counter }} {% if not forloop.first %} style="display:none" {% endif %}>
-            <div id="dummy-wrap">
-                <div class="table-dummy"></div>
-            </div>
+            <h4 style="display:none">{{ day.day }}</h4>
             <div id="table-wrap">
             <table class="table" tdelta="{{conf.timedelta}}">
                 <thead>
