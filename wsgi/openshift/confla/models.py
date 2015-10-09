@@ -187,6 +187,7 @@ class Event(models.Model):
     speaker = models.ManyToManyField(ConflaUser, related_name='usr+')
     tags = models.ManyToManyField(EventTag, related_name='tag+', blank=True, null=True)
     prim_tag = models.ForeignKey(EventTag, null=True, blank=True)
+    notes = models.TextField(blank=True)
 
     def __str__(self):
         return self.topic
