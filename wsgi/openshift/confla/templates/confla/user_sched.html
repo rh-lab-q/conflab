@@ -17,6 +17,11 @@
 {% block content %}
     {% csrf_token %}
     {% include "confla/user_table.html" %}
+    {% if perms.confla.can_organize %}
+    <div class="edit-link" style="position:fixed; left:0; bottom:0; padding:3px; background-color:#ffffff;">
+        <a href={% url 'confla:adminsched' url_id %}>Edit this page</a>
+    </div>
+    {% endif %}
 {% endblock %}
 {% block extrascripts %}
 <script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>
