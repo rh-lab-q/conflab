@@ -45,9 +45,8 @@
         {% endfor %}
     </div>
 </div>
-<div class="edit-btns" style="position: fixed; left: 5px; top: 37%; width: auto; height: 2em;;">
-    <button type="button" class="btn btn-success edit" onclick="timetableEdit()">Edit</button>
-    <button type="button" class="btn btn-success save" onclick="timetableSubmit('.table')" style="display:none">Save</button>
+<div class="edit-link" style="position:fixed; left:0; bottom:0; padding:3px; background-color:#ffffff;">
+    <a href="#" onclick="timetableSubmit('.table')">Save schedule</a>
 </div>
 {% endblock %}
 

@@ -408,13 +408,6 @@ function timetableDisable() {
     $(".event-visible").css("cursor", "auto");
 }
 
-function timetableEdit() {
-    timetableEnable();
-    $(".save").show();
-    $(".edit").hide();
-    $("#event-bar").show();
-}
-
 function timetableSubmit(selector) {
     // generate JSON and submit to DB
     var toSend = timetableToJson(selector);
@@ -422,10 +415,6 @@ function timetableSubmit(selector) {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: toSend});
 
-    timetableDisable();
-    $(".save").hide();
-    $(".edit").show();
-    $("#event-bar").hide();
     return def;
 }
 
@@ -770,7 +759,7 @@ $(document).ready(function() {
     });
     // Setup modal
     setupModal(".modal");
-    timetableEdit();
+    timetableEnable();
     $(".spinnerwrap").remove();
     $(".sched-wrap").show();
 })
