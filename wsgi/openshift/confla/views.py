@@ -1011,7 +1011,7 @@ class ImportView(generic.TemplateView):
                 usr.save()
 
     @transaction.atomic
-    def oa2015(csv_file):
+    def oa2015(csv_file, overwrite=False):
         # Setup a Conference if there is none
         try:
             conf = Conference.objects.get(url_id='oa2015')
@@ -1026,6 +1026,14 @@ class ImportView(generic.TemplateView):
             newconf.name = "Openalt 2015"
             newconf.save()
             conf = newconf
+            # Setup rooms
+            room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
+            for i in room_list:
+                newroom = Room()
+                newroom.shortname = i
+                newroom.save()
+                hr = HasRoom(room=newroom, conference=conf, slot_length=3)
+                hr.save()
 
         with open(csv_file) as f:
             if csv.Sniffer().has_header(f.read()):
@@ -1095,7 +1103,14 @@ class ImportView(generic.TemplateView):
                     if not row[42+i+1]:
                         # There are no more events left
                         break;
-                    newevent = Event()
+                    # If an event with the same topic already exists in the conference
+                    try:
+                        newevent = Event.objects.get(topic=row[43+i], conf_id=conf)
+                        # and if overwrite argument is not set, skip event
+                        if not overwrite:
+                            continue
+                    except ObjectDoesNotExist:
+                        newevent = Event()
                     newevent.conf_id = conf
                     # Check if the event type exists
                     # If not, create it
@@ -1119,12 +1134,8 @@ class ImportView(generic.TemplateView):
                     notes = notes + 'Poznamky: ' + row[48+i] + '\n'
                     newevent.notes = notes
                     newevent.full_clean()
-                    # If an event with the same topic already exists
-                    # dont save it
-                    try:
-                        newevent = Event.objects.get(topic=newevent.topic)
-                    except ObjectDoesNotExist:
-                        newevent.save()
+                    newevent.save()
+
                     # Add speakers
                     newevent.speaker.add(ConflaUser.objects.get(username=username1))
                     if username2:
