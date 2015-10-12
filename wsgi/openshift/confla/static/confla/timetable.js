@@ -152,11 +152,13 @@ function itemInit(selector) {
                 }
                 else if ($(ui.draggable).parent().is("#event-list")) {
                     // Dragged from event list
+                    $(".event-visible", item).popover("disable");
                     $(ui.draggable).parent().append($(item).find(".event:hidden").show());
                     $(item).find(".drag-help").remove();
                     $(".item-buttons", ui.draggable).show();
                     $(item).append($(ui.draggable));
                     $(".toggler").trigger("click");
+                    $(".event-visible", ui.draggable).popover("enable");
                 } else {
                     // Dragged from a different item
                     $(item).find(".drag-help").remove();
@@ -241,6 +243,7 @@ function emptyItemInit(selector) {
                     $(this).removeClass("empty");
                     $(this).droppable("destroy");
                     $(".toggler").trigger("click");
+                    $(".event-visible", ui.draggable).popover("enable");
                 }
                 $(item).find(".drag-help").remove();
                 $(item).append($(ui.draggable).show());
@@ -297,7 +300,7 @@ function createEvent() {
         var visevent = document.createElement('div');
         visevent.className = 'event-visible tag0';
         var buttondiv = document.createElement('div');
-        buttondiv.className="item-buttons";
+       /* buttondiv.className="item-buttons";
         var remove = document.createElement('div');
         remove.className="removesign";
         $(remove).append('<span class="glyphicon glyphicon-remove"></span>');
@@ -306,7 +309,7 @@ function createEvent() {
         edit.className="editsign";
         $(edit).append('<span class="glyphicon glyphicon-edit"></span>');
         $(buttondiv).append(edit);
-        $(visevent).append(buttondiv);
+        $(visevent).append(buttondiv);*/
         $(visevent).append('<p class="topic"></p>');
         $(visevent).append('<p class="author"></p>');
         $(nevent).append(visevent);
@@ -332,19 +335,21 @@ function createEvent() {
         $(popcontent).append(nform);
         $(nevent).append(popcontent);
         // jQuery magic
-        popoverInit(edit);
+        popoverInit(visevent);
         eventInit(nevent);
         return nevent;
 }
 
 function appendEvent(e) {
     var wrap = $(this).parent();
-    $(this).removeClass("empty");
-    var newevent = createEvent();
-    $(wrap).droppable("destroy");
-    itemInit(this);
-    $(this).append(newevent);
-    $(this).closest("td").off("click");
+    if ($(this).hasClass("empty")) {
+        $(this).removeClass("empty");
+        var newevent = createEvent();
+        $(wrap).droppable("destroy");
+        itemInit(this);
+        $(this).append(newevent);
+        $(this).closest("td").off("click");
+    }
 }
 
 function timetableToJson(selector) {
@@ -495,7 +500,7 @@ function popoverInit(selector) {
         container: "body",
         html: "true",
         title: function () {
-            return $(this).parent().parent().parent().find(".pop-title").html();
+            return $(this).closest(".event").find(".pop-title").html();
         },
         content: function () {
             var that = this;
@@ -669,7 +674,8 @@ $(document).ready(function() {
     });
 
     // Bootstrap popover init
-    popoverInit(".editsign");
+    popoverInit(".event-visible");
+    $("#event-bar .event-visible").popover("disable");
     // Timetable jQuery init
     timetableInit();
 
@@ -688,6 +694,7 @@ $(document).ready(function() {
                 item.resizable("destroy");
                 emptyItemInit(item);
             }
+            $(".event-visible", ui.draggable).popover("disable");
             $(this).find("#event-list").append($(ui.draggable).show());
             $(".item-buttons:visible", this).hide();
             $("#filter_input").change();
@@ -711,13 +718,13 @@ $(document).ready(function() {
         }
     });
 
-    // Close all edit popovers if clicked outside of a popover or edit icon
+    // Close all edit popovers if clicked outside of a popover or visible event
     $('html').on('click', function(e) {
-        // If the target is not the edit icon
-        if (!$(e.target).parent().hasClass("editsign")
+        // If the target is not the visible event or one of its children
+        if (!$(e.target).closest(".event-visible").length
             // If the target is not a popover
             && !$(e.target.closest(".popover")).length) {
-                $('.editsign').each( function () {
+                $('.event-visible').each( function () {
                 // If there is an open popover, hide it
                 if ($(this).attr("aria-describedby")) {
                     $(this).popover('hide');

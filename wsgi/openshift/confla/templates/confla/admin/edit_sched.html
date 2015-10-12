@@ -26,14 +26,14 @@
         {% for e in event_list %}
         <div class="event" event-id={{e.id}}>
             <div class="event-visible {{e|tag_class}}">
-                <div class="item-buttons" style="display:none">
+                <!-- <div class="item-buttons" style="display:none">
                     <div class="removesign">
                         <span class="glyphicon glyphicon-remove"></span>
                     </div>
                     <div class="editsign">
                         <span class="glyphicon glyphicon-edit"></span>
                     </div>
-                </div><!-- item-buttons -->
+                </div> item-buttons -->
                 <p class="topic">{{e.topic}}</p>
                 <p class="author">{{e.get_users}}</p>
             </div>
@@ -85,14 +85,14 @@
                             {% with e=s.event_id %}
                             <div class="event" event-id={{e.id}}>
                                 <div class="event-visible {{e|tag_class}}">
-                                    <div class="item-buttons">
+                                  <!--  <div class="item-buttons">
                                         <div class="removesign">
                                             <span class="glyphicon glyphicon-remove"></span>
                                         </div>
                                         <div class="editsign">
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </div>
-                                    </div><!-- item-buttons -->
+                                    </div> item-buttons -->
                                     <div>
                                         <p class="topic">{{e.topic}}</p>
                                         <p class="author">{{e.get_users}}</p>
