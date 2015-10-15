@@ -1036,11 +1036,10 @@ class ImportView(generic.TemplateView):
                 hr.save()
 
         with open(csv_file) as f:
-            if csv.Sniffer().has_header(f.read()):
-                f.seek(0)
-                next(f)
-            else:
-                f.seek(0)
+            # Skip the headers
+            next(f)
+            next(f)
+            next(f)
             reader = csv.reader(f, delimiter=';')
             for row in reader:
                 # Loop through each row of the csv file
@@ -1097,41 +1096,39 @@ class ImportView(generic.TemplateView):
                         newuser.full_clean()
                         newuser.save()
 
-                for i in range(0,21,7):
+                # length of each event section
+                event_len = 8
+                # number of events
+                event_num = 3
+                # index of the first event
+                sp = 42
+                for i in range(0,event_len*event_num,event_len):
                     # Loop through all events in the row
-                    # 42 = first event start position
-                    if not row[42+i+1]:
+                    if not row[sp+i+1]:
                         # There are no more events left
                         break;
                     # If an event with the same topic already exists in the conference
                     try:
-                        newevent = Event.objects.get(topic=row[43+i], conf_id=conf)
+                        newevent = Event.objects.get(topic=row[sp+2+i], conf_id=conf)
                         # and if overwrite argument is not set, skip event
                         if not overwrite:
                             continue
                     except ObjectDoesNotExist:
                         newevent = Event()
                     newevent.conf_id = conf
-                    # Check if the event type exists
-                    # If not, create it
-                    try:
-                        EventType.objects.get(name=row[42+i])
-                    except ObjectDoesNotExist:
-                        newtype = EventType()
-                        newtype.name = row[42+i]
-                        newtype.save()
-                    newevent.e_type_id = EventType.objects.get(name=row[42+i])
-                    newevent.topic = row[43+i]
-                    newevent.description = row[44+i]
+                    etype, created = EventType.objects.get_or_create(name=row[sp+1+i])
+                    newevent.e_type_id = etype
+                    newevent.topic = row[sp+2+i]
+                    newevent.description = row[sp+3+i]
                     newevent.lang = 'CZ'
-                    newevent.reqs = row[47+i]
-                    notes = 'Delka prednasky: ' + row[46+i] + '\n'
+                    newevent.reqs = row[sp+6+i]
+                    notes = 'Delka prednasky: ' + row[sp+5+i] + '\n'
                     # Get preferred day from both speakers if possible
                     notes = notes + 'Preferovany den: ' + row[12]
                     if row[30]:
                         notes = notes + '; ' + row[30]
                     notes = notes + '\n'
-                    notes = notes + 'Poznamky: ' + row[48+i] + '\n'
+                    notes = notes + 'Poznamky: ' + row[sp+7+i] + '\n'
                     newevent.notes = notes
                     newevent.full_clean()
                     newevent.save()
@@ -1141,6 +1138,18 @@ class ImportView(generic.TemplateView):
                     if username2:
                         newevent.speaker.add(ConflaUser.objects.get(username=username2))
                     newevent.save()
+
+                    # Add tag
+                    if row[sp+i]:
+                        etag, created = EventTag.objects.get_or_create(name=row[sp+i])
+                        if created:
+                            # Create a nice random colour
+                            r = lambda: (random.randint(0,255)+255) // 2
+                            etag.color = '#%02x%02x%02x' % (r(),r(),r())
+                            etag.save()
+                        newevent.tags.add(etag)
+                        newevent.prim_tag = etag
+                        newevent.save()
 
 class ExportView(generic.TemplateView):
     def m_app(request, url_id):
