@@ -3,6 +3,7 @@ import random
 import re
 import hashlib
 import csv
+import io
 from datetime import datetime, date, time
 
 from django.template.loader import render_to_string
@@ -21,13 +22,9 @@ from confla.models import *
 from confla.forms import *
 
 class TestingView(generic.TemplateView):
-    template_name = 'confla/event_modal.html'
-
     @permission_required('confla.can_organize', raise_exception=True)
-    def event_view(request):
-        return render(request, TestingView.template_name,
-                        { 'form' : EventEditForm()
-                        })
+    def test(request, url_id):
+        return ExportView.csv(request, url_id)
 
 class AdminView(generic.TemplateView):
 
@@ -1214,3 +1211,45 @@ class ExportView(generic.TemplateView):
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
 
         return HttpResponse(json.dumps(result))
+
+    def csv(request, url_id):
+        try:
+            conf = Conference.objects.get(url_id=url_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        iostr = io.StringIO()
+        writer = csv.writer(iostr, quoting=csv.QUOTE_NONNUMERIC)
+        slot_list = {}
+        rooms = conf.rooms.all()
+        header = ['time']
+        for room in rooms:
+            slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
+            header.append(room.shortname)
+        writer.writerow(header)
+        time_list = []
+        start_list = conf.get_datetime_time_list()
+        for date in conf.get_datetime_date_list():
+            time_dict = {}
+            time_dict["day"] = date.strftime("%A, %d.%m.")
+            time_dict["list"] = []
+            for start_time in start_list:
+                time = {}
+                time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M")
+                time['slots'] = []
+                for room in rooms:
+                    for slot in slot_list[room.shortname]:
+                        if slot.get_start_datetime == time['full']:
+                            time['slots'].append(slot.event_id.topic)
+                            break
+                    else:
+                        time['slots'].append('')
+                for slot in time['slots']:
+                    if slot:
+                        time['slots'].insert(0, start_time.strftime("%H:%M"))
+                        time_dict['list'].append(time)
+                        writer.writerow(time['slots'])
+                        break;
+
+            time_list.append(time_dict)
+        return HttpResponse(iostr.getvalue())
