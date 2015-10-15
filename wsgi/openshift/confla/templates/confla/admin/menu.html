@@ -9,6 +9,7 @@
         {% endif %}
         </li>
         <li {% if active == "config" %} class="cf-active" {% endif %}><a href="#">Configuration</a></li>
+        <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>Import</a></li>
         <li {% if active == "export" %} class="cf-active" {% endif %}><a href="#">Export</a></li>
     </ul>
 </div>

@@ -647,8 +647,6 @@ class TimetableView(generic.TemplateView):
 
 
 class ImportView(generic.TemplateView):
-    template_name = "confla/import.html"
-
     json_s = """{ "rooms" : [{
                         "id" : 100,
                         "s_name" : "r2",
@@ -714,6 +712,26 @@ class ImportView(generic.TemplateView):
                          "speakers" : ["testor"]
                     }]
             }"""
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def import_view(request, url_id):
+        template_name = 'confla/admin/import.html'
+        form = ImportFileForm()
+        return render(request, template_name,
+                        {   'url_id' : url_id,
+                            'form'   : form,
+                            })
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def oa_upload(request, url_id):
+        if request.method == 'POST':
+            form = ImportFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                ImportView.oa2015(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
+                return HttpResponseRedirect(reverse('confla:import', kwargs={'url_id' : url_id}))
+            else:
+                # TODO: error checking
+                return HttpResponseRedirect(reverse('confla:import', kwargs={'url_id' : url_id}))
 
     @transaction.atomic
     def json_to_db(json_string):
@@ -1032,121 +1050,121 @@ class ImportView(generic.TemplateView):
                 hr = HasRoom(room=newroom, conference=conf, slot_length=3)
                 hr.save()
 
-        with open(csv_file) as f:
-            # Skip the headers
-            next(f)
-            next(f)
-            next(f)
-            reader = csv.reader(f, delimiter=';')
-            for row in reader:
-                # Loop through each row of the csv file
-                # Generate sessions
+        f = io.TextIOWrapper(csv_file.file, encoding="utf-8")
+        # Skip the headers
+        next(f)
+        next(f)
+        next(f)
+        reader = csv.reader(f, delimiter=';')
+        for row in reader:
+            # Loop through each row of the csv file
+            # Generate sessions
 
-                # Create the speakers if not already in the db
-                # First speaker
-                username1 = row[9].replace(" ", "")[:30]
-                username1 = re.sub('[\W_]+', '', username1)
-                username2 = ''
+            # Create the speakers if not already in the db
+            # First speaker
+            username1 = row[9].replace(" ", "")[:30]
+            username1 = re.sub('[\W_]+', '', username1)
+            username2 = ''
+            try:
+                ConflaUser.objects.get(username=username1)
+            except ObjectDoesNotExist:
+                newuser = ConflaUser()
+                newuser.username = username1
+                newuser.password = "blank"
+                newuser.first_name = row[9][:30]
+                newuser.company = row[15]
+                newuser.position = row[16]
+                newuser.email = row[10]
+                #TODO: Basic format checking?
+                """
+                newuser.web = row[17]
+                newuser.facebook = row[18]
+                newuser.twitter = row[19]
+                newuser.linkedin= row[20]
+                newuser.google_plus= row[21]
+                """
+                newuser.full_clean()
+                newuser.save()
+
+            # Second speaker
+            if row[26]:
+                username2 = row[26].replace(" ", "")[:30]
+                username2 = re.sub('[\W_]+', '', username2)
                 try:
-                    ConflaUser.objects.get(username=username1)
+                    ConflaUser.objects.get(username=username2)
                 except ObjectDoesNotExist:
                     newuser = ConflaUser()
-                    newuser.username = username1
+                    newuser.username = username2
                     newuser.password = "blank"
-                    newuser.first_name = row[9][:30]
-                    newuser.company = row[15]
-                    newuser.position = row[16]
-                    newuser.email = row[10]
+                    newuser.first_name = row[26][:30]
+                    newuser.company = row[31]
+                    newuser.position = row[32]
+                    newuser.email = row[27]
                     #TODO: Basic format checking?
                     """
-                    newuser.web = row[17]
-                    newuser.facebook = row[18]
-                    newuser.twitter = row[19]
-                    newuser.linkedin= row[20]
-                    newuser.google_plus= row[21]
+                    newuser.web = row[33]
+                    newuser.facebook = row[34]
+                    newuser.twitter = row[35]
+                    newuser.linkedin= row[36]
+                    newuser.google_plus= row[37]
                     """
                     newuser.full_clean()
                     newuser.save()
 
-                # Second speaker
-                if row[26]:
-                    username2 = row[26].replace(" ", "")[:30]
-                    username2 = re.sub('[\W_]+', '', username2)
-                    try:
-                        ConflaUser.objects.get(username=username2)
-                    except ObjectDoesNotExist:
-                        newuser = ConflaUser()
-                        newuser.username = username2
-                        newuser.password = "blank"
-                        newuser.first_name = row[26][:30]
-                        newuser.company = row[31]
-                        newuser.position = row[32]
-                        newuser.email = row[27]
-                        #TODO: Basic format checking?
-                        """
-                        newuser.web = row[33]
-                        newuser.facebook = row[34]
-                        newuser.twitter = row[35]
-                        newuser.linkedin= row[36]
-                        newuser.google_plus= row[37]
-                        """
-                        newuser.full_clean()
-                        newuser.save()
+            # length of each event section
+            event_len = 8
+            # number of events
+            event_num = 3
+            # index of the first event
+            sp = 42
+            for i in range(0,event_len*event_num,event_len):
+                # Loop through all events in the row
+                if not row[sp+i+1]:
+                    # There are no more events left
+                    break;
+                # If an event with the same topic already exists in the conference
+                try:
+                    newevent = Event.objects.get(topic=row[sp+2+i], conf_id=conf)
+                    # and if overwrite argument is not set, skip event
+                    if not overwrite:
+                        continue
+                except ObjectDoesNotExist:
+                    newevent = Event()
+                newevent.conf_id = conf
+                etype, created = EventType.objects.get_or_create(name=row[sp+1+i])
+                newevent.e_type_id = etype
+                newevent.topic = row[sp+2+i]
+                newevent.description = row[sp+3+i]
+                newevent.lang = 'CZ'
+                newevent.reqs = row[sp+6+i]
+                notes = 'Delka prednasky: ' + row[sp+5+i] + '\n'
+                # Get preferred day from both speakers if possible
+                notes = notes + 'Preferovany den: ' + row[12]
+                if row[30]:
+                    notes = notes + '; ' + row[30]
+                notes = notes + '\n'
+                notes = notes + 'Poznamky: ' + row[sp+7+i] + '\n'
+                newevent.notes = notes
+                newevent.full_clean()
+                newevent.save()
 
-                # length of each event section
-                event_len = 8
-                # number of events
-                event_num = 3
-                # index of the first event
-                sp = 42
-                for i in range(0,event_len*event_num,event_len):
-                    # Loop through all events in the row
-                    if not row[sp+i+1]:
-                        # There are no more events left
-                        break;
-                    # If an event with the same topic already exists in the conference
-                    try:
-                        newevent = Event.objects.get(topic=row[sp+2+i], conf_id=conf)
-                        # and if overwrite argument is not set, skip event
-                        if not overwrite:
-                            continue
-                    except ObjectDoesNotExist:
-                        newevent = Event()
-                    newevent.conf_id = conf
-                    etype, created = EventType.objects.get_or_create(name=row[sp+1+i])
-                    newevent.e_type_id = etype
-                    newevent.topic = row[sp+2+i]
-                    newevent.description = row[sp+3+i]
-                    newevent.lang = 'CZ'
-                    newevent.reqs = row[sp+6+i]
-                    notes = 'Delka prednasky: ' + row[sp+5+i] + '\n'
-                    # Get preferred day from both speakers if possible
-                    notes = notes + 'Preferovany den: ' + row[12]
-                    if row[30]:
-                        notes = notes + '; ' + row[30]
-                    notes = notes + '\n'
-                    notes = notes + 'Poznamky: ' + row[sp+7+i] + '\n'
-                    newevent.notes = notes
-                    newevent.full_clean()
+                # Add speakers
+                newevent.speaker.add(ConflaUser.objects.get(username=username1))
+                if username2:
+                    newevent.speaker.add(ConflaUser.objects.get(username=username2))
+                newevent.save()
+
+                # Add tag
+                if row[sp+i]:
+                    etag, created = EventTag.objects.get_or_create(name=row[sp+i])
+                    if created:
+                        # Create a nice random colour
+                        r = lambda: (random.randint(0,255)+255) // 2
+                        etag.color = '#%02x%02x%02x' % (r(),r(),r())
+                        etag.save()
+                    newevent.tags.add(etag)
+                    newevent.prim_tag = etag
                     newevent.save()
-
-                    # Add speakers
-                    newevent.speaker.add(ConflaUser.objects.get(username=username1))
-                    if username2:
-                        newevent.speaker.add(ConflaUser.objects.get(username=username2))
-                    newevent.save()
-
-                    # Add tag
-                    if row[sp+i]:
-                        etag, created = EventTag.objects.get_or_create(name=row[sp+i])
-                        if created:
-                            # Create a nice random colour
-                            r = lambda: (random.randint(0,255)+255) // 2
-                            etag.color = '#%02x%02x%02x' % (r(),r(),r())
-                            etag.save()
-                        newevent.tags.add(etag)
-                        newevent.prim_tag = etag
-                        newevent.save()
 
 class ExportView(generic.TemplateView):
     def m_app(request, url_id):

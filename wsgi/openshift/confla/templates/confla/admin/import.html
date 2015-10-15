@@ -1,0 +1,17 @@
+{% extends "confla/admin/admin_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load confla_filters %}
+{% block title %}Import{% endblock %}
+
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" with active="import" %}
+{% endblock %}
+
+{% block admin_page %}
+    <form action="{% url 'confla:oa_import' url_id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-default" type="submit">{% trans "Import" %}</button>
+    </form>
+{% endblock %}

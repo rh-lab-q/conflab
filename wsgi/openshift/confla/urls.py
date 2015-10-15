@@ -42,5 +42,7 @@ urlpatterns = patterns('',
         url(r'^(?P<url_id>\w+)/admin/eventlist/$', views.EventEditView.event_view, name='editEvent'),
         url(r'^(?P<url_id>\w+)/admin/eventlist/(?P<id>\d+)/$', views.EventEditView.event_view, name='editEvent'),
         url(r'^(?P<url_id>\w+)/admin/eventlist/editEvent/(?P<id>\d+)/$', views.EventEditView.event_save, name='editEvent2'),
+        url(r'^(?P<url_id>\w+)/admin/import/$', views.ImportView.import_view, name='import'),
+        url(r'^(?P<url_id>\w+)/admin/import/oa2015/$', views.ImportView.oa_upload, name='oa_import'),
         )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

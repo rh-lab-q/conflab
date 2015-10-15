@@ -4,6 +4,15 @@ from django.utils.translation import ugettext as _
 
 from confla.models import Event, Conference, Room, ConflaUser, Paper, EmailAdress
 
+
+class ImportFileForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(ImportFileForm, self).__init__(*args, **kwargs)
+        self.fields['overwrite'].label = "Overwrite existing?"
+
+    file = forms.FileField()
+    overwrite = forms.BooleanField(required=False)
+
 class ConfCreateForm(forms.ModelForm):
 
     class Meta:
