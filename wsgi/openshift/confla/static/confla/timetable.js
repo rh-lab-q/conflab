@@ -16,12 +16,12 @@ function listFilter(input, list, elem) {
         .change(function() {
             var filter = $(this).val();
             if(filter) {
-                $matches = $(list).find(elem + ':Contains(' + filter + ')').parent();
-                $('.event-visible', list).not($matches).hide();
+                $matches = $(list).find(elem + ':Contains(' + filter + ')').parent().parent();
+                $('.event', list).not($matches).hide();
                 $matches.show();
             }
             else {
-                $(list).find('.event-visible').show();
+                $(list).find('.event').show();
             }
             return false;
         })
