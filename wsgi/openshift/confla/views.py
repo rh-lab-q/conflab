@@ -1128,9 +1128,9 @@ class ImportView(generic.TemplateView):
                 newevent.reqs = row[sp+6+i]
                 notes = 'Delka prednasky: ' + row[sp+5+i] + '\n'
                 # Get preferred day from both speakers if possible
-                notes = notes + 'Preferovany den: ' + row[12]
-                if row[30]:
-                    notes = notes + '; ' + row[30]
+                notes = notes + 'Preferovany den: ' + row[14]
+                if row[32]:
+                    notes = notes + '; ' + row[32]
                 notes = notes + '\n'
                 notes = notes + 'Poznamky: ' + row[sp+7+i] + '\n'
                 newevent.notes = notes
