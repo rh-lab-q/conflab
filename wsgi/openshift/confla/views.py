@@ -1044,10 +1044,8 @@ class ImportView(generic.TemplateView):
             # Setup rooms
             room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
             for i in room_list:
-                newroom = Room()
-                newroom.shortname = i
-                newroom.save()
-                hr = HasRoom(room=newroom, conference=conf, slot_length=3)
+                room, created = Room.objects.get_or_create(shortname=i)
+                hr = HasRoom(room=room, conference=conf, slot_length=3)
                 hr.save()
 
         f = io.TextIOWrapper(csv_file.file, encoding="utf-8")
