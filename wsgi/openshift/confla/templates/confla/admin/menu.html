@@ -1,5 +1,6 @@
 <div class="col-sm-1" id="admin-menu">
     <ul class="nav nav-sidebar">
+        {% if url_id %}
         <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>Overview</a></li>
         <li {% if active == "schedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminviewsched' url_id %}>Schedule</a>
         {% if active == "editschedule" or active == "schedule" %}
@@ -11,5 +12,9 @@
         <li {% if active == "config" %} class="cf-active" {% endif %}><a href="#">Configuration</a></li>
         <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>Import</a></li>
         <li {% if active == "export" %} class="cf-active" {% endif %}><a href="#">Export</a></li>
+        {% else %}
+        <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>Overview</a></li>
+        <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:org_import' %}>Import</a></li>
+        {% endif %}
     </ul>
 </div>

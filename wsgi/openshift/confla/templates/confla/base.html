@@ -35,10 +35,16 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                {% block cfp %}{% endblock cfp %}
+                {% if url_id %}
+                <li><a href="{% url 'confla:cfp' url_id %}"><strong>{% trans "Call for Participation" %}</strong></a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% block confbar %}{% endblock confbar %}
+                {% if url_id %}
+                <li><a href="{% url 'confla:about' url_id %}">{% trans "About" %}</a></li>
+                <li><a href="{% url 'confla:schedule' url_id %}">{% trans "Schedule" %}</a></li>
+                {% endif %}
+
                 {% if user.is_authenticated %}
                 <li class="dropdown" id="user">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,12 +53,14 @@
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                        {% block admin_link %}
                         {% if perms.confla.can_organize %}
-                        <li><a href="#">{% trans "Administration" %}</a></li>
+                        {% if url_id %}
+                        <li><a href={% url 'confla:dashboard' url_id %}>{% trans "Administration" %}</a></li>
+                        {% else %}
+                        <li><a href={% url 'confla:org_dashboard' %}>{% trans "Administration" %}</a></li>
+                        {% endif %}
                         <li role="separator" class="divider"></li>
                         {% endif %}
-                        {% endblock %}
                         <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
                         <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
                     </ul>

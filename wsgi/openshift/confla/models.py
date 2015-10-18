@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
-from confla.utils import *
+from confla.utils import validate_papers, user_rename_and_return_path, paper_rename_and_return_path
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)

@@ -18,8 +18,9 @@ from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.db import transaction
 
-from confla.models import *
 from confla.forms import *
+from confla.models import *
+from confla.view_utils import get_conf_or_404
 
 class TestingView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
@@ -29,17 +30,17 @@ class TestingView(generic.TemplateView):
 class AdminView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def dashboard(request, url_id):
+    def dashboard(request, url_id=None):
+        if url_id:
+            conf = get_conf_or_404(url_id)
         return render(request, "confla/admin/admin_base.html",
                         {   'url_id' : url_id,
                         })
 
     @permission_required('confla.can_organize', raise_exception=True)
     def schedule(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         slot_list = {}
         rooms = conf.rooms.all()
         for room in rooms:
@@ -78,13 +79,11 @@ class EventEditView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def event_view(request, url_id, id=None):
+        conf = get_conf_or_404(url_id)
+
         event = None
         if id:
             event = Event.objects.get(id=id)
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
         event_list = Event.objects.filter(conf_id=conf)
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
@@ -100,11 +99,9 @@ class EventEditView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def event_save(request, url_id, id):
         if request.method == 'POST':
+            conf = get_conf_or_404(url_id)
+
             data = request.POST.copy()
-            try:
-                conf = Conference.objects.get(url_id=url_id)
-            except ObjectDoesNotExist:
-                raise Http404
             data['conf_id'] = conf
             event = None
             try:
@@ -144,10 +141,7 @@ class EventEditView(generic.TemplateView):
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
     def my_view(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
         return render(request, AboutView.template_name, {'url_id' : url_id})
 
 class IndexView(generic.TemplateView):
@@ -161,6 +155,8 @@ class CfpView(generic.TemplateView):
     # TODO: Conference.objects.get(url_id=url_id) to get conference
     @login_required
     def save_form_and_register(request, url_id):
+        conf = get_conf_or_404(url_id)
+
         if request.method == 'POST':
             user_form = RegisterForm(request.POST)
             paper_form = PaperForm(request.POST)
@@ -182,6 +178,8 @@ class CfpView(generic.TemplateView):
 
     @login_required
     def save_form(request, url_id):
+        conf = get_conf_or_404(url_id)
+
         if request.method == 'POST':
             paper_form = PaperForm(request.POST)
             if paper_form.is_valid():
@@ -215,6 +213,8 @@ class EventView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def get_admin_popover(request, url_id):
         template_name = 'confla/event_popover_admin.html'
+        conf = get_conf_or_404(url_id)
+
         if not(request.method == "POST"):
             raise Http404
         event = Event.objects.get(id=int(request.POST['data']))
@@ -230,10 +230,8 @@ class ScheduleView(generic.TemplateView):
 
     def my_view(request, url_id):
         #TODO: Add compatibility with archived conferences
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         slot_list = {}
         rooms = conf.rooms.all()
         for room in rooms:
@@ -268,10 +266,8 @@ class ScheduleView(generic.TemplateView):
                     })
 
     def list_view(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         time_list = []
         # Distinct ordered datetime list for the current conference
         start_list = Timeslot.objects.filter(conf_id=conf).order_by("start_time").values_list("start_time", flat=True).distinct()
@@ -469,10 +465,8 @@ class RoomConfView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def slot_view(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         rooms = conf.rooms.all()
         room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
                       'room' : x} for x in conf.rooms.all()]
@@ -494,10 +488,8 @@ class RoomConfView(generic.TemplateView):
     @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
     def save_config(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         if request.method == 'POST': # the form was submitted
             configs = json.loads(request.POST['data'])
             for config in configs:
@@ -515,10 +507,8 @@ class TimetableView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
         rooms = conf.rooms.all()
@@ -564,19 +554,19 @@ class TimetableView(generic.TemplateView):
     @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
     def save_timetable(request, url_id):
+        conf = get_conf_or_404(url_id)
+
         if(request.method == 'POST'):
             TimetableView.json_to_timeslots(request.POST['data'], url_id)
             return HttpResponseRedirect(reverse('confla:thanks'))
 
     @permission_required('confla.can_organize', raise_exception=True)
     def save_event(request, url_id):
+        conf = get_conf_or_404(url_id)
+
         if request.method == 'POST':
             if request.POST['event_id'] == "0":
                 # New event
-                try:
-                    conf = Conference.objects.get(url_id=url_id)
-                except ObjectDoesNotExist:
-                    raise Http404
                 form = EventCreateForm(request.POST)
                 if form.is_valid():
                     new_event = form.save(commit=False)
@@ -608,10 +598,8 @@ class TimetableView(generic.TemplateView):
 
     def json_to_timeslots(json_string, url_id):
         # JSON format: '[{"Room" : {"start" : "HH:MM", "end" : "HH:MM"}}]'
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
+
         json_obj = json.loads(json_string)
         # Delete all existing timeslots
         Timeslot.objects.filter(conf_id=conf).delete()
@@ -714,8 +702,11 @@ class ImportView(generic.TemplateView):
             }"""
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def import_view(request, url_id):
+    def import_view(request, url_id=None):
         template_name = 'confla/admin/import.html'
+        if url_id:
+            conf = get_conf_or_404(url_id)
+
         form = ImportFileForm()
         return render(request, template_name,
                         {   'url_id' : url_id,
@@ -723,15 +714,15 @@ class ImportView(generic.TemplateView):
                             })
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def oa_upload(request, url_id):
+    def oa_upload(request):
         if request.method == 'POST':
             form = ImportFileForm(request.POST, request.FILES)
             if form.is_valid():
                 ImportView.oa2015(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
-                return HttpResponseRedirect(reverse('confla:import', kwargs={'url_id' : url_id}))
+                return HttpResponseRedirect(reverse('confla:thanks'))
             else:
                 # TODO: error checking
-                return HttpResponseRedirect(reverse('confla:import', kwargs={'url_id' : url_id}))
+                return HttpResponseRedirect(reverse('confla:thanks'))
 
     @transaction.atomic
     def json_to_db(json_string):
@@ -1166,11 +1157,9 @@ class ImportView(generic.TemplateView):
 
 class ExportView(generic.TemplateView):
     def m_app(request, url_id):
+        conf = get_conf_or_404(url_id)
+
         result = {}
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
         tz = timezone.get_default_timezone()
         rfc_time_format = "%a, %d %b %Y %X %z"
         # Export events
@@ -1229,10 +1218,7 @@ class ExportView(generic.TemplateView):
         return HttpResponse(json.dumps(result))
 
     def csv(request, url_id):
-        try:
-            conf = Conference.objects.get(url_id=url_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        conf = get_conf_or_404(url_id)
 
         iostr = io.StringIO()
         writer = csv.writer(iostr, quoting=csv.QUOTE_NONNUMERIC)

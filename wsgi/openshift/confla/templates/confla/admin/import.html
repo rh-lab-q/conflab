@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block admin_page %}
-    <form action="{% url 'confla:oa_import' url_id %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'confla:oa_import' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-default" type="submit">{% trans "Import" %}</button>
