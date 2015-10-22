@@ -16,7 +16,11 @@
 
 {% block content %}
     {% csrf_token %}
+    <div class="legend col-xs-3 col-md-1" style="float:left">
+    </div>
+    <div class="col-xs-9 col-md-11" style="float:left">
     {% include "confla/user_table.html" %}
+    </div>
     {% if perms.confla.can_organize %}
     <div class="edit-link" style="position:fixed; left:0; bottom:0; padding:3px; background-color:#ffffff;">
         <a href={% url 'confla:adminsched' url_id %}>Edit this page</a>

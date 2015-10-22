@@ -912,14 +912,10 @@ class ImportView(generic.TemplateView):
 
         # Generate rooms from roomlist
         for i in room_list:
-            try:
-                Room.objects.get(shortname=i)
-            except ObjectDoesNotExist:
-                newroom = Room()
-                newroom.shortname = i
-                newroom.save()
-                hr = HasRoom(room=newroom, conference=conf, slot_length=4)
+                room, created = Room.objects.get_or_create(shortname=i)
+                hr = HasRoom(room=room, conference=conf, slot_length=3)
                 hr.save()
+
         user_list = []
         tag_list = []
 
