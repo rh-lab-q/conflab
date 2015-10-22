@@ -572,7 +572,7 @@ function popoverInit(selector) {
         var original = $(this).parent().parent().parent().find(".pop-content");
         var popoverSelector = "#" + $(this).attr("aria-describedby");
         var content = $(popoverSelector).find(".popover-content");
-        var visible = $(this).parent().parent();
+        var visible = $(this);
         var selSpeaker = $(content).find("select.sel-speaker");
         var selTag = $(content).find("select.sel-tag");
 
