@@ -9,9 +9,12 @@
 {% endblock %}
 
 {% block admin_page %}
-    <form action="{% url 'confla:oa_import' %}" method="post" enctype="multipart/form-data">
+    <form class="oa_form" action="{% url 'confla:oa_import' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-default" type="submit">{% trans "Import" %}</button>
     </form>
+{% endblock %}
+{% block extrascripts %}
+<script src="{% static 'confla/import.js' %}"></script>
 {% endblock %}

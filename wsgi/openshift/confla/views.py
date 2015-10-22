@@ -718,8 +718,8 @@ class ImportView(generic.TemplateView):
         if request.method == 'POST':
             form = ImportFileForm(request.POST, request.FILES)
             if form.is_valid():
-                ImportView.oa2015(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
-                return HttpResponseRedirect(reverse('confla:thanks'))
+                alerts = ImportView.oa2015(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
+                return HttpResponse(alerts)
             else:
                 # TODO: error checking
                 return HttpResponseRedirect(reverse('confla:thanks'))
@@ -1035,6 +1035,13 @@ class ImportView(generic.TemplateView):
                 hr = HasRoom(room=room, conference=conf, slot_length=3)
                 hr.save()
 
+        events_created = 0
+        events_modified = 0
+        events_skipped = 0
+        users_created = 0
+        users_modified = 0
+        users_skipped = 0
+
         f = io.TextIOWrapper(csv_file.file, encoding="utf-8")
         # Skip the headers
         next(f)
@@ -1070,6 +1077,9 @@ class ImportView(generic.TemplateView):
                 """
                 newuser.full_clean()
                 newuser.save()
+                users_created += 1
+            else:
+                users_skipped += 1
 
             # Second speaker
             if row[26]:
@@ -1095,6 +1105,9 @@ class ImportView(generic.TemplateView):
                     """
                     newuser.full_clean()
                     newuser.save()
+                    users_created += 1
+                else:
+                    users_skipped += 1
 
             # length of each event section
             event_len = 8
@@ -1112,9 +1125,13 @@ class ImportView(generic.TemplateView):
                     newevent = Event.objects.get(topic=row[sp+2+i], conf_id=conf)
                     # and if overwrite argument is not set, skip event
                     if not overwrite:
+                        events_skipped += 1
                         continue
                 except ObjectDoesNotExist:
                     newevent = Event()
+                    events_created += 1
+                else:
+                    events_modified += 1
                 newevent.conf_id = conf
                 etype, created = EventType.objects.get_or_create(name=row[sp+1+i])
                 newevent.e_type_id = etype
@@ -1150,6 +1167,19 @@ class ImportView(generic.TemplateView):
                     newevent.tags.add(etag)
                     newevent.prim_tag = etag
                     newevent.save()
+
+        check = '<i class="fa fa-check-circle fa-lg"></i>'
+        warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
+        created = '<div class="alert alert-success">' + check + ' Events created: ' + str(events_created)
+        created += ', Users created: ' + str(users_created) + '</div>'
+        modified ='<div class="alert alert-success">' + check + ' Events modified: ' + str(events_modified)
+        modified += ', Users modified: ' + str(users_modified) + '</div>'
+        skipped = '<div class="alert alert-warning">' + warning + ' Events skipped: ' + str(events_skipped)
+        skipped += ', Users skipped: ' + str(users_skipped) + '</div>'
+        if overwrite:
+            return '<div class="import-alerts">'+ created + modified + '</div>'
+        else:
+            return '<div class="import-alerts">'+ created + skipped + '</div>'
 
 class ExportView(generic.TemplateView):
     def m_app(request, url_id):
