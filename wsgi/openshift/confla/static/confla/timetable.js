@@ -6,6 +6,8 @@
 
 var cellSize = 31; // cell height + 1 border
 var itemHeight = 28;
+var changes = false;
+
 $.expr[':'].Contains = function(a, i, m) {
     // m is PROBABLY an array ofcCaller, calling method('Contains'), and content of the call
     return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
@@ -66,7 +68,11 @@ function eventInit(selector) {
         $(this).draggable({
             revert: function(dropped) {
                 $(this).data('dragging', false);
-                if (dropped) return false;
+                if (dropped) {
+                    // Flag for pending changes to the schedule
+                    changes = true;
+                    return false;
+                }
                 else {
                     $(".drag-help").remove();
                     $(this).css("visibility", "visible").show();
@@ -425,8 +431,13 @@ function timetableSubmit(selector) {
     def = $.post(save_link, {
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         data: toSend});
-
-    return def;
+    $.when(def).then(function (){
+        // Success
+    }, function (response){
+        // Failure
+        var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-lg"></i> Failed to save schedule.</div>';
+        $(".sched-wrap").prepend(div);
+    });
 }
 
 function selectizePopover(selector) {
@@ -638,8 +649,9 @@ function popoverInit(selector) {
             },
             error: function(response) {
                 // Create error message and scroll to it
-                var div = $('<div class="alert alert-danger">' + response.responseText + '</div>');
-                $(div).prepend("<span>Error while saving event:</span>");
+                var error = response.responseText || 'Unknown error.';
+                var div = $('<div class="alert alert-danger">' + error + '</div>');
+                $(div).prepend('<span><i class="fa fa-exclamation-triangle fa-lg"></i> Error while saving event: </span>');
                 $(".sched-wrap").prepend(div);
                 // Smooth scroll
                 $('html,body').animate({
@@ -664,6 +676,13 @@ eventInit(".event");
 
 timetableDisable();
 }
+
+window.addEventListener("beforeunload", function (event) {
+    // Warn the user when leaving the page with pending changes
+    if (changes) {
+        event.preventDefault();
+    }
+});
 
 $(document).ready(function() {
     // Go through all .item objects and make them the right size
