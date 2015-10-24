@@ -65,6 +65,7 @@ function eventInit(selector) {
     $(selector).each( function() {
         $(this).draggable({
             revert: function(dropped) {
+                $(this).data('dragging', false);
                 if (dropped) return false;
                 else {
                     $(".drag-help").remove();
@@ -87,6 +88,8 @@ function eventInit(selector) {
                 return helper;
             }
         }).on("dragstart", function () {
+            // Hide all open popovers on drag
+            $("[aria-describedby]").popover("hide");
             $(this).css("visibility", "hidden").hide();
             $(this).parent().addClass("empty");
         }).on("dragstop", function () {
@@ -189,7 +192,7 @@ function itemInit(selector) {
                         $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                         $(ui.draggable).hide();
                     }
-                    else {
+                    else if (ui.draggable.data('dragging')) {
                         // Dragged over itself
                         $(ui.draggable).parent().append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                         $(ui.draggable).hide();
@@ -215,6 +218,9 @@ function itemInit(selector) {
                 // Dragged from event list
                 $(".sched-wrap .event:hidden").show();
                 $(".drag-help").remove();
+            }
+            if ($(item).is($(ui.draggable).parent())) {
+                ui.draggable.data('dragging', true);
             }
         }
     });
