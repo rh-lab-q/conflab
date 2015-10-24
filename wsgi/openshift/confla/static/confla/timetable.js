@@ -433,6 +433,7 @@ function timetableSubmit(selector) {
         data: toSend});
     $.when(def).then(function (){
         // Success
+        changes = false;
     }, function (response){
         // Failure
         var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-lg"></i> Failed to save schedule.</div>';

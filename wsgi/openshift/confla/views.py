@@ -1164,6 +1164,8 @@ class ImportView(generic.TemplateView):
                         r = lambda: (random.randint(0,255)+255) // 2
                         etag.color = '#%02x%02x%02x' % (r(),r(),r())
                         etag.save()
+                    # Remove any existing tags from the event
+                    newevent.tags.clear()
                     newevent.tags.add(etag)
                     newevent.prim_tag = etag
                     newevent.save()

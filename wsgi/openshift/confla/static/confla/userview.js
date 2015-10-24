@@ -372,7 +372,8 @@ function user_setup() {
     $('html').on('click', function(e) {
         // If the target is not an event or topic
         if (!$(e.target).hasClass("event-visible") && !$(e.target).hasClass("topic") && !$(e.target).hasClass("speaker")
-            // If the target is not a popover
+            && !$(e.target).hasClass("speakers")
+                // If the target is not a popover
             && $(e.target).parents('.popover.in').length === 0) {
                 $(sel).each( function () {
                 // If there is an open popover, hide it
