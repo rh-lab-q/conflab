@@ -371,7 +371,7 @@ function user_setup() {
     sel = ".user-wrap .item";
     $('html').on('click', function(e) {
         // If the target is not an event or topic
-        if (!$(e.target).hasClass("event-visible") && !$(e.target).hasClass("topic")
+        if (!$(e.target).hasClass("event-visible") && !$(e.target).hasClass("topic") && !$(e.target).hasClass("speaker")
             // If the target is not a popover
             && $(e.target).parents('.popover.in').length === 0) {
                 $(sel).each( function () {

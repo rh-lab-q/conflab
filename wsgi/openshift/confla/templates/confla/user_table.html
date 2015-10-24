@@ -55,8 +55,14 @@
                             {% with e=s.event_id %}
                             <div class="event" style="position:absolute" event-id={{e.id}}>
                                     <div class="event-visible {{e|tag_class}}">
-                                        <p class="topic">{{e.topic}}</p>
-                                        <p class="author">{{e.get_users}}</p>
+                                        <div class="topic">{{e.topic}}</div>
+                                        <div class="speakers">
+                                        {% for speaker in e.speaker.all %}
+                                        <span class="speaker">
+                                            {{speaker.first_name}}{% if not forloop.last %}, {% endif %}
+                                        </span>
+                                        {% endfor %}
+                                        </p>
                                     </div>
                                 </div>
                             {% endwith %}
