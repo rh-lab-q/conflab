@@ -1199,7 +1199,11 @@ class ExportView(generic.TemplateView):
                 session = {}
                 session['lang'] = event.lang
                 session['type'] = event.e_type_id.name
-                session['room_color'] = "#ffffff"
+                # Primary tag color
+                if event.prim_tag:
+                    session['room_color'] = event.prim_tag.color 
+                else:
+                    session['room_color'] = '#787878'
                 session['room'] = slot.room_id.shortname
                 session['room_short'] = slot.room_id.shortname
                 session['speakers'] = [x.first_name for x in event.speaker.all()]
