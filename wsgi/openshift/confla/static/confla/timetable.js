@@ -349,6 +349,8 @@ function createEvent() {
         // jQuery magic
         popoverInit(visevent);
         eventInit(nevent);
+        // Flag for pending changes to the schedule
+        changes = true;
         return nevent;
 }
 
@@ -599,6 +601,20 @@ function popoverInit(selector) {
 
         // If something went wrong when creating the popover
         if(!selTag.length || !selSpeaker.length) return;
+
+        // Check if the required fields are all empty
+        if(!$(content).find("#id_topic").val()
+            && !$(content).find("#id_description").val()
+            && !(selSpeaker[0].selectize.items.length)) {
+                // Delete the event, and exit
+                var item = $(this).closest(".item");
+                $(item).addClass("empty");
+                $(item).resizable("destroy");
+                $(item).parent().droppable("destroy");
+                emptyItemInit(item);
+                $(this).parent().remove();
+                return;
+        }
 
         // Copy edited content into original html
         $(original).find("#id_topic").attr("value", ($(content).find("#id_topic").val()));
