@@ -1266,9 +1266,10 @@ class ExportView(generic.TemplateView):
         writer = csv.writer(iostr, quoting=csv.QUOTE_NONNUMERIC)
         slot_list = {}
         rooms = conf.rooms.all()
-        header = ['time']
+        header = []
         for room in rooms:
             slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
+            header.append('time')
             header.append(room.shortname)
         writer.writerow(header)
         time_list = []
@@ -1284,13 +1285,15 @@ class ExportView(generic.TemplateView):
                 for room in rooms:
                     for slot in slot_list[room.shortname]:
                         if slot.get_start_datetime == time['full']:
+                            end_time = slot.get_end_time
+                            time['slots'].append(start_time.strftime("%H:%M") + ' - ' + end_time)
                             time['slots'].append(slot.event_id.topic)
                             break
                     else:
                         time['slots'].append('')
+                        time['slots'].append('')
                 for slot in time['slots']:
                     if slot:
-                        time['slots'].insert(0, start_time.strftime("%H:%M"))
                         time_dict['list'].append(time)
                         writer.writerow(time['slots'])
                         break;
