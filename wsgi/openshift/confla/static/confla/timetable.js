@@ -758,7 +758,7 @@ $(document).ready(function() {
             });
         }
     });
-    listFilter($("#filter_input"), $("#event-list"), "p");
+    listFilter($("#filter_input"), $("#event-list"), "div");
 
     // Setup slot lengths for empty slots
     var total = $(".table:first tbody tr").length;

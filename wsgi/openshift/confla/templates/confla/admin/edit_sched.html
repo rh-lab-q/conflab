@@ -34,8 +34,16 @@
                         <span class="glyphicon glyphicon-edit"></span>
                     </div>
                 </div> item-buttons -->
-                <p class="topic">{{e.topic}}</p>
-                <p class="author">{{e.get_users}}</p>
+                <div>
+                    <div class="topic">{{e.topic}}</div>
+                    <div class="speakers">
+                        {% for speaker in e.speaker.all %}
+                        <span class="speaker">
+                            {{speaker.first_name}}{% if not forloop.last %}, {% endif %}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             <div class="pop-title"style="display:none">
                 <span>{% trans "Edit event" %}</span>
@@ -94,8 +102,14 @@
                                         </div>
                                     </div> item-buttons -->
                                     <div>
-                                        <p class="topic">{{e.topic}}</p>
-                                        <p class="author">{{e.get_users}}</p>
+                                        <div class="topic">{{e.topic}}</div>
+                                        <div class="speakers">
+                                            {% for speaker in e.speaker.all %}
+                                            <span class="speaker">
+                                                {{speaker.first_name}}{% if not forloop.last %}, {% endif %}
+                                            </span>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="pop-title"style="display:none">
