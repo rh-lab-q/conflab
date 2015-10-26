@@ -178,6 +178,10 @@ td > .ui-state-hover {
     line-height: 100%;
 }
 
+.speakers {
+    line-height: 120%;
+}
+
 #filter_input {
     width: 100%;
 }

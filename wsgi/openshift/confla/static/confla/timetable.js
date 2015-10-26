@@ -780,6 +780,7 @@ $(document).ready(function() {
     var total = $(".table:first tbody tr").length;
     $(".table").each(function() {
         var that = this;
+        var tr_arr = $(this).find("tr");
         // For each room name table header except the first one (time)
         $("th:not(:first-child)", that).each(function() {
             var index = $(this).index() + 1;
@@ -793,14 +794,13 @@ $(document).ready(function() {
                     // set the item's length to 1
                     if (total-i < slot_len-1) {
                         $(this).height(itemHeight);
-                        // TODO: Setup end time for slots of length 1 here
+                        $(this).find(".end").text("Ends at: " + countEndtime(tr_arr, i+1));
                     }
                     else {
                         $(this).height(itemHeight+cellSize*(slot_len-1));
                         // Setup end time for timetable update
-                        endIndex = $(row).index() + parseInt(slot_len) + 1;
-                        endTime = $("tbody tr:nth-child(" + endIndex + ") td:first", that).text();
-                        $(this).find(".end").text("Ends at: " + endTime);
+                        var endIndex = $(row).index() + parseInt(slot_len) + 1;
+                        $(this).find(".end").text("Ends at: " + countEndtime(tr_arr, endIndex));
                     }
                 });
             });
