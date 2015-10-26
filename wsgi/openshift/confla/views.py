@@ -1227,7 +1227,10 @@ class ExportView(generic.TemplateView):
             user['position'] = usr.position
             user['company'] = usr.company
             user['joined'] = usr.date_joined.astimezone(tz).isoformat()[:19].replace('T', ' ')
-            user['lastactive'] = usr.last_login.astimezone(tz).isoformat()[:19].replace('T', ' ')
+            if usr.last_login:
+                user['lastactive'] = usr.last_login.astimezone(tz).isoformat()[:19].replace('T', ' ')
+            else:
+                user['lastactive'] = ''
             user['avatar'] = ''
             result['users'].append(user)
 
@@ -1243,7 +1246,7 @@ class ExportView(generic.TemplateView):
         # Generate checksum
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
 
-        return HttpResponse(json.dumps(result))
+        return HttpResponse(json.dumps(result), content_type="application/json")
 
     def csv(request, url_id):
         conf = get_conf_or_404(url_id)
