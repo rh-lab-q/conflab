@@ -1,0 +1,20 @@
+{% extends "confla/admin/admin_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load confla_filters %}
+{% block title %}Export{% endblock %}
+
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" with active="export" %}
+{% endblock %}
+
+{% block admin_page %}
+<div>
+<a href={% url 'confla:export_mapp' url_id %}>export as JSON</a> 
+</div>
+<div>
+<a href={% url 'confla:export_csv' url_id %}>export as csv</a> 
+</div>
+{% endblock %}
+{% block extrascripts %}
+{% endblock %}

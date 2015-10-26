@@ -1184,6 +1184,13 @@ class ImportView(generic.TemplateView):
             return '<div class="import-alerts">'+ created + skipped + '</div>'
 
 class ExportView(generic.TemplateView):
+    @permission_required('confla.can_organize', raise_exception=True)
+    def export_view(request, url_id):
+        template_name = 'confla/admin/export.html'
+        conf = get_conf_or_404(url_id)
+
+        return render(request, template_name,{ 'url_id' : url_id })
+
     def m_app(request, url_id):
         conf = get_conf_or_404(url_id)
 
@@ -1289,4 +1296,4 @@ class ExportView(generic.TemplateView):
                         break;
 
             time_list.append(time_dict)
-        return HttpResponse(iostr.getvalue())
+        return HttpResponse(iostr.getvalue(), content_type="text/csv")
