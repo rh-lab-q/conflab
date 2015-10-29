@@ -1037,14 +1037,24 @@ class ImportView(generic.TemplateView):
                 newuser.company = row[15]
                 newuser.position = row[16]
                 newuser.email = row[10]
-                #TODO: Basic format checking?
-                """
-                newuser.web = row[17]
-                newuser.facebook = row[18]
-                newuser.twitter = row[19]
-                newuser.linkedin= row[20]
-                newuser.google_plus= row[21]
-                """
+                newuser.web = row[17].strip()
+                if newuser.web and not newuser.web.startswith('http'):
+                    newuser.web = 'http://' + newuser.web
+                newuser.facebook = row[18].strip()
+                if newuser.facebook and not newuser.facebook.startswith('http'):
+                    newuser.facebook = 'https://' + newuser.facebook
+                newuser.twitter = row[19].strip()
+                if newuser.twitter:
+                    if newuser.twitter.startswith('twitter'):
+                        newuser.twitter = 'https://' + newuser.twitter
+                    elif not newuser.twitter.startswith('http'):
+                        newuser.twitter = 'https://twitter.com/' + newuser.twitter
+                newuser.linkedin= row[20].strip()
+                if newuser.linkedin and not newuser.linkedin.startswith('http'):
+                    newuser.linkedin = 'https://' + newuser.linkedin
+                newuser.google_plus= row[21].strip()
+                if newuser.google_plus and not newuser.google_plus.startswith('http'):
+                    newuser.google_plus = 'https://' + newuser.google_plus
                 newuser.full_clean()
                 newuser.save()
                 users_created += 1
@@ -1065,14 +1075,24 @@ class ImportView(generic.TemplateView):
                     newuser.company = row[31]
                     newuser.position = row[32]
                     newuser.email = row[27]
-                    #TODO: Basic format checking?
-                    """
-                    newuser.web = row[33]
-                    newuser.facebook = row[34]
-                    newuser.twitter = row[35]
-                    newuser.linkedin= row[36]
-                    newuser.google_plus= row[37]
-                    """
+                    newuser.web = row[33].strip()
+                    if row[33] and not newuser.web.startswith('http'):
+                        newuser.web = 'http://' + newuser.web
+                    newuser.facebook = row[34].strip()
+                    if newuser.facebook and not newuser.facebook.startswith('http'):
+                        newuser.facebook = 'https://' + newuser.facebook
+                    newuser.twitter = row[35].strip()
+                    if newuser.twitter:
+                        if newuser.twitter.startswith('twitter'):
+                            newuser.twitter = 'https://' + newuser.twitter
+                        elif not newuser.twitter.startswith('http'):
+                            newuser.twitter = 'https://twitter.com/' + newuser.twitter
+                    newuser.linkedin= row[36].strip()
+                    if newuser.linkedin and not newuser.linkedin.startswith('http'):
+                        newuser.linkedin = 'https://' + newuser.linkedin
+                    newuser.google_plus= row[37].strip()
+                    if newuser.google_plus and not newuser.google_plus.startswith('http'):
+                        newuser.google_plus = 'https://' + newuser.google_plus
                     newuser.full_clean()
                     newuser.save()
                     users_created += 1
