@@ -1209,8 +1209,10 @@ class ExportView(generic.TemplateView):
                 # Primary tag color
                 if event.prim_tag:
                     session['room_color'] = event.prim_tag.color 
+                    session['track'] = event.prim_tag.name
                 else:
                     session['room_color'] = '#787878'
+                    session['track'] = ''
                 session['room'] = slot.room_id.shortname
                 session['room_short'] = slot.room_id.shortname
                 session['speakers'] = [x.first_name for x in event.speaker.all()]
@@ -1223,6 +1225,7 @@ class ExportView(generic.TemplateView):
                 session['event_start_rfc'] = start_time.strftime(rfc_time_format)
                 session['event_end'] = int(end_time.timestamp())
                 session['event_end_rfc'] = end_time.strftime(rfc_time_format)
+                session['reqs'] = event.reqs
                 result['sessions'].append(session)
 
         # Export days
