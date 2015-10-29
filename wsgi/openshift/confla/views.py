@@ -1028,76 +1028,83 @@ class ImportView(generic.TemplateView):
             username1 = re.sub('[\W_]+', '', username1)
             username2 = ''
             try:
-                ConflaUser.objects.get(username=username1)
+                newuser = ConflaUser.objects.get(username=username1)
+                if not overwrite:
+                    users_skipped += 1
+                    continue
             except ObjectDoesNotExist:
                 newuser = ConflaUser()
                 newuser.username = username1
                 newuser.password = "blank"
-                newuser.first_name = row[9][:30]
-                newuser.company = row[15]
-                newuser.position = row[16]
-                newuser.email = row[10]
-                newuser.web = row[17].strip()
-                if newuser.web and not newuser.web.startswith('http'):
-                    newuser.web = 'http://' + newuser.web
-                newuser.facebook = row[18].strip()
-                if newuser.facebook and not newuser.facebook.startswith('http'):
-                    newuser.facebook = 'https://' + newuser.facebook
-                newuser.twitter = row[19].strip()
-                if newuser.twitter:
-                    if newuser.twitter.startswith('twitter'):
-                        newuser.twitter = 'https://' + newuser.twitter
-                    elif not newuser.twitter.startswith('http'):
-                        newuser.twitter = 'https://twitter.com/' + newuser.twitter
-                newuser.linkedin= row[20].strip()
-                if newuser.linkedin and not newuser.linkedin.startswith('http'):
-                    newuser.linkedin = 'https://' + newuser.linkedin
-                newuser.google_plus= row[21].strip()
-                if newuser.google_plus and not newuser.google_plus.startswith('http'):
-                    newuser.google_plus = 'https://' + newuser.google_plus
-                newuser.full_clean()
-                newuser.save()
                 users_created += 1
             else:
-                users_skipped += 1
+                users_modified += 1
+
+            newuser.first_name = row[9][:30]
+            newuser.company = row[15]
+            newuser.position = row[16]
+            newuser.email = row[10]
+            newuser.web = row[17].strip()
+            if newuser.web and not newuser.web.startswith('http'):
+                newuser.web = 'http://' + newuser.web
+            newuser.facebook = row[18].strip()
+            if newuser.facebook and not newuser.facebook.startswith('http'):
+                newuser.facebook = 'https://' + newuser.facebook
+            newuser.twitter = row[19].strip()
+            if newuser.twitter:
+                if newuser.twitter.startswith('twitter'):
+                    newuser.twitter = 'https://' + newuser.twitter
+                elif not newuser.twitter.startswith('http'):
+                    newuser.twitter = 'https://twitter.com/' + newuser.twitter
+            newuser.linkedin= row[20].strip()
+            if newuser.linkedin and not newuser.linkedin.startswith('http'):
+                newuser.linkedin = 'https://' + newuser.linkedin
+            newuser.google_plus= row[21].strip()
+            if newuser.google_plus and not newuser.google_plus.startswith('http'):
+                newuser.google_plus = 'https://' + newuser.google_plus
+            newuser.full_clean()
+            newuser.save()
 
             # Second speaker
             if row[26]:
                 username2 = row[26].replace(" ", "")[:30]
                 username2 = re.sub('[\W_]+', '', username2)
                 try:
-                    ConflaUser.objects.get(username=username2)
+                    newuser = ConflaUser.objects.get(username=username2)
+                    if not overwrite:
+                        users_skipped += 1
+                        continue
                 except ObjectDoesNotExist:
                     newuser = ConflaUser()
                     newuser.username = username2
                     newuser.password = "blank"
-                    newuser.first_name = row[26][:30]
-                    newuser.company = row[31]
-                    newuser.position = row[32]
-                    newuser.email = row[27]
-                    newuser.web = row[33].strip()
-                    if row[33] and not newuser.web.startswith('http'):
-                        newuser.web = 'http://' + newuser.web
-                    newuser.facebook = row[34].strip()
-                    if newuser.facebook and not newuser.facebook.startswith('http'):
-                        newuser.facebook = 'https://' + newuser.facebook
-                    newuser.twitter = row[35].strip()
-                    if newuser.twitter:
-                        if newuser.twitter.startswith('twitter'):
-                            newuser.twitter = 'https://' + newuser.twitter
-                        elif not newuser.twitter.startswith('http'):
-                            newuser.twitter = 'https://twitter.com/' + newuser.twitter
-                    newuser.linkedin= row[36].strip()
-                    if newuser.linkedin and not newuser.linkedin.startswith('http'):
-                        newuser.linkedin = 'https://' + newuser.linkedin
-                    newuser.google_plus= row[37].strip()
-                    if newuser.google_plus and not newuser.google_plus.startswith('http'):
-                        newuser.google_plus = 'https://' + newuser.google_plus
-                    newuser.full_clean()
-                    newuser.save()
                     users_created += 1
                 else:
-                    users_skipped += 1
+                    users_modified += 1
+                newuser.first_name = row[26][:30]
+                newuser.company = row[31]
+                newuser.position = row[32]
+                newuser.email = row[27]
+                newuser.web = row[33].strip()
+                if row[33] and not newuser.web.startswith('http'):
+                    newuser.web = 'http://' + newuser.web
+                newuser.facebook = row[34].strip()
+                if newuser.facebook and not newuser.facebook.startswith('http'):
+                    newuser.facebook = 'https://' + newuser.facebook
+                newuser.twitter = row[35].strip()
+                if newuser.twitter:
+                    if newuser.twitter.startswith('twitter'):
+                        newuser.twitter = 'https://' + newuser.twitter
+                    elif not newuser.twitter.startswith('http'):
+                        newuser.twitter = 'https://twitter.com/' + newuser.twitter
+                newuser.linkedin= row[36].strip()
+                if newuser.linkedin and not newuser.linkedin.startswith('http'):
+                    newuser.linkedin = 'https://' + newuser.linkedin
+                newuser.google_plus= row[37].strip()
+                if newuser.google_plus and not newuser.google_plus.startswith('http'):
+                    newuser.google_plus = 'https://' + newuser.google_plus
+                newuser.full_clean()
+                newuser.save()
 
             # length of each event section
             event_len = 8
