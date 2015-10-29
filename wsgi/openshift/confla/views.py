@@ -882,84 +882,65 @@ class ImportView(generic.TemplateView):
     @transaction.atomic
     def dv(json_string):
         # delete everyone excluding admin
-        ConflaUser.objects.all().exclude(username="admin").delete()
         json_obj = json.loads(json_string)
-        Timeslot.objects.all().delete()
-        Event.objects.all().delete()
-        EventTag.objects.all().delete()
-        room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
-        # Setup dummy event type
-        try:
-            EventType.objects.get(id=1)
-        except ObjectDoesNotExist:
-            newetype = EventType()
-            newetype.name = 'Talk'
-            newetype.save()
+        #room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
         # Setup a Conference if there is none
         try:
-            conf = Conference.objects.get(url_id='2015')
+            conf = Conference.objects.get(url_id='Placeholder')
         except ObjectDoesNotExist:
             newconf = Conference()
-            newconf.start_date = date(2015, 2, 6)
-            newconf.end_date = date(2015, 2, 8)
-            newconf.start_time = time(8, 0, 0)
-            newconf.end_time = time(20, 0, 0)
-            newconf.url_id = '2015'
+            newconf.url_id = 'Placeholder'
             newconf.active = True
-            newconf.name = "Devconf 2015"
+            newconf.name = "Placeholder"
+            newconf.start_time = time(9, 0, 0)
+            newconf.end_time = time(17, 30, 0)
             newconf.save()
             conf = newconf
-
-        # Generate rooms from roomlist
-        for i in room_list:
-                room, created = Room.objects.get_or_create(shortname=i)
-                hr = HasRoom(room=room, conference=conf, slot_length=3)
-                hr.save()
-
-        user_list = []
-        tag_list = []
-
         # Generate sessions
-        event_list = json_obj['sessions']
-        for event in event_list:
-            newevent = Event()
-            newevent.conf_id = conf
-            newevent.e_type_id = EventType.objects.get(id=1)
-            newevent.topic = event['topic']
-            newevent.description = event['description']
-            newevent.lang = event['lang']
+        for event in json_obj['sessions']:
+            try:
+                newevent = Event.objects.get(conf_id=conf, topic=event['topic'])
+            except ObjectDoesNotExist:
+                newevent = Event()
+                newevent.conf_id = conf
+                newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
+                newevent.topic = event['topic']
+                newevent.description = event['description']
+                newevent.lang = event['lang']
 
-            newevent.full_clean()
-            newevent.save()
+                newevent.full_clean()
+                newevent.save()
 
-            # Create timeslot for the event
-            newslot = Timeslot()
-            newslot.conf_id = conf
-            if event['room_short'] in room_list:
+            # Create rooms
+            room, created = Room.objects.get_or_create(shortname=event['room_short'])
+            created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+
+            try:
+                newevent.timeslot
+            except ObjectDoesNotExist:
+                # Create timeslot for the event
+                newslot = Timeslot()
+                newslot.conf_id = conf
                 newslot.room_id = Room.objects.get(shortname=event['room_short'])
-            start = datetime.fromtimestamp(int(event['event_start']))
-            end = datetime.fromtimestamp(int(event['event_end']))
-            newslot.start_time = timezone.get_default_timezone().localize(start)
-            newslot.end_time = timezone.get_default_timezone().localize(end)
-            newslot.event_id = newevent
-            newslot.full_clean()
-            newslot.save()
+                start = datetime.fromtimestamp(int(event['event_start']))
+                end = datetime.fromtimestamp(int(event['event_end']))
+                newslot.start_time = timezone.get_default_timezone().localize(start)
+                newslot.end_time = timezone.get_default_timezone().localize(end)
+                newslot.event_id = newevent
+                newslot.full_clean()
+                newslot.save()
 
             # Create speakers
             for speaker in event['speakers']:
                 username = speaker.replace(" ", "")[:30]
                 username = re.sub('[\W_]+', '', username)
-                if username in user_list:
-                    newevent.speaker.add(ConflaUser.objects.get(username=username))
-                else:
-                    newuser = ConflaUser()
-                    newuser.username = username
+                newuser, created = ConflaUser.objects.get_or_create(username=username)
+                if created:
                     newuser.password = "blank"
                     newuser.first_name = speaker
                     newuser.full_clean()
                     newuser.save()
-                    newevent.speaker.add(newuser)
-                    user_list.append(username)
+                newevent.speaker.add(newuser)
 
             if event['tags']:
                 tags = event['tags'][0].split(",")
@@ -969,19 +950,12 @@ class ImportView(generic.TemplateView):
             # Create tags
             for tag in tags:
                 tag = tag.strip()
-                if tag in tag_list:
-                    newevent.tags.add(EventTag.objects.get(name=tag))
-                else:
-                    newtag = EventTag()
-                    newtag.name = tag
+                newtag, created = EventTag.objects.get_or_create(name=tag)
+                if created:
                     newtag.color = "#%06x" % random.randint(0,0xFFFFFF)
-                    try:
-                        newtag.full_clean()
-                    except ValidationError as e:
-                        pass
+                    newtag.full_clean()
                     newtag.save()
-                    newevent.tags.add(newtag)
-                    tag_list.append(tag)
+                newevent.tags.add(newtag)
 
             newevent.prim_tag = EventTag.objects.get(name=tags[0])
             newevent.save()   
@@ -991,26 +965,22 @@ class ImportView(generic.TemplateView):
         for user in users_list:
             username = user['name'].replace(" ", "")[:30]
             username = re.sub('[\W_]+', '', username)
-            if not username:
-                username = user["username"][:30]
-            if username not in user_list:
-                newuser = ConflaUser()
-                newuser.username = username
+            newuser, created = ConflaUser.objects.get_or_create(username=username)
+            if created:
                 newuser.password = "blank"
                 newuser.first_name = user['name'][:30]
-                newuser.company = user['company']
-                newuser.position = user['position']
-                newuser.picture = user['avatar']
-                newuser.full_clean()
-                newuser.save()
-                user_list.append(username)
-            else:
-                usr = ConflaUser.objects.get(username=username)
-                usr.company = user['company']
-                usr.position = user['position']
-                usr.picture = user['avatar']
-                usr.full_clean()
-                usr.save()
+            newuser.company = user['company']
+            newuser.position = user['position']
+            newuser.picture = user['avatar']
+            newuser.full_clean()
+            newuser.save()
+
+        # Setup proper start and end times of the conference
+        first_slot = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")[0]
+        last_slot = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("-end_time")[0]
+        conf.start_date = first_slot.start_time.date()
+        conf.end_date = last_slot.end_time.date()
+        conf.save()
 
     @transaction.atomic
     def oa2015(csv_file, overwrite=False):
