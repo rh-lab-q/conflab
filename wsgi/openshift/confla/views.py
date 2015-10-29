@@ -1048,8 +1048,11 @@ class ImportView(generic.TemplateView):
             if newuser.web and not newuser.web.startswith('http'):
                 newuser.web = 'http://' + newuser.web
             newuser.facebook = row[18].strip()
-            if newuser.facebook and not newuser.facebook.startswith('http'):
-                newuser.facebook = 'https://' + newuser.facebook
+            if newuser.facebook:
+                if newuser.facebook.startswith('www.facebook'):
+                    newuser.facebook = 'https://' + newuser.facebook
+                elif not newuser.facebook.startswith('http'):
+                    newuser.facebook = 'https://www.facebook.com/' + newuser.facebook
             newuser.twitter = row[19].strip()
             if newuser.twitter:
                 if newuser.twitter.startswith('twitter'):
@@ -1060,11 +1063,13 @@ class ImportView(generic.TemplateView):
             if newuser.linkedin and not newuser.linkedin.startswith('http'):
                 newuser.linkedin = 'https://' + newuser.linkedin
             newuser.google_plus= row[21].strip()
-            if newuser.google_plus and not newuser.google_plus.startswith('http'):
-                newuser.google_plus = 'https://' + newuser.google_plus
+            if newuser.google_plus:
+                if newuser.google_plus.startswith('plus.google'):
+                    newuser.google_plus = 'https://' + newuser.google_plus
+                elif not newuser.google_plus.startswith('http'):
+                    newuser.google_plus = 'https://plus.google.com/' + newuser.google_plus
             newuser.full_clean()
             newuser.save()
-
             # Second speaker
             if row[26]:
                 username2 = row[26].replace(" ", "")[:30]
@@ -1089,8 +1094,11 @@ class ImportView(generic.TemplateView):
                 if row[33] and not newuser.web.startswith('http'):
                     newuser.web = 'http://' + newuser.web
                 newuser.facebook = row[34].strip()
-                if newuser.facebook and not newuser.facebook.startswith('http'):
-                    newuser.facebook = 'https://' + newuser.facebook
+                if newuser.facebook:
+                    if newuser.facebook.startswith('www.facebook'):
+                        newuser.facebook = 'https://' + newuser.facebook
+                    elif not newuser.facebook.startswith('http'):
+                        newuser.facebook = 'https://www.facebook.com/' + newuser.facebook
                 newuser.twitter = row[35].strip()
                 if newuser.twitter:
                     if newuser.twitter.startswith('twitter'):
@@ -1101,8 +1109,11 @@ class ImportView(generic.TemplateView):
                 if newuser.linkedin and not newuser.linkedin.startswith('http'):
                     newuser.linkedin = 'https://' + newuser.linkedin
                 newuser.google_plus= row[37].strip()
-                if newuser.google_plus and not newuser.google_plus.startswith('http'):
-                    newuser.google_plus = 'https://' + newuser.google_plus
+                if newuser.google_plus:
+                    if newuser.google_plus.startswith('plus.google'):
+                        newuser.google_plus = 'https://' + newuser.google_plus
+                    elif not newuser.google_plus.startswith('http'):
+                        newuser.google_plus = 'https://plus.google.com/' + newuser.google_plus
                 newuser.full_clean()
                 newuser.save()
 
