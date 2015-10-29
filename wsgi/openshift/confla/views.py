@@ -1236,6 +1236,11 @@ class ExportView(generic.TemplateView):
             else:
                 user['lastactive'] = ''
             user['avatar'] = ''
+            user['web'] = usr.web
+            user['facebook'] = usr.facebook
+            user['twitter'] = usr.twitter
+            user['google_plus'] = usr.google_plus
+            user['linkedin'] = usr.linkedin
             result['users'].append(user)
 
         # Export about
