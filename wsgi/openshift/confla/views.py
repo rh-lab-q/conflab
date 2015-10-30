@@ -1068,6 +1068,9 @@ class ImportView(generic.TemplateView):
                     newuser.google_plus = 'https://' + newuser.google_plus
                 elif not newuser.google_plus.startswith('http'):
                     newuser.google_plus = 'https://plus.google.com/' + newuser.google_plus
+            if row[23]:
+                # FIXME: Own avatar field
+                newuser.github = row[23].strip()
             newuser.full_clean()
             newuser.save()
             # Second speaker
@@ -1114,6 +1117,9 @@ class ImportView(generic.TemplateView):
                         newuser.google_plus = 'https://' + newuser.google_plus
                     elif not newuser.google_plus.startswith('http'):
                         newuser.google_plus = 'https://plus.google.com/' + newuser.google_plus
+                if row[39]:
+                    # FIXME: Own avatar field
+                    newuser.github = row[39].strip()
                 newuser.full_clean()
                 newuser.save()
 
@@ -1253,7 +1259,8 @@ class ExportView(generic.TemplateView):
                 user['lastactive'] = usr.last_login.astimezone(tz).isoformat()[:19].replace('T', ' ')
             else:
                 user['lastactive'] = ''
-            user['avatar'] = ''
+            # FIXME: Own avatar field
+            user['avatar'] = usr.github
             user['web'] = usr.web
             user['facebook'] = usr.facebook
             user['twitter'] = usr.twitter
