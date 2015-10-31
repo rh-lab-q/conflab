@@ -16,10 +16,10 @@
 
 {% block content %}
     {% csrf_token %}
-    <div id="legend-wrap" class="sched-left col-xs-3 col-md-1" style="float:left">
+    <div id="legend-wrap" class="col-xs-3 col-md-2 col-lg-1">
         {% include "confla/sched_legend.html" with tag_list=tag_list %}
     </div>
-    <div class="col-xs-9 col-md-11" style="float:left">
+    <div class="col-xs-9 col-md-10 col-lg-11">
     {% include "confla/user_table.html" %}
     </div>
     {% if perms.confla.can_organize %}
