@@ -1,20 +1,18 @@
-<div class="col-xs-3 col-md-1" id="admin-menu">
-    <ul class="nav nav-sidebar">
-        {% if url_id %}
-        <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>Overview</a></li>
-        <li {% if active == "schedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminviewsched' url_id %}>Schedule</a>
-        {% if active == "editschedule" or active == "schedule" %}
-        <ul class="nav nav-inner-sidebar">
-            <li {% if active == "editschedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminsched' url_id %}>Edit schedule</a></li>
-        </ul>
-        {% endif %}
-        </li>
-        <li {% if active == "config" %} class="cf-active" {% endif %}><a href="#">Configuration</a></li>
-        <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>Import</a></li>
-        <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">Export</a></li>
-        {% else %}
-        <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>Overview</a></li>
-        <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:org_import' %}>Import</a></li>
-        {% endif %}
+<ul class="nav nav-sidebar">
+    {% if url_id %}
+    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>Overview</a></li>
+    <li {% if active == "schedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminviewsched' url_id %}>Schedule</a>
+    {% if active == "editschedule" or active == "schedule" %}
+    <ul class="nav nav-inner-sidebar">
+        <li {% if active == "editschedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminsched' url_id %}>Edit schedule</a></li>
     </ul>
-</div>
+    {% endif %}
+    </li>
+    <li {% if active == "config" %} class="cf-active" {% endif %}><a href="#">Configuration</a></li>
+    <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>Import</a></li>
+    <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">Export</a></li>
+    {% else %}
+    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>Overview</a></li>
+    <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:org_import' %}>Import</a></li>
+    {% endif %}
+</ul>

@@ -20,6 +20,9 @@
     {% csrf_token %}
     {% include "confla/user_table.html" %}
 {% endblock %}
+{% block bott_menu %}
+    {% include "confla/sched_legend.html" with tag_list=tag_list %}
+{% endblock %}
 {% block extrascripts %}
 <script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>
 <script class="js-setup">

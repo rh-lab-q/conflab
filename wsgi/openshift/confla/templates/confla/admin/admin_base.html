@@ -4,11 +4,18 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/adminview.css' %}" />
-{% block admin_menu %}
-    {% include "confla/admin/menu.html" with active="overview" %}
-{% endblock %}
-<div class="admin-page col-xs-9 col-md-11" style="float:left">
-{% block admin_page %}
+<div class="col-xs-3 col-md-2 col-lg-1" id="admin-left">
+    <div id="admin-menu">
+    {% block admin_menu %}
+        {% include "confla/admin/menu.html" with active="overview" %}
+    {% endblock %}
+    </div>
+
+    {% block bott_menu %}
+    {% endblock %}
 </div>
+<div class="admin-page col-xs-9 col-md-10 col-lg-11" style="float:left">
+{% block admin_page %}
 {% endblock %}
+</div>
 {% endblock %}

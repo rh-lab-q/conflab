@@ -17,6 +17,9 @@
 {% block admin_menu %}
     {% include "confla/admin/menu.html" with active="editschedule" %}
 {% endblock %}
+{% block bott_menu %}
+    {% include "confla/sched_legend.html" with tag_list=tag_list %}
+{% endblock %}
 
 {% block extranav %}
 <div id="event-bar">

@@ -1,0 +1,11 @@
+<div id="legend">
+    <div class="legend-title">
+        Legenda:
+    </div>
+    {% for tag in tag_list %}
+    <div class=legend-item>
+        <span class="tag-color tag{{tag.id}}"></span>
+        <span class="tag-name">{{tag.name}}</span>
+    </div>
+    {% endfor %} 
+</div>

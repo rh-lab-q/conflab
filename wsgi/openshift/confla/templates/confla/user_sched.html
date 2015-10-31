@@ -16,7 +16,8 @@
 
 {% block content %}
     {% csrf_token %}
-    <div class="legend col-xs-3 col-md-1" style="float:left">
+    <div id="legend-wrap" class="sched-left col-xs-3 col-md-1" style="float:left">
+        {% include "confla/sched_legend.html" with tag_list=tag_list %}
     </div>
     <div class="col-xs-9 col-md-11" style="float:left">
     {% include "confla/user_table.html" %}
