@@ -279,3 +279,13 @@ td > .ui-state-hover {
     border-width: 1px;
     border-color: #e7e7e7;
 }
+
+.sched-save {
+    text-align: center;
+    margin: 5px;
+    padding: 10px 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e7e7e7;
+    background-color: #f8f8f8;
+}
