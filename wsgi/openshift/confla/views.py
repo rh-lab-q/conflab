@@ -976,8 +976,8 @@ class ImportView(generic.TemplateView):
             newuser.save()
 
         # Setup proper start and end times of the conference
-        first_slot = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")[0]
-        last_slot = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("-end_time")[0]
+        first_slot = Timeslot.objects.filter(conf_id=conf).order_by("start_time")[0]
+        last_slot = Timeslot.objects.filter(conf_id=conf).order_by("-end_time")[0]
         conf.start_date = first_slot.start_time.date()
         conf.end_date = last_slot.end_time.date()
         conf.save()
