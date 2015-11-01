@@ -256,3 +256,36 @@ td > .ui-state-hover {
     float:right;
     margin-bottom:3px;
 }
+
+#legend {
+    padding: 0 5px;
+    background-color: #f8f8f8;
+    margin: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e7e7e7;
+}
+
+.legend-title {
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    border-color: #e7e7e7;
+}
+.tag-color {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e7e7e7;
+}
+
+.sched-save {
+    text-align: center;
+    margin: 5px;
+    padding: 10px 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e7e7e7;
+    background-color: #f8f8f8;
+}

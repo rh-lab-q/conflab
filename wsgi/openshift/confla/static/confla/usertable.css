@@ -22,3 +22,8 @@ div.pop-user {
     max-height: 200px;
     overflow-y: auto;
 }
+
+#page-container > #legend-wrap {
+    padding-left: 0;
+    margin-top: 98px;
+}

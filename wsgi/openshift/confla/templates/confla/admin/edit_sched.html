@@ -17,6 +17,12 @@
 {% block admin_menu %}
     {% include "confla/admin/menu.html" with active="editschedule" %}
 {% endblock %}
+{% block bott_menu %}
+    <div class="sched-save">
+        <a href="#" onclick="timetableSubmit('.table')">Save changes</a>
+    </div>
+    {% include "confla/sched_legend.html" with tag_list=tag_list %}
+{% endblock %}
 
 {% block extranav %}
 <div id="event-bar">
@@ -53,9 +59,7 @@
         {% endfor %}
     </div>
 </div>
-<div class="edit-link" style="position:fixed; left:0; bottom:0; padding:3px; background-color:#ffffff;">
-    <a href="#" onclick="timetableSubmit('.table')">Save schedule</a>
-</div>
+
 {% endblock %}
 
 {% block admin_page %}
