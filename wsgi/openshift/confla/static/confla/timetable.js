@@ -8,6 +8,19 @@ var cellSize = 31; // cell height + 1 border
 var itemHeight = 28;
 var changes = false;
 
+function setChanges() {
+    changes = true;
+    $(".sched-save button").removeClass("btn-default");
+    $(".sched-save button").removeClass("btn-success");
+    $(".sched-save button").addClass("btn-warning");
+}
+
+function unsetChanges() {
+    changes = false;
+    $(".sched-save button").removeClass("btn-warning");
+    $(".sched-save button").addClass("btn-success");
+}
+
 $.expr[':'].Contains = function(a, i, m) {
     // m is PROBABLY an array ofcCaller, calling method('Contains'), and content of the call
     return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
@@ -70,7 +83,7 @@ function eventInit(selector) {
                 $(this).data('dragging', false);
                 if (dropped) {
                     // Flag for pending changes to the schedule
-                    changes = true;
+                    setChanges();
                     return false;
                 }
                 else {
@@ -350,7 +363,7 @@ function createEvent() {
         popoverInit(visevent);
         eventInit(nevent);
         // Flag for pending changes to the schedule
-        changes = true;
+        setChanges();
         return nevent;
 }
 
@@ -435,7 +448,7 @@ function timetableSubmit(selector) {
         data: toSend});
     $.when(def).then(function (){
         // Success
-        changes = false;
+        unsetChanges();
     }, function (response){
         // Failure
         var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-lg"></i> Failed to save schedule.</div>';

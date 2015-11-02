@@ -19,7 +19,7 @@
 {% endblock %}
 {% block bott_menu %}
     <div class="sched-save">
-        <a href="#" onclick="timetableSubmit('.table')">Save changes</a>
+        <button class="btn btn-default" type="buton" onclick="timetableSubmit('.table')" style="width:100%;">Save changes</button>
     </div>
     {% include "confla/sched_legend.html" with tag_list=tag_list %}
 {% endblock %}
