@@ -1219,6 +1219,7 @@ class ExportView(generic.TemplateView):
             if slot.room_id:
                 event = slot.event_id
                 session = {}
+                session['session_id'] = event.pk
                 session['lang'] = event.lang
                 session['type'] = event.e_type_id.name
                 # Primary tag color
