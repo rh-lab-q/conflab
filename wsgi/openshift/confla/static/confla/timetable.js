@@ -8,6 +8,34 @@ var cellSize = 31; // cell height + 1 border
 var itemHeight = 28;
 var changes = false;
 
+function countEventHeight (row, col, height) {
+    var slot_len = heightToSlots(height);
+    var index = col.index() + 1;
+    var slice_len = row.index() + slot_len;
+    var rows = row.parent().children().slice(row.index()+1, slice_len);
+    var slot_list = $("td:nth-child(" + index + ") .item:not(.empty)", rows);
+    // Check if there are any collisions when using the item's height
+    if (slot_list.length) {
+        return slotsToHeight(slot_list.first().closest("tr").index() - row.index());
+    } else {
+        return height
+    }
+}
+
+function heightToSlots (height) {
+    return ((height - itemHeight) / cellSize) + 1
+}
+
+function slotsToHeight (slot_len) {
+    return (slot_len - 1) * cellSize + itemHeight
+}
+
+function setItemEndtime (item) {
+    var tr_arr = item.closest("tbody").children();
+    var endIndex = item.closest("tr").index() + heightToSlots(item.height());
+    $(item).find(".end").text("Ends at: " + countEndtime(tr_arr, endIndex));
+}
+
 function setChanges() {
     changes = true;
     $(".sched-save button").removeClass("btn-default");
@@ -147,13 +175,7 @@ function itemInit(selector) {
                 // Repair inaccuracies in size difference when zoomed in/out
                 ui.size.height = Math.round((ui.size.height-itemHeight) / (cellSize)) * (cellSize) + itemHeight;
                 // New end time on resize
-                var row = $(this).parent().parent().parent().parent().children().index($(this).parent().parent().parent());
-                var height = ui.size.height;
-                var rowdiff = (height-itemHeight)/cellSize;
-                var endspan = $(this).find("span.end")
-                var tr_array = $(this).parent().parent().parent().parent().find('tr');
-                var endtime_text = countEndtime(tr_array, row+rowdiff+1)
-                $(endspan).text("Ends at: " + endtime_text);
+                setItemEndtime($(this));
             }
         })
     });
@@ -251,7 +273,6 @@ function emptyItemInit(selector) {
         tolerance: "pointer",
         drop: function( event, ui ) {
             var item = $(this).find(".item");
-            $(".drag-help").remove();
             // Dont drop into itself
             if (!$(item).is($(ui.draggable).parent())) {
                 if (!$(ui.draggable).parent().is("#event-list")) {
@@ -270,11 +291,14 @@ function emptyItemInit(selector) {
                     $(".toggler").trigger("click");
                     $(".event-visible", ui.draggable).popover("enable");
                 }
-                $(item).find(".drag-help").remove();
+
+                item.height($(".drag-help", item).height());
+                setItemEndtime (item);
                 $(item).append($(ui.draggable).show());
                 $(item).removeClass("empty");
                 itemInit(item);
             }
+            $(".drag-help").remove();
         },
         over: function(event, ui) {
             var item = $(this).find(".item");
@@ -295,6 +319,11 @@ function emptyItemInit(selector) {
                         // Dragged from event list
                         $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                     }
+
+                    var col = item.closest("td");
+                    var row = item.closest("tr");
+                    var help_height = countEventHeight (row, col, ui.draggable.height());
+                    $(".drag-help", item).height(help_height);
                     $(".item-buttons", ".drag-help").show();
                 }, 0);
             }
@@ -793,7 +822,6 @@ $(document).ready(function() {
     var total = $(".table:first tbody tr").length;
     $(".table").each(function() {
         var that = this;
-        var tr_arr = $(this).find("tr");
         // For each room name table header except the first one (time)
         $("th:not(:first-child)", that).each(function() {
             var index = $(this).index() + 1;
@@ -807,13 +835,12 @@ $(document).ready(function() {
                     // set the item's length to 1
                     if (total-i < slot_len-1) {
                         $(this).height(itemHeight);
-                        $(this).find(".end").text("Ends at: " + countEndtime(tr_arr, i+1));
+                        setItemEndtime($(this));
                     }
                     else {
                         $(this).height(itemHeight+cellSize*(slot_len-1));
                         // Setup end time for timetable update
-                        var endIndex = $(row).index() + parseInt(slot_len) + 1;
-                        $(this).find(".end").text("Ends at: " + countEndtime(tr_arr, endIndex));
+                        setItemEndtime($(this));
                     }
                 });
             });
