@@ -185,7 +185,6 @@ function itemInit(selector) {
         tolerance: "pointer",
         drop: function( event, ui ) {
             item = $(this).find(".item");
-            $(".drag-help").remove();
             // Dropped into another slot
             if (!$(item).is($(ui.draggable).parent())) {
                 // Don't append empty events to event list
@@ -205,15 +204,17 @@ function itemInit(selector) {
                     $(".event-visible", ui.draggable).popover("enable");
                 } else {
                     // Dragged from a different item
-                    $(item).find(".drag-help").remove();
-                    $(ui.draggable).parent().find(".drag-help").remove();
-                    $(ui.draggable).parent().append($(item).find(".event").show());
+                    $(ui.draggable).parent().css("overflow", "");
+                    $(ui.draggable).parent().removeClass("empty");
+                    $(ui.draggable).parent().height($(".drag-help", ui.draggable.parent()).height());
+                    $(ui.draggable).parent().append($(item).find(".event:not(.drag-help)").show());
                     $(item).append($(ui.draggable).show());
                     setItemEndtime($(ui.draggable).parent());
-                    $(ui.draggable).parent().removeAttr("old_height");
                 }
+                item.height($(".drag-help", item).height());
+                item.css("overflow", "");
                 setItemEndtime(item);
-                item.removeAttr("old_height");
+                $(".drag-help").remove();
             }
             // Dropped into itself
             else {
@@ -240,19 +241,20 @@ function itemInit(selector) {
                         var row_drag = $(ui.draggable).closest("tr");
                         var index_drag = col_drag.index() + 1;
                         var slot_len_drag = $(ui.draggable).closest("table").find("th:nth-child(" + index_drag + ")").attr("slot_len");
-                        item_drag.removeClass("empty");
+                        item_drag.addClass("empty");
                         item_drag.append($(item).find(".event").clone().addClass("drag-help").show());
+                        item.addClass("empty");
                         $(item).find(".event").hide();
                         $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
                         $(ui.draggable).hide();
 
                         var new_height = countEventHeight(row, col, item_drag.height());
-                        item.attr("old_height", item.height());
-                        item.height(new_height);
+                        item.css("overflow", "visible");
+                        item.find(".drag-help").height(new_height);
 
-                        new_height = countEventHeight(row, col, item.height());
-                        item_drag.attr("old_height", item_drag.height());
-                        item_drag.height(new_height);
+                        new_height = countEventHeight(row_drag, col_drag, item.height());
+                        item_drag.css("overflow", "visible");
+                        item_drag.find(".drag-help").height(new_height);
                     }
                     else if (ui.draggable.data('dragging')) {
                         // Dragged over itself
@@ -266,8 +268,8 @@ function itemInit(selector) {
                     $(item).append($(ui.draggable).clone().addClass("drag-help").css("visibility", "visible").show());
 
                     var new_height = countEventHeight(row, col, slotsToHeight(slot_len));
-                    item.attr("old_height", item.height());
-                    item.height(new_height);
+                    item.find(".drag-help").height(new_height);
+                    item.css("overflow", "visible");
                 }
             }, 0);
         },
@@ -275,11 +277,13 @@ function itemInit(selector) {
             item = $(this).find(".item");
             if (!$(ui.draggable).parent().is("#event-list")) {
                 // Dragged out of a different item
+                if (!$(item).is($(ui.draggable).parent())) {
+                    // Dragged over a different item
+                    item.removeClass("empty");
+                }
                 $(ui.draggable).parent().addClass("empty");
                 $(".event:hidden").show();
                 $(".drag-help").remove();
-                $(ui.draggable).parent().height($(ui.draggable).parent().attr("old_height"));
-                $(ui.draggable).parent().removeAttr("old_height");
             }
             else {
                 // Dragged from event list
@@ -289,8 +293,8 @@ function itemInit(selector) {
             if ($(item).is($(ui.draggable).parent())) {
                 ui.draggable.data('dragging', true);
             }
-            item.height(item.attr("old_height"));
-            item.removeAttr("old_height");
+            item.css("overflow", "");
+            $(ui.draggable).parent().css("overflow", "");
         }
     });
 }
@@ -320,9 +324,9 @@ function emptyItemInit(selector) {
                     $(".event-visible", ui.draggable).popover("enable");
                 }
 
-                //item.height($(".drag-help", item).height());
+                item.height($(".drag-help", item).height());
                 setItemEndtime(item);
-                item.removeAttr("old_height");
+                item.css("overflow", "");
                 $(item).append($(ui.draggable).show());
                 $(item).removeClass("empty");
                 itemInit(item);
@@ -356,8 +360,8 @@ function emptyItemInit(selector) {
                         new_height = countEventHeight(row, col, slotsToHeight(slot_len));
                     }
 
-                    item.attr("old_height", item.height());
-                    item.height(new_height);
+                    item.css("overflow", "visible");
+                    item.find(".drag-help").height(new_height);
                     $(".item-buttons", ".drag-help").show();
                 }, 0);
             }
@@ -377,8 +381,8 @@ function emptyItemInit(selector) {
                 $(".drag-help").remove();
                 $(".sched-wrap .event:hidden").show();
             }
-            item.height(item.attr("old_height"));
-            item.removeAttr("old_height");
+
+            item.css("overflow", "");
         }
     });
     $(selector).closest("td").off("click").on("click", ".item", appendEvent);
