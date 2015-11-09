@@ -11,3 +11,11 @@
 .dropdown-menu button.lang {
     width: 100%;
 }
+
+#container > .col-lg-1 {
+    width:12%;
+}
+
+#container > .col-lg-11 {
+    width:88%;
+}
