@@ -1242,6 +1242,8 @@ class ExportView(generic.TemplateView):
                 session['event_end'] = int(end_time.timestamp())
                 session['event_end_rfc'] = end_time.strftime(rfc_time_format)
                 session['reqs'] = event.reqs
+                session['video'] = event.video
+                session['slides'] = event.slides
                 result['sessions'].append(session)
 
         # Export days
