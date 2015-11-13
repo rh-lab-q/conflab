@@ -272,6 +272,11 @@ td > .ui-state-hover {
     border-width: 0 0 1px 0;
     border-color: #e7e7e7;
 }
+
+.legend-item a {
+    text-decoration: none;
+}
+
 .tag-color {
     display: inline-block;
     width: 10px;
@@ -283,4 +288,15 @@ td > .ui-state-hover {
 
 .sched-save {
     margin: 5px;
+}
+
+.sched-save > .btn {
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+    color: #337ab7;
+}
+
+.sched-save > .btn:hover {
+    background-color: #eee;
+    color: #23527c;
 }
