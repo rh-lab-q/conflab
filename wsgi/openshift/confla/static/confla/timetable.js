@@ -5,7 +5,7 @@
 */
 
 var cellSize = 31; // cell height + 1 border
-var itemHeight = 28;
+var itemHeight = 30;
 var changes = false;
 
 function countEventHeight (row, col, height) {

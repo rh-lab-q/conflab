@@ -71,9 +71,8 @@ td {
 }
 
 .item {
-    border: 1px solid #999;
     width: 200px; /* 166px; */
-    height: 28px;
+    height: 30px;
     position: absolute;
     top: 0;
     left: 0;
@@ -84,11 +83,10 @@ td {
 }
 
 .item > .event > .event-visible {
-    border: none;
+    border: 1px solid #999;
 }
 
 .item.empty {
-    border: 1px solid transparent;
     z-index: auto;
 }
 
@@ -290,13 +288,13 @@ td > .ui-state-hover {
     margin: 5px;
 }
 
-.sched-save > .btn {
+.sched-save > .btn-default {
     background-color: #f8f8f8;
     border-color: #e7e7e7;
     color: #337ab7;
 }
 
-.sched-save > .btn:hover {
+.sched-save > .btn-default:hover {
     background-color: #eee;
     color: #23527c;
 }
