@@ -2,7 +2,7 @@
 <div class="popover-content">
     <form method="post" action="{% url 'confla:saveEvent' url_id %}">
         {% csrf_token %}
-        <input type="hidden" name="event_id" value={{ event.id }} />
+        <input type="hidden" name="event_id" value={{ event_id }} />
         {{ form.topic }}
         {{ form.description }}
         {{ form.speaker }}

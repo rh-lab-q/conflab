@@ -388,6 +388,7 @@ function emptyItemInit(selector) {
 function createEvent() {
         var nevent = document.createElement('div');
         nevent.className = "event";
+        nevent.setAttribute('event-id', 0)
         var visevent = document.createElement('div');
         visevent.className = 'event-visible tag0';
         var buttondiv = document.createElement('div');
@@ -411,20 +412,10 @@ function createEvent() {
         // TODO: Translation in javascript
         // https://docs.djangoproject.com/en/1.8/topics/i18n/translation/#using-the-javascript-translation-catalog
         $(poptitle).append('<span>Add event</span>')
-        $(poptitle).append('<span class="pop-close" glyphicon glyphicon-remove></span>');
+        $(poptitle).append('<i title="Close popup" class="pop-close fa fa-close fa-lg"></i>');
+        $(poptitle).append('<i title="Move to event bar" class="pop-move-right fa fa-arrow-right"></i>');
         $(nevent).append(poptitle);
-        var popcontent = document.createElement('div');
-        popcontent.className = "pop-content";
-        $(popcontent).attr("style", "display : none");
-        // Event create form
-        nform = document.createElement('form');
-        $(nform).attr("method", "post");
-        $(nform).attr("action", form_action);
-        $(nform).append($($("[name=csrfmiddlewaretoken]")[0]).clone());
-        $(nform).append('<input type="hidden" name="event_id" value="0" />');
-        $(nform).append(form);
-        $(popcontent).append(nform);
-        $(nevent).append(popcontent);
+        $(nevent).find(".pop-move-right").hide();
         // jQuery magic
         popoverInit(visevent);
         eventInit(nevent);
@@ -740,7 +731,8 @@ function popoverInit(selector) {
                 if (event_id.attr("value") == 0) {
                     event_id.attr("value", response);
                     visible.closest(".event").attr("event-id", response);
-                    visible.closest(".event").find(".pop-title span:not(.pop-close)").html("Edit event");
+                    visible.closest(".event").find(".pop-title span").html("Edit event");
+                    visible.closest(".event").find(".pop-move-right").show();
                 }
             },
             error: function(response) {
@@ -824,18 +816,21 @@ $(document).ready(function() {
             $(".drag-help").remove();
         },
         over: function(event, ui) {
-            $(".wrap .empty").closest(".wrap").droppable("disable");
-            // Remove drag helpers from all items and show original events
-            $(".drag-help").parent().find(".event").show();
-            $(".drag-help").remove();
-            // Then hide the dragged event
-            $(ui.draggable).hide();
-            $(ui.draggable).parent().addClass("empty");
+            if ($(".toggler").parent().attr("data-status") == "opened") {
+                $(".wrap .empty").closest(".wrap").droppable("disable");
+                // Remove drag helpers from all items and show original events
+                $(".drag-help").parent().find(".event").show();
+                $(".drag-help").remove();
+                // Then hide the dragged event
+                $(ui.draggable).hide();
+                $(ui.draggable).parent().addClass("empty");
+            }
         },
         out: function(event, ui) {
             $(".wrap .empty").closest(".wrap").droppable("enable");
             $(ui.draggable).parent().removeClass("empty");
-            $(".toggler").trigger("click");
+            if ($(".toggler").parent().attr("data-status") == "opened")
+                $(".toggler").trigger("click");
         }
     });
 

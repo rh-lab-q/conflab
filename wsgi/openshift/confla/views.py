@@ -217,10 +217,16 @@ class EventView(generic.TemplateView):
 
         if not(request.method == "POST"):
             raise Http404
-        event = Event.objects.get(id=int(request.POST['data']))
-        form = EventCreateForm(instance=event)
+        event_id = int(request.POST['data'])
+        print(event_id)
+        if event_id > 0:
+            event = Event.objects.get(id=int(request.POST['data']))
+            form = EventCreateForm(instance=event)
+        else:
+            form = EventCreateForm()
+
         return render(request, template_name,
-                        {'event': event,
+                        {'event_id': event_id,
                          'form'  : form,
                          'url_id' : url_id,
                         })
