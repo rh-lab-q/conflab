@@ -653,10 +653,21 @@ function popoverInit(selector) {
         $("[aria-describedby]").not(this).popover("hide");
     }).on("shown.bs.popover", function() {
         // Set click method for the close icon
-        var item = this;
-        var popoverSelector = "#" + $(this).attr("aria-describedby");
+        var visible = $(this);
+        var popoverSelector = "#" + visible.attr("aria-describedby");
         $(popoverSelector).find(".pop-close").on("click", function () {
-            $(item).popover("hide");
+            visible.popover("hide");
+        });
+        $(popoverSelector).find(".pop-move-right").on("click", function () {
+            // Move the event to event bar and close the popover
+            var item = visible.closest(".item");
+            var e = visible.closest(".event");
+            visible.popover("hide");
+            $("#event-list").append(e.show());
+            item.addClass("empty");
+            item.parent().droppable("destroy");
+            item.resizable("destroy");
+            emptyItemInit(item);
         });
     }).on("hide.bs.popover", function () {
         var original = $(this).parent().parent().parent().find(".pop-content");
