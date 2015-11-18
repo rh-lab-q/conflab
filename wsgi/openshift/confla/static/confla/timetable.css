@@ -288,17 +288,18 @@ td > .ui-state-hover {
     border-color: #e7e7e7;
 }
 
-.sched-save {
+.extra-buttons {
     margin: 5px;
 }
 
-.sched-save > .btn-default {
+.extra-buttons > .btn-default {
+    margin: 1px;
     background-color: #f8f8f8;
     border-color: #e7e7e7;
     color: #337ab7;
 }
 
-.sched-save > .btn-default:hover {
+.extra-buttons > .btn-default:hover {
     background-color: #eee;
     color: #23527c;
 }

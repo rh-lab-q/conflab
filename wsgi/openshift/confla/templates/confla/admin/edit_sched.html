@@ -18,10 +18,11 @@
     {% include "confla/admin/menu.html" with active="editschedule" %}
 {% endblock %}
 {% block bott_menu %}
-    <div class="sched-save">
-        <button class="btn btn-default" type="buton" onclick="timetableSubmit('.table')" style="width:100%;">Save changes</button>
+    <div class="extra-buttons">
+        <button class="btn btn-default btn-submit" type="buton" onclick="timetableSubmit('.table')" style="width:100%;">Save changes</button>
+        <button class="btn btn-default" type="buton" onclick="timetableClear()" style="width:100%;">Clear schedule</button>
     </div>
-    {% include "confla/sched_legend.html" with tag_list=tag_list %}
+    {% include "confla/sched_legend.html" %}
 {% endblock %}
 
 {% block extranav %}

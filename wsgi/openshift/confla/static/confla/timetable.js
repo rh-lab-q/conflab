@@ -42,15 +42,15 @@ function setItemEndtime (item) {
 
 function setChanges() {
     changes = true;
-    $(".sched-save button").removeClass("btn-default");
-    $(".sched-save button").removeClass("btn-success");
-    $(".sched-save button").addClass("btn-warning");
+    $(".btn-submit").removeClass("btn-default");
+    $(".btn-submit").removeClass("btn-success");
+    $(".btn-submit").addClass("btn-warning");
 }
 
 function unsetChanges() {
     changes = false;
-    $(".sched-save button").removeClass("btn-warning");
-    $(".sched-save button").addClass("btn-success");
+    $(".btn-submit").removeClass("btn-warning");
+    $(".btn-submit").addClass("btn-success");
 }
 
 $.expr[':'].Contains = function(a, i, m) {
@@ -511,6 +511,28 @@ function timetableSubmit(selector) {
         var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-lg"></i> Failed to save schedule.</div>';
         $(".sched-wrap").prepend(div);
     });
+}
+
+function timetableClear() {
+    var items = $(".item .event");
+    if (items.length) {
+        bootbox.confirm("Are you sure you want to clear the schedule? <br /> (Scheduled events will be moved to the sidebar.)", function(result) {
+            if (result) {
+                // Move scheduled events to event bar and close all popovers
+                $(".drag-help").remove();
+                $("[aria-describedby]").popover("hide");
+                items.each(function () {
+                    var item = $(this).closest(".item");
+                    $("#event-list").append($(this).show());
+                    item.addClass("empty");
+                    item.parent().droppable("destroy");
+                    item.resizable("destroy");
+                    emptyItemInit(item);
+                });
+                setChanges();
+            }
+        });
+    }
 }
 
 function selectizePopover(selector) {
