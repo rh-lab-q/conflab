@@ -65,10 +65,9 @@ class AdminView(generic.TemplateView):
                         time['slots'].append(None)
                 time_dict["list"].append(time)
             time_list.append(time_dict)
-
         return render(request, "confla/admin/user_sched.html",
                     {    'time_list' : time_list,
-                         'tag_list' : EventTag.objects.all(),
+                         'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                          'url_id' : url_id,
@@ -265,7 +264,7 @@ class ScheduleView(generic.TemplateView):
 
         return render(request, ScheduleView.template_name,
                     {    'time_list' : time_list,
-                         'tag_list' : EventTag.objects.all(),
+                         'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                          'url_id' : url_id,
@@ -298,6 +297,7 @@ class ScheduleView(generic.TemplateView):
         return render(request, "confla/schedlist.html",
                       {  'time_list' : time_list, 
                          'tag_list' : EventTag.objects.all(),
+                         'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
                     })
@@ -550,6 +550,7 @@ class TimetableView(generic.TemplateView):
                                          'name' : x.name,
                                          'color': x.color,
                                         } for x in EventTag.objects.all()],
+                         'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                          'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
                          'time_list' : time_list,
                          'room_list' : room_list,

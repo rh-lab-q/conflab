@@ -6,7 +6,7 @@
 {% block extrastyles %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
 <style type='text/css'>
-    {% for tag in tag_list %}
+    {% for tag in legend_list %}
     .tag{{tag.id}} {
         background : {{tag.color}};
     }
@@ -21,7 +21,7 @@
     {% include "confla/user_table.html" %}
 {% endblock %}
 {% block bott_menu %}
-    {% include "confla/sched_legend.html" with tag_list=tag_list %}
+    {% include "confla/sched_legend.html" %}
 {% endblock %}
 {% block extrascripts %}
 <script id="user-js" type="text/javascript" src="{% static 'confla/userview.js' %}"></script>

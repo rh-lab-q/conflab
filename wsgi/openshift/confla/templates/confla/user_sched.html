@@ -6,7 +6,7 @@
 {% block extrastyles %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
 <style type='text/css'>
-    {% for tag in tag_list %}
+    {% for tag in legend_list %}
     .tag{{tag.id}} {
         background : {{tag.color}};
     }
@@ -17,7 +17,7 @@
 {% block content %}
     {% csrf_token %}
     <div id="legend-wrap" class="col-xs-3 col-md-2 col-lg-1">
-        {% include "confla/sched_legend.html" with tag_list=tag_list %}
+        {% include "confla/sched_legend.html" %}
     </div>
     <div class="col-xs-9 col-md-10 col-lg-11">
     {% include "confla/user_table.html" %}
