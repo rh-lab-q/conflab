@@ -607,8 +607,9 @@ function selectizePopover(selector) {
 }
 
 function popoverInit(selector) {
+    var arrowsize = 11; // arrow size in pixels
     $(selector).popover({
-        placement: "right",
+        placement: "auto right",
         container: "body",
         html: "true",
         title: function () {
@@ -620,7 +621,7 @@ function popoverInit(selector) {
             var content = $(eventp).find(".pop-content");
             // If the content has not been fetched yet
             if (!content.length) {
-                var spinner = '<i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i>';
+                var spinner = '<i style="text-align:center; width:324px;" class="fa fa-5x fa-spinner fa-spin"></i>';
                 // Send a post and monitor the promise object
                 def = $.post(popover_link, {
                     csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
@@ -638,11 +639,19 @@ function popoverInit(selector) {
                     $(popid).find(".fa-spinner").remove();
                     $(popid).find(".popover-content").append(popcontent);
                     // Compute the popover position using bootstrap's popover prototype
-                    var position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
+                    var position;
+                    if ($(popid).hasClass("right"))
+                        position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
                             'right', e, pop.offsetWidth, pop.offsetHeight);
+                    else
+                        position = $.fn.popover.Constructor.prototype.getCalculatedOffset(
+                            'left', e, pop.offsetWidth, pop.offsetHeight);
                     // Create document coordinates from relative ones and apply adjustments
                     position.top = position.top + scrollTop;
-                    position.left = position.left + scrollLeft + 10;
+                    if ($(popid).hasClass("right"))
+                        position.left = position.left + scrollLeft + arrowsize;
+                    else
+                        position.left = position.left + scrollLeft - arrowsize;
                     // Save new position
                     $(popid).offset(position);
                     var div = document.createElement("div");
