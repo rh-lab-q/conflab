@@ -1,11 +1,16 @@
 {% extends "confla/base.html" %}
 
-{% block title %}This is where conf name should be.{% endblock %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/splash.css' %}" />
+{% endblock %}
+
+{% block title %}{{conf.name}}{% endblock %}
 
 {% block content %}
-<p> Confla is a great tool that helps you create and organize your
-very own conference! </p>
-<p> Receive papers, organize time of lectures, assign volunteers
-to their jobs and have people rate the lectures they attended.
-</p>
+<div><h1>{{conf.name}}</h1></div>
+<h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
+<h1>{{info}}</h1>
 {% endblock %}

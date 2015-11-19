@@ -7,6 +7,7 @@ import io
 from datetime import datetime, date, time
 
 from django.template.loader import render_to_string
+from django.template.defaultfilters import date as _date
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render
 from django.views import generic
@@ -139,9 +140,18 @@ class EventEditView(generic.TemplateView):
 
 class AboutView(generic.TemplateView):
     template_name = 'confla/about.html'
-    def my_view(request, url_id):
+    def splash_view(request, url_id):
         conf = get_conf_or_404(url_id)
-        return render(request, AboutView.template_name, {'url_id' : url_id})
+
+        info = str(len(Timeslot.objects.filter(event_id__conf_id=conf))) + ' events, '
+        info += str(len(ConflaUser.objects.filter(events__conf_id=conf).distinct())) + ' speakers, '
+        info += str(len(EventTag.objects.filter(events__conf_id=conf,
+                            events__timeslot__isnull=False).distinct())) + ' topics'
+        return render(request, AboutView.template_name,
+                        {'url_id' : url_id,
+                         'conf' : conf,
+                         'info' : info,
+                            })
 
 class IndexView(generic.TemplateView):
     template_name = 'confla/index.html'
@@ -217,7 +227,6 @@ class EventView(generic.TemplateView):
         if not(request.method == "POST"):
             raise Http404
         event_id = int(request.POST['data'])
-        print(event_id)
         if event_id > 0:
             event = Event.objects.get(id=int(request.POST['data']))
             form = EventCreateForm(instance=event)

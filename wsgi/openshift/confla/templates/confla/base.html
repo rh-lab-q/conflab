@@ -7,7 +7,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{% block title %}Confla - Conference schedule made easy{% endblock%}</title>
+    <title>
+        {% block title %}
+        {% if url_id %}
+        {{conf.name}}
+        {% else %}
+        Confla - Conference schedule made easy
+        {% endif %}
+        {% endblock%}
+    </title>
 
     <link rel="stylesheet" type="text/css" href="{% static 'jquery/jquery-ui-1.11.4/jquery-ui.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
