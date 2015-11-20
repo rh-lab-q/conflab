@@ -898,19 +898,25 @@ class ImportView(generic.TemplateView):
     # import json from devconf for testing purposes
     @transaction.atomic
     def dv(json_string):
-        # delete everyone excluding admin
         json_obj = json.loads(json_string)
-        #room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
+
         # Setup a Conference if there is none
+        conf_obj = json_obj['conference']
         try:
-            conf = Conference.objects.get(url_id='Placeholder')
+            conf = Conference.objects.get(url_id=conf_obj['id'])
         except ObjectDoesNotExist:
             newconf = Conference()
-            newconf.url_id = 'Placeholder'
+            newconf.url_id = conf_obj['id']
             newconf.active = True
-            newconf.name = "Placeholder"
-            newconf.start_time = time(9, 0, 0)
-            newconf.end_time = time(17, 30, 0)
+            # TODO: Export timedelta
+            #newconf.timedelta = conf_obj['delta']
+            newconf.name = conf_obj['name']
+            start = datetime.fromtimestamp(conf_obj['start'])
+            end = datetime.fromtimestamp(conf_obj['end'])
+            newconf.start_date = start.date()
+            newconf.start_time = start.time()
+            newconf.end_date = end.date()
+            newconf.end_time = end.time()
             newconf.save()
             conf = newconf
         # Generate sessions
@@ -959,22 +965,21 @@ class ImportView(generic.TemplateView):
                     newuser.save()
                 newevent.speaker.add(newuser)
 
+            tags = []
+            # Create tags
             if event['tags']:
                 tags = event['tags'][0].split(",")
-            else:
-                tags = ['notag']
-
-            # Create tags
             for tag in tags:
                 tag = tag.strip()
                 newtag, created = EventTag.objects.get_or_create(name=tag)
-                if created:
-                    newtag.color = "#%06x" % random.randint(0,0xFFFFFF)
-                    newtag.full_clean()
-                    newtag.save()
                 newevent.tags.add(newtag)
 
-            newevent.prim_tag = EventTag.objects.get(name=tags[0])
+            if event['track'] and event['room_color']:
+                tag, created = EventTag.objects.get_or_create(name=event['track'])
+                tag.color = event['room_color']
+                tag.save()
+                newevent.prim_tag = EventTag.objects.get(name=event['track'])
+
             newevent.save()   
 
         # Generate users
@@ -992,12 +997,12 @@ class ImportView(generic.TemplateView):
             newuser.full_clean()
             newuser.save()
 
-        # Setup proper start and end times of the conference
-        first_slot = Timeslot.objects.filter(conf_id=conf).order_by("start_time")[0]
-        last_slot = Timeslot.objects.filter(conf_id=conf).order_by("-end_time")[0]
-        conf.start_date = first_slot.start_time.date()
-        conf.end_date = last_slot.end_time.date()
-        conf.save()
+        # Randomly color uncolored tags
+        tags = EventTag.objects.filter(events__conf_id=conf, color__exact='').distinct()
+        for tag in tags:
+            r = lambda: (random.randint(0,255)+255) // 2
+            tag.color = '#%02x%02x%02x' % (r(),r(),r())
+            tag.save()
 
     @transaction.atomic
     def oa2015(csv_file, overwrite=False):
@@ -1228,6 +1233,16 @@ class ExportView(generic.TemplateView):
         result = {}
         tz = timezone.get_default_timezone()
         rfc_time_format = "%a, %d %b %Y %X %z"
+
+        # Export conference information
+        start = datetime.combine(conf.start_date, conf.start_time).timestamp()
+        end = datetime.combine(conf.end_date, conf.end_time).timestamp()
+        result['conference'] = { 'name' : conf.name,
+                                 'id' : conf.url_id,
+                                 'start' : start,
+                                 'end' : end,
+                                 }
+
         # Export events
         result['sessions'] = []
         slots = Timeslot.objects.filter(conf_id=conf)
