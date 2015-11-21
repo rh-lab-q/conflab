@@ -919,11 +919,13 @@ class ImportView(generic.TemplateView):
             newconf.end_time = end.time()
             newconf.save()
             conf = newconf
+
         # Generate sessions
+        eventlist = []
         for event in json_obj['sessions']:
-            try:
-                newevent = Event.objects.get(conf_id=conf, topic=event['topic'])
-            except ObjectDoesNotExist:
+            events = Event.objects.filter(conf_id=conf, topic=event['topic'])
+            if not events:
+                # No existing event with given name, create one
                 newevent = Event()
                 newevent.conf_id = conf
                 newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
@@ -933,6 +935,30 @@ class ImportView(generic.TemplateView):
 
                 newevent.full_clean()
                 newevent.save()
+                eventlist.append(newevent.topic)
+            else:
+                # One or more existing events
+                if event['topic'] in eventlist:
+                    # The event has been added by this import
+                    # Create another one
+                    newevent = Event()
+                    newevent.conf_id = conf
+                    newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
+                    newevent.topic = event['topic']
+                    newevent.description = event['description']
+                    newevent.lang = event['lang']
+
+                    newevent.full_clean()
+                    newevent.save()
+                else:
+                    # Duplicate event already in the db
+                    # If its a single one, we can modify it
+                    if len(events) == 1:
+                        #TODO: Overwrite
+                        newevent = events[0]
+                    else:
+                        # Multiple events, how to manage timeslots?
+                        pass
 
             # Create rooms
             room, created = Room.objects.get_or_create(shortname=event['room_short'])
