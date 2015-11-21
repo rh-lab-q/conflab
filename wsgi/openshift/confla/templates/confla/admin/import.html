@@ -4,16 +4,41 @@
 {% load confla_filters %}
 {% block title %}Import{% endblock %}
 
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/import.css' %}" />
+{% endblock %}
+
 {% block admin_menu %}
     {% include "confla/admin/menu.html" with active="import" %}
 {% endblock %}
 
 {% block admin_page %}
-    <form class="oa_form" action="{% url 'confla:oa_import' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-default" type="submit">{% trans "Import" %}</button>
-    </form>
+<div class="import-form">
+    <div class="panel panel-default">
+        <div class="panel-heading">Openalt CSV<i class="fa fa-caret-down fa-lg"></i>
+        </div>
+        <div class="panel-body">
+            <form class="oa_form" action="{% url 'confla:oa_import' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-default" type="submit">{% trans "Import" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="import-form">
+    <div class="panel panel-default">
+        <div class="panel-heading">JSON<i class="fa fa-caret-down fa-lg"></i>
+        </div>
+        <div class="panel-body">
+            <form class="json_form" action="{% url 'confla:json_import' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-default" type="submit">{% trans "Import" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block extrascripts %}
 <script src="{% static 'confla/import.js' %}"></script>

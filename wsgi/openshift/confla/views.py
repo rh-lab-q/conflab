@@ -741,164 +741,29 @@ class ImportView(generic.TemplateView):
                 # TODO: error checking
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
+    @permission_required('confla.can_organize', raise_exception=True)
+    def json_upload(request):
+        if request.method == 'POST':
+            form = ImportFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                alerts = ImportView.json(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
+                return HttpResponse(alerts)
+            else:
+                # TODO: error checking
+                return HttpResponseRedirect(reverse('confla:thanks'))
+
     @transaction.atomic
-    def json_to_db(json_string):
+    def json(json_file, overwrite):
+        f = io.TextIOWrapper(json_file.file, encoding="utf-8")
+        json_string = f.read()
         json_obj = json.loads(json_string)
 
-        # Generate rooms
-        room_list = json_obj['rooms']
-        for room in room_list:
-            newroom = Room()
-            newroom.id = room['id']
-            newroom.shortname = room['s_name']
-            newroom.name = room['name']
-            newroom.description = room['desc']
-            newroom.color = room['color']
-            try:
-                newroom.full_clean()
-            except ValidationError as e:
-                if ('id' in e.error_dict and
-                        e.error_dict['id'][0] == 'Room with this ID already exists.'):
-                    Room.objects.get(id=newroom.id).delete()
-                    newroom.full_clean()
-                else:
-                    raise e
-            newroom.save()
-
-        # Generate conferences
-        conf_list = json_obj['confs']
-        for conf in conf_list:
-            newconf = Conference()
-            newconf.id = conf['id']
-            newconf.name = conf['name']
-            # Has to be like this or else django complains!
-            start = datetime.strptime(conf['start_t'], "%H:%M")
-            end = datetime.strptime(conf['end_t'], "%H:%M")
-            newconf.start_time = timezone.now().replace(hour=start.hour, minute=start.minute,
-                                                            second=0, microsecond=0)
-            newconf.end_time = timezone.now().replace(hour=end.hour, minute=end.minute,
-                                                            second=0, microsecond=0)
-            newconf.start_date = datetime.strptime(conf['start_d'], "%d/%m/%Y")
-            newconf.end_date = datetime.strptime(conf['end_d'], "%d/%m/%Y")
-            newconf.timedelta = conf['time_d']
-            newconf.active = conf['active']
-            # Conference has to be in db before we can add rooms
-            try:
-                newconf.full_clean()
-            except ValidationError as e:
-                if ('id' in e.error_dict and
-                        e.error_dict['id'][0] == 'Conference with this ID already exists.'):
-                    Conference.objects.get(id=newconf.id).delete()
-                    newconf.full_clean()
-                else:
-                    raise e
-
-            newconf.save()
-
-            for room in conf['rooms']:
-                newconf.rooms.add(Room.objects.get(id=room))
-            newconf.save()
-
-        # Generate timeslots
-        slot_list = json_obj['slots']
-        for slot in slot_list:
-            newslot = Timeslot()
-            newslot.id = slot['id']
-            newslot.conf_id = Conference.objects.get(id=slot['conf_id'])
-            newslot.room_id = Room.objects.get(id=slot['room_id'])
-            start = datetime.strptime(slot['start_t'], "%H:%M")
-            end = datetime.strptime(slot['end_t'], "%H:%M")
-            newslot.start_time = timezone.get_default_timezone().localize(start)
-            newslot.end_time = timezone.get_default_timezone().localize(end)
-            try:
-                newslot.full_clean()
-            except ValidationError as e:
-                if ('id' in e.error_dict and
-                        e.error_dict['id'][0] == 'Timeslot with this ID already exists.'):
-                    Timeslot.objects.get(id=newslot.id).delete()
-                    newslot.full_clean()
-                else:
-                    raise e
-            newslot.save()
-
-        # Generate users
-        user_list = json_obj['users']
-        for user in user_list:
-            newuser = ConflaUser()
-            newuser.username = user['username']
-            newuser.password = user['password']
-            newuser.first_name = user['f_name']
-            newuser.last_name = user['l_name']
-            newuser.phone = user['phone']
-            newuser.picture = None
-            newuser.company = user['company']
-            newuser.position = user['position']
-            newuser.web = user['web']
-            newuser.github = user['github']
-            newuser.facebook = user['facebook']
-            newuser.twitter = user['twitter']
-            newuser.google_plus = user['g+']
-            newuser.linkedin = user['linkedin']
-            newuser.bio = user['bio']
-            try:
-                newuser.full_clean()
-            except ValidationError as e:
-                if ('username' in e.error_dict and
-                        e.error_dict['username'][0] == 'Confla user with this Username already exists.'):
-                    ConflaUser.objects.get(username=newuser.username).delete()
-                    newuser.full_clean()
-                else:
-                    raise e
-            newuser.save()
-
-        # Generate event types
-        event_type_list = json_obj['e_types']
-        for etype in event_type_list:
-            newtype = EventType()
-            newtype.id = etype['id']
-            newtype.name = etype['name']
-            try:
-                newtype.full_clean()
-            except ValidationError as e:
-                if ('id' in e.error_dict and
-                        e.error_dict['id'][0] == 'Event type with this ID already exists.'):
-                    EventType.objects.get(id=newtype.id).delete()
-                    newtype.full_clean()
-                else:
-                    raise e
-            newtype.save()
-
-        # Generate events
-        event_list = json_obj['events']
-        for event in event_list:
-            newevent = Event()
-            newevent.id = event['id']
-            newevent.conf_id = Conference.objects.get(id=event['conf_id'])
-            newevent.e_type_id = EventType.objects.get(id=event['type_id'])
-            newevent.topic = event['topic']
-            newevent.description = event['desc']
-            newevent.lang = event['lang']
-            newevent.slides = event['slides']
-            newevent.video = event['video']
-            newevent.google_doc_url = event['g_doc']
-            try:
-                newevent.full_clean()
-            except ValidationError as e:
-                if ('id' in e.error_dict and
-                        e.error_dict['id'][0] == 'Event with this ID already exists.'):
-                    Event.objects.get(id=newevent.id).delete()
-                    newevent.full_clean()
-                else:
-                    raise e
-            newevent.save()
-            for speaker in event['speakers']:
-                newevent.speaker.add(ConflaUser.objects.get(username=speaker))
-            newevent.save()
-
-    # import json from devconf for testing purposes
-    @transaction.atomic
-    def dv(json_string):
-        json_obj = json.loads(json_string)
+        events_created = 0
+        events_modified = 0
+        events_skipped = 0
+        users_created = 0
+        users_modified = 0
+        users_skipped = 0
 
         # Setup a Conference if there is none
         conf_obj = json_obj['conference']
@@ -935,6 +800,7 @@ class ImportView(generic.TemplateView):
 
                 newevent.full_clean()
                 newevent.save()
+                events_created += 1
                 eventlist.append(newevent.topic)
             else:
                 # One or more existing events
@@ -950,6 +816,7 @@ class ImportView(generic.TemplateView):
 
                     newevent.full_clean()
                     newevent.save()
+                    events_created += 1
                 else:
                     # Duplicate event already in the db
                     # If its a single one, we can modify it
@@ -1029,6 +896,21 @@ class ImportView(generic.TemplateView):
             r = lambda: (random.randint(0,255)+255) // 2
             tag.color = '#%02x%02x%02x' % (r(),r(),r())
             tag.save()
+
+        check = '<i class="fa fa-check-circle fa-lg"></i>'
+        warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
+        created = '<div class="alert alert-success">' + check + ' Events created: ' + str(events_created)
+        created += ', Users created: ' + str(users_created) + '</div>'
+        modified ='<div class="alert alert-success">' + check + ' Events modified: ' + str(events_modified)
+        modified += ', Users modified: ' + str(users_modified) + '</div>'
+        skipped = '<div class="alert alert-warning">' + warning + ' Events skipped: ' + str(events_skipped)
+        skipped += ', Users skipped: ' + str(users_skipped) + '</div>'
+        if overwrite:
+            return '<div class="import-alerts">'+ created + modified + '</div>'
+        else:
+            return '<div class="import-alerts">'+ created + skipped + '</div>'
+
+
 
     @transaction.atomic
     def oa2015(csv_file, overwrite=False):
