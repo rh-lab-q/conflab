@@ -761,9 +761,11 @@ class ImportView(generic.TemplateView):
         events_created = 0
         events_modified = 0
         events_skipped = 0
+        events_collisions = 0
         users_created = 0
         users_modified = 0
         users_skipped = 0
+        users_collisions = 0
 
         # Setup a Conference if there is none
         conf_obj = json_obj['conference']
@@ -784,10 +786,23 @@ class ImportView(generic.TemplateView):
             newconf.end_time = end.time()
             newconf.save()
             conf = newconf
+        else:
+            if overwrite:
+                # Update name and start times/dates
+                conf.name = conf_obj['name']
+                start = datetime.fromtimestamp(conf_obj['start'])
+                end = datetime.fromtimestamp(conf_obj['end'])
+                conf.start_date = start.date()
+                conf.start_time = start.time()
+                conf.end_date = end.date()
+                conf.end_time = end.time()
+                conf.save()
 
         # Generate sessions
-        eventlist = []
+        user_list = []
+        event_list = []
         for event in json_obj['sessions']:
+            setup_event = False
             events = Event.objects.filter(conf_id=conf, topic=event['topic'])
             if not events:
                 # No existing event with given name, create one
@@ -797,46 +812,59 @@ class ImportView(generic.TemplateView):
                 newevent.topic = event['topic']
                 newevent.description = event['description']
                 newevent.lang = event['lang']
-
                 newevent.full_clean()
                 newevent.save()
                 events_created += 1
-                eventlist.append(newevent.topic)
+                event_list.append(newevent.topic)
             else:
                 # One or more existing events
-                if event['topic'] in eventlist:
+                if event['topic'] in event_list:
                     # The event has been added by this import
                     # Create another one
                     newevent = Event()
                     newevent.conf_id = conf
-                    newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
-                    newevent.topic = event['topic']
-                    newevent.description = event['description']
-                    newevent.lang = event['lang']
-
-                    newevent.full_clean()
-                    newevent.save()
+                    setup_event = True
                     events_created += 1
                 else:
                     # Duplicate event already in the db
                     # If its a single one, we can modify it
                     if len(events) == 1:
-                        #TODO: Overwrite
                         newevent = events[0]
+
                     else:
-                        # Multiple events, how to manage timeslots?
-                        pass
+                        # Mulitple events, no idea which to modify
+                        # Log the collision
+                        # TODO: Better log
+                        events_collisions += 1
+                        continue
+
+                if setup_event or overwrite:
+                    newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
+                    newevent.topic = event['topic']
+                    newevent.description = event['description']
+                    newevent.lang = event['lang']
+                    newevent.full_clean()
+                    newevent.save()
+                    if overwrite:
+                        events_modified += 1
+                else:
+                    events_skipped += 1
 
             # Create rooms
             room, created = Room.objects.get_or_create(shortname=event['room_short'])
             created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
 
+            setup_slot = False
             try:
-                newevent.timeslot
+                newslot = newevent.timeslot
             except ObjectDoesNotExist:
                 # Create timeslot for the event
                 newslot = Timeslot()
                 newslot.conf_id = conf
+                # New slot, we need to set it up properly
+                setup_slot = True
+
+            if setup_slot or setup_event or overwrite:
                 newslot.room_id = Room.objects.get(shortname=event['room_short'])
                 start = datetime.fromtimestamp(int(event['event_start']))
                 end = datetime.fromtimestamp(int(event['event_end']))
@@ -856,6 +884,8 @@ class ImportView(generic.TemplateView):
                     newuser.first_name = speaker
                     newuser.full_clean()
                     newuser.save()
+                    users_created += 1
+                    user_list.append(newuser.username)
                 newevent.speaker.add(newuser)
 
             tags = []
@@ -881,12 +911,20 @@ class ImportView(generic.TemplateView):
             username = user['name'].replace(" ", "")[:30]
             username = re.sub('[\W_]+', '', username)
             newuser, created = ConflaUser.objects.get_or_create(username=username)
-            if created:
+            if created or overwrite:
                 newuser.password = "blank"
                 newuser.first_name = user['name'][:30]
-            newuser.company = user['company']
-            newuser.position = user['position']
-            newuser.picture = user['avatar']
+                newuser.company = user['company']
+                newuser.position = user['position']
+                newuser.picture = user['avatar']
+                if overwrite and newuser.username in user_list:
+                    users_modified += 1
+                elif created:
+                    user_list.append(newuser.username)
+                    users_created += 1
+            elif not created and newuser.username not in user_list:
+                users_skipped += 1
+
             newuser.full_clean()
             newuser.save()
 
@@ -899,16 +937,19 @@ class ImportView(generic.TemplateView):
 
         check = '<i class="fa fa-check-circle fa-lg"></i>'
         warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
+        collisions = ''
         created = '<div class="alert alert-success">' + check + ' Events created: ' + str(events_created)
         created += ', Users created: ' + str(users_created) + '</div>'
         modified ='<div class="alert alert-success">' + check + ' Events modified: ' + str(events_modified)
         modified += ', Users modified: ' + str(users_modified) + '</div>'
         skipped = '<div class="alert alert-warning">' + warning + ' Events skipped: ' + str(events_skipped)
         skipped += ', Users skipped: ' + str(users_skipped) + '</div>'
+        if events_collisions:
+            collisions = '<div class="alert alert-danger">' + warning + ' Event collsions: ' + str(events_collisions) + '</div>'
         if overwrite:
-            return '<div class="import-alerts">'+ created + modified + '</div>'
+            return '<div class="import-alerts">'+ created + modified + collisions + '</div>'
         else:
-            return '<div class="import-alerts">'+ created + skipped + '</div>'
+            return '<div class="import-alerts">'+ created + skipped + collisions + '</div>'
 
 
 
