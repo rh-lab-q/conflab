@@ -1,0 +1,26 @@
+.panel {
+    position: relative;
+    left: 33%;
+    display: inline-block;
+}
+
+.panel-body {
+    width:100%;
+    position:relative;
+    padding:0;
+    height:0;
+    overflow:hidden;
+}
+
+.panel-heading {
+    cursor:pointer;
+}
+
+.admin-page form {
+    min-width: 100%;
+    padding: 15px;
+}
+
+.admin-page .fa-caret-down, .admin-page .fa-caret-up {
+    float:right;
+}
