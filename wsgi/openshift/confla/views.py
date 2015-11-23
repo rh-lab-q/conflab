@@ -143,10 +143,10 @@ class AboutView(generic.TemplateView):
     def splash_view(request, url_id):
         conf = get_conf_or_404(url_id)
 
-        events = str(len(Timeslot.objects.filter(event_id__conf_id=conf))) + ' events'
+        events = str(len(Timeslot.objects.filter(event_id__conf_id=conf))) + ' talks'
         speakers = str(len(ConflaUser.objects.filter(events__conf_id=conf).distinct())) + ' speakers'
         topics = str(len(EventTag.objects.filter(events__conf_id=conf,
-                            events__timeslot__isnull=False).distinct())) + ' topics'
+                            events__timeslot__isnull=False).distinct())) + ' tags'
         return render(request, AboutView.template_name,
                         {'url_id' : url_id,
                          'conf' : conf,
