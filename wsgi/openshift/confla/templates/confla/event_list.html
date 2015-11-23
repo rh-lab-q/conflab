@@ -1,0 +1,44 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %}Events{% endblock %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/event_list.css' %}" />
+<style type='text/css'>
+    {% for tag in tag_list %}
+    .tag{{tag.id}} {
+        background : {{tag.color}};
+    }
+    {% endfor %}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="event-list">
+    {% for event in events %}
+    <div id="event_{{event.id}}" class="event">
+        <div class="event-header">
+            <h3 class="topic">
+                {{ event.topic }}
+            </h3>
+        </div>
+        <div class="event-body">
+            <div class="location">
+                {{event.timeslot.get_start_time}} - {{event.timeslot.room_id.shortname}} 
+            </div>
+            {% if event.tags.all %}
+            <div class="tags">
+                {% for tag in event.tags.all %}
+                <div class="tag tag{{tag.id}}">
+                    {{tag.name}}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="desc">
+                {{ event.description }}
+            </div>
+        </div>
+    </div>
+    {% endfor %} 
+</div>
+{% endblock %}

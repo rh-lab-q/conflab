@@ -7,10 +7,10 @@
 <link rel="stylesheet" type="text/css" href="{% static 'confla/splash.css' %}" />
 {% endblock %}
 
-{% block title %}{{conf.name}}{% endblock %}
+{% block title %}{% endblock %}
 
 {% block content %}
 <div><h1>{{conf.name}}</h1></div>
 <h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
-<h1>{{info}}</h1>
+<h1><a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}}</a>, {{speakers}}, {{topics}}</h1>
 {% endblock %}

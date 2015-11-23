@@ -143,14 +143,16 @@ class AboutView(generic.TemplateView):
     def splash_view(request, url_id):
         conf = get_conf_or_404(url_id)
 
-        info = str(len(Timeslot.objects.filter(event_id__conf_id=conf))) + ' events, '
-        info += str(len(ConflaUser.objects.filter(events__conf_id=conf).distinct())) + ' speakers, '
-        info += str(len(EventTag.objects.filter(events__conf_id=conf,
+        events = str(len(Timeslot.objects.filter(event_id__conf_id=conf))) + ' events'
+        speakers = str(len(ConflaUser.objects.filter(events__conf_id=conf).distinct())) + ' speakers'
+        topics = str(len(EventTag.objects.filter(events__conf_id=conf,
                             events__timeslot__isnull=False).distinct())) + ' topics'
         return render(request, AboutView.template_name,
                         {'url_id' : url_id,
                          'conf' : conf,
-                         'info' : info,
+                         'events' : events,
+                         'speakers' : speakers,
+                         'topics' : topics,
                             })
 
 class IndexView(generic.TemplateView):
@@ -211,6 +213,17 @@ class VolunteerView(generic.TemplateView):
         return render(request, VolunteerView.template_name)
 
 class EventView(generic.TemplateView):
+
+    def event_list(request, url_id):
+        template_name = 'confla/event_list.html'
+        conf = get_conf_or_404(url_id)
+        events = Event.objects.filter(conf_id=conf, timeslot__isnull=False).order_by('timeslot__start_time')
+        return render(request, template_name, {
+                    'events': events,
+                    'tag_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
+                    'url_id' : url_id,
+                    'conf' : conf,
+                    })
 
     def get_popover(request):
         template_name = 'confla/event_popover.html'
@@ -277,7 +290,8 @@ class ScheduleView(generic.TemplateView):
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                          'url_id' : url_id,
-                    })
+                         'conf' : conf,
+                         })
 
     def list_view(request, url_id):
         conf = get_conf_or_404(url_id)

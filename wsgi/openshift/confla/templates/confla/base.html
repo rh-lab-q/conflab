@@ -8,12 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>
-        {% block title %}
         {% if url_id %}
         {{conf.name}}
         {% else %}
-        Confla - Conference schedule made easy
+        Confla
         {% endif %}
+        {% block title %}
         {% endblock%}
     </title>
 

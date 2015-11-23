@@ -1,0 +1,16 @@
+.event-list {
+    /*position: relative;
+    left: 15%;
+    width: 70%;*/
+}
+
+.event {
+    border-top: 1px solid #999;
+    padding-bottom: 15px;
+}
+
+.tag {
+    display: inline-block;
+    border: 1px solid #b8b8b8;
+    padding: 2px;
+}

@@ -2,3 +2,12 @@ body > #page-container {
     width: 100%;
     text-align: center;
 }
+
+#page-container .confla-link {
+    color: #333333;
+}
+
+#page-container .confla-link:hover {
+    color: #282828;
+    text-decoration: none;
+}
