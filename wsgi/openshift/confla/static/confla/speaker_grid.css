@@ -1,0 +1,13 @@
+.speaker-wrap {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+}
+
+.grid-wrap {
+    text-align: center;
+}
+
+body > #page-container {
+    width: 100%;
+}

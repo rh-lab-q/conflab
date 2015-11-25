@@ -440,6 +440,18 @@ class UserView(generic.TemplateView):
             'email_form' : email_form,
             })
 
+    def speaker_grid(request, url_id):
+        template_name = 'confla/speaker_grid.html'
+
+        conf = get_conf_or_404(url_id)
+
+        speakers = ConflaUser.objects.filter(events__conf_id=conf).distinct()
+        return render(request, template_name, {
+                        'speakers' : speakers,
+                        'url_id' : url_id,
+                        'conf' : conf,
+                        })
+
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'
 

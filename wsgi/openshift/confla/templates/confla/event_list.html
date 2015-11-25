@@ -23,7 +23,7 @@
         </div>
         <div class="event-body">
             <div class="location">
-                {{event.timeslot.get_start_time}} - {{event.timeslot.room_id.shortname}} 
+                {{event.timeslot.get_start_time}} - {{event.timeslot.room_id.shortname}}
             </div>
             {% if event.tags.all %}
             <div class="tags">
@@ -39,6 +39,6 @@
             </div>
         </div>
     </div>
-    {% endfor %} 
+    {% endfor %}
 </div>
 {% endblock %}

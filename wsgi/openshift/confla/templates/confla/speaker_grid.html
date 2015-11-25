@@ -1,0 +1,21 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load confla_filters %}
+{% block title %}Speakers{% endblock %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/speaker_grid.css' %}"/>
+{% endblock %} 
+
+{% block content %}
+<div class="grid-wrap">
+{% for speaker in speakers %}
+    {% if speaker.picture %}
+    <div class="speaker-wrap">
+        <a>
+            <img src={{speaker.picture|crop:"150x150"}}>
+        </a>
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
+{% endblock %}
