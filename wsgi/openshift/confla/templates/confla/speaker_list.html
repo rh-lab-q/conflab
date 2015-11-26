@@ -1,6 +1,7 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
+{% load confla_filters %}
 {% block title %}Speakers{% endblock %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/speaker_list.css' %}" />
 {% endblock %}
@@ -15,10 +16,15 @@
             </h3>
         </div>
         <div class="speaker-body">
-            {% if speaker.picture %}
             <div class="avatar">
+                {% if speaker.picture %}
+                <img src={{speaker.picture|crop:"100x100"}}>
+                {% else %}
+                <div class="no-avatar">
+                    <span>?</span>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
             <div class="speaker-info">
                 {% if speaker.company %}
                 <div class="company">

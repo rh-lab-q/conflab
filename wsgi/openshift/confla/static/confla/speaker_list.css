@@ -1,14 +1,19 @@
-/* Avatar for testing purposes */
-.avatar {
-    width: 100px;
-    height: 100px;
-}
-/* Avatar for testing purposes end */
-
 .avatar {
     border: 1px solid #b8b8b8;
     margin-right: 10px;
     float: left;
+    /* 100x100 + 1px per border */
+    width: 102px;
+    height: 102px;
+}
+
+.no-avatar {
+    text-align: center;
+    color: #999;
+}
+
+.no-avatar > span {
+    font-size: 70px;
 }
 
 .speaker-wrap {
