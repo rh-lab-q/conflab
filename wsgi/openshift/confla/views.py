@@ -20,6 +20,7 @@ from django.core.files import File
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.db import transaction
+from unidecode import unidecode
 
 from confla.forms import *
 from confla.models import *
@@ -918,8 +919,9 @@ class ImportView(generic.TemplateView):
             for speaker in event['speakers']:
                 username = speaker.replace(" ", "")[:30]
                 username = re.sub('[\W_]+', '', username)
-                newuser, created = ConflaUser.objects.get_or_create(username=username)
-                if created:
+                username = unidecode(username)
+                newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
+                if created_speaker:
                     newuser.password = "blank"
                     newuser.first_name = speaker
                     newuser.full_clean()
@@ -950,23 +952,21 @@ class ImportView(generic.TemplateView):
         for user in users_list:
             username = user['name'].replace(" ", "")[:30]
             username = re.sub('[\W_]+', '', username)
+            username = unidecode(username)
             newuser, created = ConflaUser.objects.get_or_create(username=username)
-            if created or overwrite:
-                newuser.password = "blank"
-                newuser.first_name = user['name'][:30]
-                newuser.company = user['company']
-                newuser.position = user['position']
-                if user['avatar']:
-                    content = urllib.request.urlretrieve(user['avatar'])
-                    ext = user['avatar'].split('.')[-1]
-                    newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
-                if overwrite and newuser.username in user_list:
-                    users_modified += 1
-                elif created:
-                    user_list.append(newuser.username)
-                    users_created += 1
-            elif not created and newuser.username not in user_list:
-                users_skipped += 1
+            newuser.password = "blank"
+            newuser.first_name = user['name'][:30]
+            newuser.company = user['company']
+            newuser.position = user['position']
+            if user['avatar']:
+                content = urllib.request.urlretrieve(user['avatar'])
+                ext = user['avatar'].split('.')[-1]
+                newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
+            if overwrite and newuser.username in user_list:
+                users_modified += 1
+            elif created:
+                user_list.append(newuser.username)
+                users_created += 1
 
             newuser.full_clean()
             newuser.save()
@@ -1054,6 +1054,8 @@ class ImportView(generic.TemplateView):
             else:
                 users_modified += 1
 
+            username1 = unidecode(username1)
+            username2 = unidecode(username2)
             newuser.first_name = row[9][:30]
             newuser.company = row[15]
             newuser.position = row[16]
