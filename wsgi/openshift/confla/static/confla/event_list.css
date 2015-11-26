@@ -9,8 +9,45 @@
     padding-bottom: 15px;
 }
 
+.tags {
+    margin: 5px 0;
+}
+
 .tag {
     display: inline-block;
     border: 1px solid #b8b8b8;
     padding: 2px;
+}
+
+.speaker {
+    float: left;
+    margin-bottom: 5px;
+}
+
+.avatar {
+    border: 1px solid #b8b8b8;
+    float:left;
+    /* 70x70 + 1px per border */
+    width: 72px;
+    height: 72px;
+
+}
+
+.no-avatar {
+    text-align: center;
+    color: #999;
+}
+
+.no-avatar > span {
+    font-size: 50px;
+}
+
+.speaker-info {
+    float:left;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+a.confla-link {
+    color: inherit;
 }

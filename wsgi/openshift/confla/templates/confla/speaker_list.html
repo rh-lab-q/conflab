@@ -42,7 +42,7 @@
                 </div>
                 {% endif %}
             </div>
-            <div class="speaker-events clear">
+            <div class="speaker-events clear-both">
                 {% for event in speaker.events_by_time %}
                 <div class="speaker-event">
                     {{ event.timeslot.start_time|date:"D" }}, {{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}: 

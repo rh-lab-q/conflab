@@ -19,3 +19,7 @@
 #container > .col-lg-11 {
     width:88%;
 }
+
+.clear-both {
+    clear: both;
+}
