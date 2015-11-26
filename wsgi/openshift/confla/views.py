@@ -452,6 +452,18 @@ class UserView(generic.TemplateView):
                         'conf' : conf,
                         })
 
+    def speaker_list(request, url_id):
+        template_name = 'confla/speaker_list.html'
+
+        conf = get_conf_or_404(url_id)
+
+        speakers = ConflaUser.objects.filter(events__conf_id=conf).distinct()
+        return render(request, template_name, {
+                        'speakers' : speakers,
+                        'url_id' : url_id,
+                        'conf' : conf,
+                        })
+
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'
 

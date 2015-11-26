@@ -1,0 +1,30 @@
+/* Avatar for testing purposes */
+.avatar {
+    width: 100px;
+    height: 100px;
+}
+/* Avatar for testing purposes end */
+
+.avatar {
+    border: 1px solid #b8b8b8;
+    margin-right: 10px;
+    float: left;
+}
+
+.speaker-wrap {
+    border-top: 1px solid #999;
+    padding-bottom: 20px;
+}
+
+.speaker-events {
+    padding-top: 5px;
+    padding-left: 10px;
+}
+
+.speaker-info {
+    float: left;
+}
+
+.clear {
+    clear: both;
+}

@@ -1,4 +1,5 @@
 .speaker-wrap {
+    border: 1px solid #b8b8b8;
     position: relative;
     display: inline-block;
     margin: 5px;

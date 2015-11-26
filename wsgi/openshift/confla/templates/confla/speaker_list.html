@@ -1,0 +1,51 @@
+{% extends "confla/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %}Speakers{% endblock %}
+{% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/speaker_list.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="speaker-list">
+    {% for speaker in speakers %}
+    <div id="speaker_{{speaker.pk}}" class="speaker-wrap">
+        <div class="speaker-header">
+            <h3 class="name">
+                {{ speaker.first_name }}
+            </h3>
+        </div>
+        <div class="speaker-body">
+            {% if speaker.picture %}
+            <div class="avatar">
+            </div>
+            {% endif %}
+            <div class="speaker-info">
+                {% if speaker.company %}
+                <div class="company">
+                    {{ speaker.company }}
+                </div>
+                {% endif %}
+                {% if speaker.position %}
+                <div class="position">
+                    {{ speaker.position }}
+                </div>
+                {% endif %}
+                {% if speaker.bio %}
+                <div class="about">
+                    {{ speaker.bio }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="speaker-events clear">
+                {% for event in speaker.events_by_time %}
+                <div class="speaker-event">
+                    {{ event.timeslot.start_time|date:"D" }}, {{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}: 
+                    <a href="{% url 'confla:event_list' url_id %}#event_{{ event.id }}">{{ event.topic }}</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
