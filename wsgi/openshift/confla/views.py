@@ -4,6 +4,7 @@ import re
 import hashlib
 import csv
 import io
+import urllib
 from datetime import datetime, date, time
 
 from django.template.loader import render_to_string
@@ -15,6 +16,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.files import File
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.db import transaction
@@ -954,7 +956,10 @@ class ImportView(generic.TemplateView):
                 newuser.first_name = user['name'][:30]
                 newuser.company = user['company']
                 newuser.position = user['position']
-                newuser.picture = user['avatar']
+                if user['avatar']:
+                    content = urllib.request.urlretrieve(user['avatar'])
+                    ext = user['avatar'].split('.')[-1]
+                    newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
                 if overwrite and newuser.username in user_list:
                     users_modified += 1
                 elif created:
