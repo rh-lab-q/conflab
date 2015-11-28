@@ -71,7 +71,7 @@ def scale(imagefield, size, method='scale'):
 def crop(imagefield, size):
     return scale(imagefield, size, 'crop')
 
-register.inclusion_tag('confla/event_modal.html')
+@register.inclusion_tag('confla/event_modal.html')
 def include_modal(event=None):
     if event:
         form = EventEditForm(instance=event)
