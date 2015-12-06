@@ -35,3 +35,12 @@
     vertical-align: middle;
     display: inline-block;
 }
+
+.conf-icon {
+    height: auto;
+    max-height:100%;
+}
+
+.image-brand {
+    padding: 5px;
+}

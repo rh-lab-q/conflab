@@ -40,9 +40,15 @@
                 <span class="icon-bar"></span>
             </button>
             {% if url_id %}
-            <a class="navbar-brand" href="{% url 'confla:splash' url_id %}">Logo</a>
+            <a class="{% if conf.icon %}image-brand{% endif %} navbar-brand" href="{% url 'confla:splash' url_id %}">
+            {% if conf.icon %}
+                <img class="conf-icon" src={{conf.icon.url}}>
             {% else %}
-            <a class="navbar-brand" href="{% url 'confla:index' %}">Logo</a>
+                Logo
+            {% endif %}
+            </a>
+            {% else %}
+            <a class="navbar-brand" href="{% url 'confla:index' %}">Confla</a>
             {% endif %}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -113,7 +119,7 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-text pull-left">
-            &copy; 2015 Conflab - conference management system
+            &copy; 2015 Confla - conference management system
         </div>
         <div class="pull-right">
             <a class="btn btn-default" href="https://github.com/rh-lab-q/conflab"><i class="fa fa-github"></i></a>
