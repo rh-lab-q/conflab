@@ -23,3 +23,15 @@
 .clear-both {
     clear: both;
 }
+
+.footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.footer-text {
+    line-height: 34px;
+    vertical-align: middle;
+    display: inline-block;
+}

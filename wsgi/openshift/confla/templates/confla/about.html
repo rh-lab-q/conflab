@@ -13,10 +13,36 @@
 <div>
     <h1>{{conf.name}}</h1>
 </div>
-<h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h3>
-<h1>
+<h2>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
+<h3>
     <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}}</a>,
     <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}}</a>,
     {{topics}}
-</h1>
+</h3>
+<div class="conf-splash">
+    {% if conf.splash %}
+    <img src={{conf.splash.url}}>
+    {% endif %}
+</div>
+<div class="container">
+    <div class="btn-group btn-group-justified">
+        <a href={% url 'confla:event_list' conf.url_id %} class="btn btn-lg btn-default">Topics</a>
+        {% if conf.timeslot_set.all %}
+        <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-lg btn-default">Schedule</a>
+        {% endif %}
+        <a href={% url 'confla:speaker_grid' conf.url_id %} class="btn btn-lg btn-default">Speakers</a>
+    </div>
+    <div class="conf-about">
+        {% if conf.about %}
+        <h3>About:</h3>
+        <p>{{conf.about|linebreaks}}</p>
+        {% endif %}
+    </div>
+    <div class="conf-venue">
+        {% if conf.venue %}
+        <h3>Venue:</h3>
+        <p>{{conf.venue|linebreaks}}</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

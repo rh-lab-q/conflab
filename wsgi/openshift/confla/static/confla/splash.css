@@ -11,3 +11,7 @@ body > #page-container {
     color: #282828;
     text-decoration: none;
 }
+
+body .btn {
+    background-color: #eee;
+}
