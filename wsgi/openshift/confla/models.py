@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
 from confla.utils import validate_papers, user_rename_and_return_path, paper_rename_and_return_path
+from confla.utils import conf_rename_and_return_path
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
@@ -18,6 +19,13 @@ class Conference(models.Model):
     url_id = models.CharField(max_length=256, unique=True)
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
+    about = models.TextField(blank=True)
+    venue = models.TextField(blank=True)
+    gps = models.CharField(max_length=256, blank=True)
+    splash = models.ImageField(upload_to=conf_rename_and_return_path('splash/'),
+                                blank=True, null=True)
+    icon = models.ImageField(upload_to=conf_rename_and_return_path('icon/'),
+                                blank=True, null=True)
 
     def __str__(self):
         return self.name

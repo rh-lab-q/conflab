@@ -161,7 +161,7 @@ class AboutView(generic.TemplateView):
 class IndexView(generic.TemplateView):
     template_name = 'confla/index.html'
     def my_view(request):
-        conf_list = Conference.objects.all();
+        conf_list = Conference.objects.all().order_by("-start_date")
         return render(request, IndexView.template_name, {'conf_list' : conf_list})
 
 class CfpView(generic.TemplateView):

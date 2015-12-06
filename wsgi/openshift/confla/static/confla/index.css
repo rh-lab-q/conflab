@@ -1,4 +1,16 @@
-.confswrap {
+body > #page-container, .conference {
     width: 100%;
+    padding: 0;
+}
+
+.conference > .container {
+    padding-bottom: 20px;
+}
+
+.conf-name {
     text-align: center;
+}
+
+.conference:nth-of-type(2n) {
+    background-color: #e8e8e8;
 }

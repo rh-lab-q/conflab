@@ -13,7 +13,7 @@
 <div>
     <h1>{{conf.name}}</h1>
 </div>
-<h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
+<h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h3>
 <h1>
     <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}}</a>,
     <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}}</a>,
