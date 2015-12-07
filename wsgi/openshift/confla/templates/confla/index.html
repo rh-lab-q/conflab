@@ -9,6 +9,7 @@
 {% block content %}
 <div class="confswrap">
     {% for conf in conf_list %}
+    {%if conf.active %}
     <div class="conference">
         <div class="container">
             <h2 class="conf-name">{{conf.name}}</h2>
@@ -23,7 +24,7 @@
                 </div>
                 <div class="conf-about">
                     {% if conf.about %}
-                    <p>{{conf.about}}</p>
+                    <p>{{conf.about|linebreaks}}</p>
                     {% endif %}
                 </div>
                 <div class="btn-group">
@@ -36,6 +37,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}
