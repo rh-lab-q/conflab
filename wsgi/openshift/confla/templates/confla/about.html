@@ -5,6 +5,7 @@
 
 {% block extrastyles %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/splash.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}" />
 {% endblock %}
 
 {% block title %}{% endblock %}
@@ -42,6 +43,26 @@
         {% if conf.venue %}
         <h3>Venue:</h3>
         <p>{{conf.venue|linebreaks}}</p>
+        {% endif %}
+    </div>
+    <div class="conf-map">
+        {% if conf.gps %}
+        <div id="map" style="width: 100%; height: 300px; border: 0; margin: 0;"></div>
+        <script src={% static 'leaflet/leaflet.js' %}></script>
+        <script type="text/javascript">
+            map = new L.Map('map');
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>; contributors';
+            var osm = new L.TileLayer(osmUrl, {minZoom:4, maxZoom: 18, attribution: osmAttrib});
+
+            map.setView([{{ conf.gps }}], 15);
+            map.addLayer(osm);
+            var marker = L.marker([{{ conf.gps }}]).addTo(map);
+            map.dragging.disable();
+            map.touchZoom.disable();
+            map.doubleClickZoom.disable();
+            map.scrollWheelZoom.disable();
+        </script>
         {% endif %}
     </div>
 </div>
