@@ -16,9 +16,9 @@
 </div>
 <h2>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
 <h3>
-    <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}}</a>,
-    <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}}</a>,
-    {{topics}}
+    <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}} topics</a>,
+    <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}} speakers</a>,
+    {{topics}} tags
 </h3>
 <div class="conf-splash">
     {% if conf.splash %}
@@ -27,11 +27,9 @@
 </div>
 <div class="container">
     <div class="btn-group btn-group-justified">
-        <a href={% url 'confla:event_list' conf.url_id %} class="btn btn-lg btn-default">Topics</a>
-        {% if conf.timeslot_set.all %}
-        <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-lg btn-default">Schedule</a>
-        {% endif %}
-        <a href={% url 'confla:speaker_grid' conf.url_id %} class="btn btn-lg btn-default">Speakers</a>
+        <a href={% url 'confla:event_list' conf.url_id %} class="btn btn-lg btn-default {% if not events %}disabled{% endif %}" >Topics</a>
+        <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-lg btn-default {% if not events %}disabled{% endif %}">Schedule</a>
+        <a href={% url 'confla:speaker_grid' conf.url_id %} class="btn btn-lg btn-default {% if not speakers %}disabled{% endif %}">Speakers</a>
     </div>
     <div class="conf-about">
         {% if conf.about %}
