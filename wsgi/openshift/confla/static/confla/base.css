@@ -41,6 +41,15 @@
     max-height:100%;
 }
 
-.image-brand {
+#image-brand {
     padding: 5px;
+    margin: 0;
+}
+
+#home-brand {
+    padding-top: 10px;
+}
+
+#home-brand > .fa-home {
+    font-size: 1.5em;
 }

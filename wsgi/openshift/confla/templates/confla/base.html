@@ -40,15 +40,13 @@
                 <span class="icon-bar"></span>
             </button>
             {% if url_id %}
-            <a class="{% if conf.icon %}image-brand{% endif %} navbar-brand" href="{% url 'confla:splash' url_id %}">
-            {% if conf.icon %}
-                <img class="conf-icon" src={{conf.icon.url}}>
-            {% else %}
-                Logo
-            {% endif %}
+            <a id="{% if conf.icon %}image-brand{% endif %}"class="navbar-brand" href="{% url 'confla:splash' url_id %}">
+                {% if conf.icon %}
+                    <img class="conf-icon" src={{conf.icon.url}}>
+                {% else %}
+                    Logo
+                {% endif %}
             </a>
-            {% else %}
-            <a class="navbar-brand" href="{% url 'confla:index' %}">Confla</a>
             {% endif %}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -59,7 +57,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if url_id %}
-                <li><a href="{% url 'confla:about' url_id %}">{% trans "About" %}</a></li>
+                
                 <li><a href="{% url 'confla:schedule' url_id %}">{% trans "Schedule" %}</a></li>
                 {% endif %}
 
@@ -103,6 +101,11 @@
                             {% endfor %}
                         </form>
                     </ul>
+                </li>
+                <li>
+                    <a id="home-brand" class="navbar-brand" href="{% url 'confla:index' %}">
+                        <i class="fa fa-2x fa-home" style="vertical-align: middle;"></i>
+                    </a>
                 </li>
             </ul>
         </div>
