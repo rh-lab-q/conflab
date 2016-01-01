@@ -40,6 +40,9 @@ class Conference(models.Model):
         except ObjectDoesNotExist:
             return None
 
+    def has_datetimes(self):
+        return (self.start_time and self.end_time and self.start_date and self.end_date)
+
     # Returns a list of times during a day for a defined timedelta
     def get_delta_list(self):
         def delta_func(start, end, delta):

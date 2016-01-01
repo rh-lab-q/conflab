@@ -44,6 +44,11 @@ class AdminView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def schedule(request, url_id):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            return render(request, "confla/admin/user_sched.html",
+                     { 'conf'   : conf,
+                       'url_id' : url_id,
+                     })
 
         slot_list = {}
         rooms = conf.rooms.all()
@@ -259,8 +264,9 @@ class ScheduleView(generic.TemplateView):
     template_name = 'confla/user_sched.html'
 
     def my_view(request, url_id):
-        #TODO: Add compatibility with archived conferences
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            raise Http404
 
         slot_list = {}
         rooms = conf.rooms.all()
@@ -298,6 +304,8 @@ class ScheduleView(generic.TemplateView):
 
     def list_view(request, url_id):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            raise Http404
 
         time_list = []
         # Distinct ordered datetime list for the current conference
@@ -564,6 +572,11 @@ class TimetableView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request, url_id):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            return render(request, TimetableView.template_name,
+                     { 'conf'      : conf,
+                       'url_id' : url_id,
+                     })
 
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
