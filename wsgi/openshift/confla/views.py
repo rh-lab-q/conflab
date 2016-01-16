@@ -1262,7 +1262,6 @@ class ExportView(generic.TemplateView):
         result = {
             'conferences' : [],
             'timestamp' : '',
-            'checksum' : '',
         }
 
         for conf in Conference.objects.filter(active=True):
@@ -1277,10 +1276,9 @@ class ExportView(generic.TemplateView):
             url_json = request.build_absolute_uri(reverse('confla:export_mapp', kwargs={'url_id' : conf.url_id}))
 
             # Export conference information
-            if (conf.start_date and conf.start_time):
+            if conf.has_datetimes():
                 start = datetime.combine(conf.start_date, conf.start_time).timestamp()
                 start_rfc = datetime.combine(conf.start_date, conf.start_time).strftime(rfc_time_format)
-            if (conf.end_date and conf.end_time):
                 end = datetime.combine(conf.end_date, conf.end_time).timestamp()
                 end_rfc = datetime.combine(conf.end_date, conf.end_time).strftime(rfc_time_format)
 
@@ -1311,9 +1309,13 @@ class ExportView(generic.TemplateView):
         tz = timezone.get_default_timezone()
         rfc_time_format = "%a, %d %b %Y %X %z"
 
+        start = ''
+        end = ''
+
         # Export conference information
-        start = datetime.combine(conf.start_date, conf.start_time).timestamp()
-        end = datetime.combine(conf.end_date, conf.end_time).timestamp()
+        if conf.has_datetimes():
+            start = datetime.combine(conf.start_date, conf.start_time).timestamp()
+            end = datetime.combine(conf.end_date, conf.end_time).timestamp()
         result['conference'] = { 'name' : conf.name,
                                  'id' : conf.url_id,
                                  'start' : start,

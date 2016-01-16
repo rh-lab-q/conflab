@@ -51,10 +51,14 @@ class Conference(models.Model):
                 yield current
                 current = (datetime.combine(date.today(), current) + delta).time()
 
-        mins = self.timedelta
-        delta_list = [x.strftime("%H:%M") for x in delta_func(self.start_time,
-                                                                self.end_time,
-                                                                timedelta(minutes=mins))]
+        if self.has_datetimes():
+            mins = self.timedelta
+            delta_list = [x.strftime("%H:%M") for x in delta_func(self.start_time,
+                                                                    self.end_time,
+                                                                    timedelta(minutes=mins))]
+        else:
+            delta_list = []
+
         return delta_list
 
     # Returns a list of datetimes during a day for a defined timedelta
@@ -65,24 +69,34 @@ class Conference(models.Model):
                 yield current
                 current = (datetime.combine(date.today(), current) + delta).time()
 
-        mins = self.timedelta
-        delta_list = [x for x in delta_func(self.start_time,
-                                                self.end_time,
-                                                timedelta(minutes=mins))]
+        if self.has_datetimes():
+            mins = self.timedelta
+            delta_list = [x for x in delta_func(self.start_time,
+                                                    self.end_time,
+                                                    timedelta(minutes=mins))]
+        else:
+            delta_list = []
+
         return delta_list
 
     # Returns a list of days formated as a string
     def get_date_list(self):
-        day_num = (self.end_date - self.start_date).days + 1
-        date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
-                        for x in range(0, day_num)]
+        if self.has_datetimes():
+            day_num = (self.end_date - self.start_date).days + 1
+            date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
+                            for x in range(0, day_num)]
+        else:
+            date_list = []
         return date_list
 
     # Returns a list of days as a datetime
     def get_datetime_date_list(self):
-        day_num = (self.end_date - self.start_date).days + 1
-        date_list = [(self.start_date + timedelta(days=x))
-                        for x in range(0, day_num)]
+        if self.has_datetimes():
+            day_num = (self.end_date - self.start_date).days + 1
+            date_list = [(self.start_date + timedelta(days=x))
+                            for x in range(0, day_num)]
+        else:
+            date_list = []
         return date_list
 
     # gets events in a conference, filter by speaker, room, type
