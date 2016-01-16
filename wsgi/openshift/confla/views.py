@@ -823,35 +823,47 @@ class ImportView(generic.TemplateView):
         users_collisions = 0
 
         # Setup a Conference if there is none
-        conf_obj = json_obj['conference']
-        try:
-            conf = Conference.objects.get(url_id=conf_obj['id'])
-        except ObjectDoesNotExist:
-            newconf = Conference()
-            newconf.url_id = conf_obj['id']
+        if 'conference' in json_obj:
+            conf_obj = json_obj['conference']
+            try:
+                conf = Conference.objects.get(url_id=conf_obj['id'])
+            except ObjectDoesNotExist:
+                newconf = Conference()
+                newconf.url_id = conf_obj['id']
+                newconf.active = True
+                # TODO: Export timedelta
+                #newconf.timedelta = conf_obj['delta']
+                newconf.name = conf_obj['name']
+                start = datetime.fromtimestamp(conf_obj['start'])
+                end = datetime.fromtimestamp(conf_obj['end'])
+                newconf.start_date = start.date()
+                newconf.start_time = start.time()
+                newconf.end_date = end.date()
+                newconf.end_time = end.time()
+                newconf.save()
+                conf = newconf
+            else:
+                if overwrite:
+                    # Update name and start times/dates
+                    conf.name = conf_obj['name']
+                    start = datetime.fromtimestamp(conf_obj['start'])
+                    end = datetime.fromtimestamp(conf_obj['end'])
+                    conf.start_date = start.date()
+                    conf.start_time = start.time()
+                    conf.end_date = end.date()
+                    conf.end_time = end.time()
+                    conf.save()
+        else:
+            # No conference information provided
+            # setup a generic conference
+            newconf, created = Conference.objects.get_or_create(url_id='generic_conf')
+            newconf.url_id = 'generic_conf'
             newconf.active = True
             # TODO: Export timedelta
             #newconf.timedelta = conf_obj['delta']
-            newconf.name = conf_obj['name']
-            start = datetime.fromtimestamp(conf_obj['start'])
-            end = datetime.fromtimestamp(conf_obj['end'])
-            newconf.start_date = start.date()
-            newconf.start_time = start.time()
-            newconf.end_date = end.date()
-            newconf.end_time = end.time()
+            newconf.name = 'New Conference'
             newconf.save()
             conf = newconf
-        else:
-            if overwrite:
-                # Update name and start times/dates
-                conf.name = conf_obj['name']
-                start = datetime.fromtimestamp(conf_obj['start'])
-                end = datetime.fromtimestamp(conf_obj['end'])
-                conf.start_date = start.date()
-                conf.start_time = start.time()
-                conf.end_date = end.date()
-                conf.end_time = end.time()
-                conf.save()
 
         # Generate sessions
         user_list = []
@@ -953,11 +965,15 @@ class ImportView(generic.TemplateView):
                 newtag, created = EventTag.objects.get_or_create(name=tag)
                 newevent.tags.add(newtag)
 
-            if event['track'] and event['room_color']:
-                tag, created = EventTag.objects.get_or_create(name=event['track'])
-                tag.color = event['room_color']
-                tag.save()
-                newevent.prim_tag = EventTag.objects.get(name=event['track'])
+            if 'track' in event:
+                if event['track'] and event['room_color']:
+                    tag, created = EventTag.objects.get_or_create(name=event['track'])
+                    tag.color = event['room_color']
+                    tag.save()
+                    newevent.prim_tag = EventTag.objects.get(name=event['track'])
+            else:
+                tag = EventTag.objects.get(name=tags[0].strip())
+                newevent.prim_tag = tag
 
             newevent.save()   
 
@@ -965,25 +981,32 @@ class ImportView(generic.TemplateView):
         users_list = json_obj['users']
         for user in users_list:
             username = user['name'].replace(" ", "")[:30]
+            if not username:
+                username = user['username'][:30]
             username = re.sub('[\W_]+', '', username)
             username = unidecode(username)
             newuser, created = ConflaUser.objects.get_or_create(username=username)
-            newuser.password = "blank"
-            newuser.first_name = user['name'][:30]
-            newuser.company = user['company']
-            newuser.position = user['position']
-            if user['avatar']:
-                content = urllib.request.urlretrieve(user['avatar'])
-                ext = user['avatar'].split('.')[-1]
-                newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
-            if overwrite and newuser.username in user_list:
-                users_modified += 1
-            elif created:
-                user_list.append(newuser.username)
-                users_created += 1
+            if created or overwrite:
+                # TODO: proper passwords
+                newuser.password = "blank"
+                newuser.first_name = user['name'][:30]
+                newuser.company = user['company']
+                newuser.position = user['position']
+                if user['avatar']:
+                    try:
+                        content = urllib.request.urlretrieve(user['avatar'])
+                        ext = user['avatar'].split('.')[-1]
+                        newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
+                    except (urllib.error.HTTPError, urllib.error.URLError):
+                        pass
+                if overwrite and newuser.username in user_list:
+                    users_modified += 1
+                elif created:
+                    user_list.append(newuser.username)
+                    users_created += 1
 
-            newuser.full_clean()
-            newuser.save()
+                newuser.full_clean()
+                newuser.save()
 
         # Randomly color uncolored tags
         tags = EventTag.objects.filter(events__conf_id=conf, color__exact='').distinct()
