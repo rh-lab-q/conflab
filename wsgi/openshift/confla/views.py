@@ -1258,6 +1258,52 @@ class ExportView(generic.TemplateView):
 
         return render(request, template_name,{ 'url_id' : url_id })
 
+    def conf_list(request):
+        result = {
+            'conferences' : [],
+            'timestamp' : '',
+            'checksum' : '',
+        }
+
+        for conf in Conference.objects.filter(active=True):
+            tz = timezone.get_default_timezone()
+            rfc_time_format = "%a, %d %b %Y %X %z"
+
+            start = ''
+            end = ''
+            start_rfc = ''
+            end_rfc = ''
+            url = request.build_absolute_uri(reverse('confla:splash', kwargs={'url_id' : conf.url_id}))
+            url_json = request.build_absolute_uri(reverse('confla:export_mapp', kwargs={'url_id' : conf.url_id}))
+
+            # Export conference information
+            if (conf.start_date and conf.start_time):
+                start = datetime.combine(conf.start_date, conf.start_time).timestamp()
+                start_rfc = datetime.combine(conf.start_date, conf.start_time).strftime(rfc_time_format)
+            if (conf.end_date and conf.end_time):
+                end = datetime.combine(conf.end_date, conf.end_time).timestamp()
+                end_rfc = datetime.combine(conf.end_date, conf.end_time).strftime(rfc_time_format)
+
+            conf_dict = {    
+                         'name' : conf.name,
+                         'url' : url,
+                         'url_json' : url_json,
+                         'start' : start,
+                         'end' : end,
+                         'start_rfc' : start_rfc,
+                         'end_rfc' : end_rfc,
+                         }
+            result['conferences'].append(conf_dict)
+
+        # Generate checksum
+        result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
+
+
+
+        return HttpResponse(json.dumps(result), content_type="application/json")
+
+
+
     def m_app(request, url_id):
         conf = get_conf_or_404(url_id)
 

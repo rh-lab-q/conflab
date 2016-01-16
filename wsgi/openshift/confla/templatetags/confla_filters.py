@@ -38,7 +38,6 @@ def resized_path(path, size):
     "Returns the path for the resized image."
 
     dir, name = os.path.split(path)
-    print(name)
     image_name, ext = name.rsplit('.', 1)
     return os.path.join(dir, '%s_%s.%s' % (image_name, size, 'jpg'))
 
