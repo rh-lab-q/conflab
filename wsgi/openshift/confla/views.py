@@ -995,7 +995,7 @@ class ImportView(generic.TemplateView):
                 if user['avatar']:
                     try:
                         content = urllib.request.urlretrieve(user['avatar'])
-                        ext = user['avatar'].split('.')[-1]
+                        ext = 'jpg'
                         newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
                     except (urllib.error.HTTPError, urllib.error.URLError):
                         pass
