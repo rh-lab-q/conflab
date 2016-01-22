@@ -12,6 +12,11 @@ from confla.forms import EventCreateForm, EventEditForm
 register = template.Library()
 
 @register.filter
+def filter_events(speaker, conf):
+    return speaker.events.filter(timeslot__isnull=False,
+                                 conf_id=conf).order_by('timeslot__start_time')
+
+@register.filter
 def div(value, arg):
     value = int(value)
     arg = int(arg)

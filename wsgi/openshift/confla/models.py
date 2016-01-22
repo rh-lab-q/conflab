@@ -151,11 +151,6 @@ class ConflaUser(AbstractUser):
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0
 
-    @property
-    def events_by_time(self):
-        # Returns scheduled events ordered by start_time
-        return self.events.filter(timeslot__isnull=False).order_by('timeslot__start_time')
-
     class Meta:
         permissions = (
             ("can_volunteer", "Is a volunteer in a Conference"),
