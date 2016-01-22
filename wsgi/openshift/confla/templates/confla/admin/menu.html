@@ -13,6 +13,5 @@
     <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">Export</a></li>
     {% else %}
     <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>Overview</a></li>
-    <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:org_import' %}>Import</a></li>
     {% endif %}
 </ul>

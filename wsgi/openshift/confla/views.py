@@ -797,18 +797,20 @@ class ImportView(generic.TemplateView):
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def json_upload(request):
+    def json_upload(request, url_id=None):
         if request.method == 'POST':
             form = ImportFileForm(request.POST, request.FILES)
             if form.is_valid():
-                alerts = ImportView.json(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
+                alerts = ImportView.json(request.FILES['file'],
+                                         overwrite=form.cleaned_data['overwrite'],
+                                         url_id=url_id)
                 return HttpResponse(alerts)
             else:
                 # TODO: error checking
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
     @transaction.atomic
-    def json(json_file, overwrite):
+    def json(json_file, overwrite, url_id):
         f = io.TextIOWrapper(json_file.file, encoding="utf-8")
         json_string = f.read()
         json_obj = json.loads(json_string)
@@ -822,48 +824,7 @@ class ImportView(generic.TemplateView):
         users_skipped = 0
         users_collisions = 0
 
-        # Setup a Conference if there is none
-        if 'conference' in json_obj:
-            conf_obj = json_obj['conference']
-            try:
-                conf = Conference.objects.get(url_id=conf_obj['id'])
-            except ObjectDoesNotExist:
-                newconf = Conference()
-                newconf.url_id = conf_obj['id']
-                newconf.active = True
-                # TODO: Export timedelta
-                #newconf.timedelta = conf_obj['delta']
-                newconf.name = conf_obj['name']
-                start = datetime.fromtimestamp(conf_obj['start'])
-                end = datetime.fromtimestamp(conf_obj['end'])
-                newconf.start_date = start.date()
-                newconf.start_time = start.time()
-                newconf.end_date = end.date()
-                newconf.end_time = end.time()
-                newconf.save()
-                conf = newconf
-            else:
-                if overwrite:
-                    # Update name and start times/dates
-                    conf.name = conf_obj['name']
-                    start = datetime.fromtimestamp(conf_obj['start'])
-                    end = datetime.fromtimestamp(conf_obj['end'])
-                    conf.start_date = start.date()
-                    conf.start_time = start.time()
-                    conf.end_date = end.date()
-                    conf.end_time = end.time()
-                    conf.save()
-        else:
-            # No conference information provided
-            # setup a generic conference
-            newconf, created = Conference.objects.get_or_create(url_id='generic_conf')
-            newconf.url_id = 'generic_conf'
-            newconf.active = True
-            # TODO: Export timedelta
-            #newconf.timedelta = conf_obj['delta']
-            newconf.name = 'New Conference'
-            newconf.save()
-            conf = newconf
+        conf = Conference.objects.get(url_id=url_id)
 
         # Generate sessions
         user_list = []
