@@ -879,7 +879,7 @@ class ImportView(generic.TemplateView):
                     events_skipped += 1
 
             # Create rooms
-            room, created = Room.objects.get_or_create(shortname=event['room_short'])
+            room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
             created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
 
             setup_slot = False
@@ -893,7 +893,7 @@ class ImportView(generic.TemplateView):
                 setup_slot = True
 
             if setup_slot or setup_event or overwrite:
-                newslot.room_id = Room.objects.get(shortname=event['room_short'])
+                newslot.room_id = room
                 start = datetime.fromtimestamp(int(event['event_start']))
                 end = datetime.fromtimestamp(int(event['event_end']))
                 newslot.start_time = timezone.get_default_timezone().localize(start)
