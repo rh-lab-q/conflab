@@ -12,3 +12,8 @@ Features:
 
 Examples of deployment:
 - http://python-conflab.rhcloud.com/oa2015/sched/
+
+Other software for conference planning:
+- https://github.com/openSUSE/osem
+- http://indico-software.org/
+- http://pentabarf.org/
