@@ -1,7 +1,7 @@
 function showError(response) {
     $(".fa-spinner").remove();
     var resp = response.responseText;
-    var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-circle fa-lg"></i> Import error: ' + resp + '</div>';
+    var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-circle fa-lg"></i> Import error: <pre>' + resp + '</pre> </div>';
     var alerts = '<div class="import-alerts">' + div + '</div>'
     $(".admin-page").prepend(alerts);
     $(".oa_form").show();
