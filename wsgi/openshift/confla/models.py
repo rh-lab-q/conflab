@@ -30,16 +30,6 @@ class Conference(models.Model):
     def __str__(self):
         return self.name
 
-    # Returns the active conference
-    def get_active():
-        try:
-            return Conference.objects.get(active=True)
-        except MultipleObjectsReturned as e:
-            # There is more than one active conference
-            raise e
-        except ObjectDoesNotExist:
-            return None
-
     def has_datetimes(self):
         return (self.start_time and self.end_time and self.start_date and self.end_date)
 
@@ -70,9 +60,15 @@ class Conference(models.Model):
                 current = (datetime.combine(date.today(), current) + delta).time()
 
         if self.has_datetimes():
+            tz = timezone.get_default_timezone()
+            offset = tz.utcoffset(datetime.now())
+            tz_start = datetime.combine(self.start_date, self.start_time)
+            tz_end = datetime.combine(self.end_date, self.end_time)
+            tz_start = tz_start + offset
+            tz_end = tz_end + offset
             mins = self.timedelta
-            delta_list = [x for x in delta_func(self.start_time,
-                                                    self.end_time,
+            delta_list = [x for x in delta_func(tz_start.time(),
+                                                    tz_end.time(),
                                                     timedelta(minutes=mins))]
         else:
             delta_list = []

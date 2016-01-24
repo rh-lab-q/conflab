@@ -976,6 +976,25 @@ class ImportView(generic.TemplateView):
             tag.color = '#%02x%02x%02x' % (r(),r(),r())
             tag.save()
 
+        # Setup start and end dates of the conference
+        max_start = None
+        max_end = None
+        slots = Timeslot.objects.filter(conf_id=conf).order_by('start_time')
+        for slot in slots:
+            if not max_start:
+                max_start = slot.start_time.time()
+            elif max_start > slot.start_time.time():
+                max_start = slot.start_time.time()
+            if not max_end:
+                max_end = slot.end_time.time()
+            elif max_end < slot.end_time.time():
+                max_end = slot.end_time.time()
+        conf.start_time = max_start
+        conf.end_time = max_end
+        conf.start_date = slots[0].start_time.date()
+        conf.end_date = slots.reverse()[0].start_time.date()
+        conf.save()
+
         check = '<i class="fa fa-check-circle fa-lg"></i>'
         warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
         collisions = ''
