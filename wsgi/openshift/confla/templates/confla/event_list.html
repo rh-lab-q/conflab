@@ -60,7 +60,7 @@
                     <div class="speaker-info">
                         <a class="confla-link" href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
                             <b>
-                                {{ speaker.first_name }}
+                                {{ speaker.first_name }} {{ speaker.last_name }}
                             </b>
                         </a>
                         {% if speaker.company %}
