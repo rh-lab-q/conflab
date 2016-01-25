@@ -830,6 +830,7 @@ class ImportView(generic.TemplateView):
         # Generate sessions
         user_list = []
         event_list = []
+        collision_log = {}
         for event in json_obj['sessions']:
             setup_event = False
             events = Event.objects.filter(conf_id=conf, topic=event['topic'])
@@ -864,6 +865,11 @@ class ImportView(generic.TemplateView):
                         # Mulitple events, no idea which to modify
                         # Log the collision
                         # TODO: Better log
+                        if event['topic'] in collision_log:
+                            collision_log[event['topic']]['col_list'].append(event)
+                        else:
+                            collision_log[event['topic']] = { 'event_list' : events,
+                                                              'col_list' : [event],}
                         events_collisions += 1
                         continue
 
@@ -1006,7 +1012,8 @@ class ImportView(generic.TemplateView):
                        'users_skipped' : users_skipped,
                        'events_skipped' : events_skipped,
                        'events_collisions' : events_collisions,
-                     })
+                       'collision_log' : collision_log
+                       })
 
     @transaction.atomic
     def oa2015(csv_file, overwrite=False):
