@@ -801,7 +801,8 @@ class ImportView(generic.TemplateView):
         if request.method == 'POST':
             form = ImportFileForm(request.POST, request.FILES)
             if form.is_valid():
-                alerts = ImportView.json(request.FILES['file'],
+                alerts = ImportView.json(request,
+                                         request.FILES['file'],
                                          overwrite=form.cleaned_data['overwrite'],
                                          url_id=url_id)
                 return HttpResponse(alerts)
@@ -810,7 +811,7 @@ class ImportView(generic.TemplateView):
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
     @transaction.atomic
-    def json(json_file, overwrite, url_id):
+    def json(request, json_file, overwrite, url_id):
         f = io.TextIOWrapper(json_file.file, encoding="utf-8")
         json_string = f.read()
         json_obj = json.loads(json_string)
@@ -995,23 +996,17 @@ class ImportView(generic.TemplateView):
         conf.end_date = slots.reverse()[0].start_time.date()
         conf.save()
 
-        check = '<i class="fa fa-check-circle fa-lg"></i>'
-        warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
-        collisions = ''
-        created = '<div class="alert alert-success">' + check + ' Events created: ' + str(events_created)
-        created += ', Users created: ' + str(users_created) + '</div>'
-        modified ='<div class="alert alert-success">' + check + ' Events modified: ' + str(events_modified)
-        modified += ', Users modified: ' + str(users_modified) + '</div>'
-        skipped = '<div class="alert alert-warning">' + warning + ' Events skipped: ' + str(events_skipped)
-        skipped += ', Users skipped: ' + str(users_skipped) + '</div>'
-        if events_collisions:
-            collisions = '<div class="alert alert-danger">' + warning + ' Event collsions: ' + str(events_collisions) + '</div>'
-        if overwrite:
-            return '<div class="import-alerts">'+ created + modified + collisions + '</div>'
-        else:
-            return '<div class="import-alerts">'+ created + skipped + collisions + '</div>'
-
-
+        return render(request, 'confla/admin/import_response.html',
+                     { 'conf'      : conf,
+                       'url_id' : url_id,
+                       'users_created' : users_created,
+                       'events_created' : events_created,
+                       'users_modified' : users_modified,
+                       'events_modified' : events_modified,
+                       'users_skipped' : users_skipped,
+                       'events_skipped' : events_skipped,
+                       'events_collisions' : events_collisions,
+                     })
 
     @transaction.atomic
     def oa2015(csv_file, overwrite=False):

@@ -1,0 +1,34 @@
+<div class="import-alerts">
+    {% if users_created or events_created %}
+    <div class="alert alert-success">
+        <div class="alert-header">
+            <i class="fa fa-check-circle fa-lg"></i>
+            Events created: {{ events_created }}, users created: {{ users_created }}
+        </div>
+    </div>
+    {% endif %}
+    {% if users_modified or events_modified %}
+    <div class="alert alert-success">
+        <div class="alert-header">
+            <i class="fa fa-check-circle fa-lg"></i>
+            Events modified: {{ events_modified }}, users modified: {{ users_modified }}
+        </div>
+    </div>
+    {% endif %}
+    {% if users_skipped or events_skipped %}
+    <div class="alert alert-warning">
+        <div class="alert-header">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+            Events skipped: {{ events_skipped }}, users skipped: {{ users_skipped }}
+        </div>
+    </div>
+    {% endif %}
+    {% if events_collisions %}
+    <div class="alert alert-danger">
+        <div class="alert-header">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+            Event collisions: {{ events_collisions }}
+        </div>
+    </div>
+    {% endif %}
+</div>
