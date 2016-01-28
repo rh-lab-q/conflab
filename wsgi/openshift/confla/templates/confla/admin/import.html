@@ -30,9 +30,9 @@
 -->
 <div class="import-form">
     <div class="panel panel-default">
-        <div class="panel-heading">JSON<i class="fa fa-caret-down fa-lg"></i>
+        <div class="confla-toggle panel-heading">JSON<i class="fa confla-caret fa-caret-down fa-lg"></i>
         </div>
-        <div class="panel-body">
+        <div class="confla-togglable panel-body">
             <form class="json_form" action="{% url 'confla:json_import' url_id %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}

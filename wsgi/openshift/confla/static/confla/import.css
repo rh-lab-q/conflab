@@ -4,7 +4,7 @@
     display: inline-block;
 }
 
-.panel-body {
+.confla-togglable {
     width:100%;
     position:relative;
     padding:0;
@@ -12,7 +12,7 @@
     overflow:hidden;
 }
 
-.panel-heading {
+.confla-toggle {
     cursor:pointer;
 }
 
@@ -23,4 +23,16 @@
 
 .admin-page .fa-caret-down, .admin-page .fa-caret-up {
     float:right;
+}
+
+.alert .toggled {
+    padding-right: 15px;
+    margin: 10px 10px 10px;
+}
+
+.existing-events {
+    padding-top: 5px;
+    border-top-width: 1px;
+    border-top-color: #a94442;
+    border-top-style: solid;
 }

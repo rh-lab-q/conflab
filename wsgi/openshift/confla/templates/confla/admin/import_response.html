@@ -25,27 +25,35 @@
     {% endif %}
     {% if events_collisions %}
     <div class="alert alert-danger">
-        <div class="alert-header">
+        <div class="confla-toggle alert-header">
             <i class="fa fa-exclamation-triangle fa-lg"></i>
             Event collisions: {{ events_collisions }}
+            <i class="fa confla-caret fa-caret-down fa-lg"></i>
+        </div>
+        <div class="confla-togglable alert-body">
             {% for key, value in collision_log.items %}
-                {% for event in value.event_list %}
-                <div class="existing-events">
-                    {% if event.timeslot %}
-                        {{ event.timeslot.start_time|date:"D" }}, {{ event.timeslot.get_start_time }}: 
-                    {% else %}
-                        Not scheduled:
-                    {% endif %}
-                    {{ event.topic }}
+            <div class="existing-events">
+            {% for event in value.event_list %}
+                <div class="existing-event">
+                {% if event.timeslot %}
+                    {{ event.timeslot.start_time|date:"D" }}, {{ event.timeslot.get_start_time }}:
+                {% else %}
+                    Not scheduled:
+                {% endif %}
+                {{ event.topic }}
                 </div>
+            {% endfor %}
+            </div>
+            <div class="colliding-events">
+                <ul>
+                {% for event in value.col_list %}
+                <li>
+                    {{ event.event_start_rfc}}: {{ event.topic }} |
+                    <span class="js-link">Create</span>
+                </li>
                 {% endfor %}
-                <div class="colliding-events">
-                    <ul>
-                    {% for event in value.col_list %}
-                    <li>{{ event.event_start_rfc}}: {{ event.topic }}</li>
-                    {% endfor %}
-                    </ul>
-                </div>
+                </ul>
+            </div>
             {% endfor %}
         </div>
     </div>

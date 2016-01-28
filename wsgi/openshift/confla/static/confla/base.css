@@ -53,3 +53,12 @@
 #home-brand > .fa-home {
     font-size: 1.5em;
 }
+
+.js-link {
+    cursor: pointer;
+    color: #337ab7;
+}
+
+.js-link:hover, .js-link:focus {
+    color: #23527c;
+}
