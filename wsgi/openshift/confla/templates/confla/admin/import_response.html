@@ -49,7 +49,10 @@
                 {% for event in value.col_list %}
                 <li>
                     {{ event.event_start_rfc}}: {{ event.topic }} |
-                    <span class="js-link">Create</span>
+                    <span class="js-link" onClick="import_event(this)">Create</span>
+                    <div class="event-json">
+                        {{ event|safe }}
+                    </div>
                 </li>
                 {% endfor %}
                 </ul>

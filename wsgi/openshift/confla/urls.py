@@ -52,6 +52,7 @@ urlpatterns = patterns('',
         url(r'^(?P<url_id>\w+)/admin/import/$', views.ImportView.import_view, name='import'),
         url(r'^(?P<url_id>\w+)/admin/import/json/$', views.ImportView.json_upload, name='json_import'),
         url(r'^(?P<url_id>\w+)/admin/import/oa2015/$', views.ImportView.oa_upload, name='oa_import'),
+        url(r'^(?P<url_id>\w+)/admin/import/import_event/$', views.ImportView.import_event, name='import_event'),
         url(r'^(?P<url_id>\w+)/admin/export/$', views.ExportView.export_view, name='export'),
         )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

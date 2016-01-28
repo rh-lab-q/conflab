@@ -14,6 +14,16 @@ function showAlerts(response) {
     $(".confla-toggle.alert-header").click(confla_toggle);
 }
 
+function import_event(selector) {
+    var json = $(selector).closest("li").find(".event-json").text();
+    def = $.post("import_event/", {
+        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        data: json});
+    $.when(def).then(function (){
+    }, function (response){
+    });
+}
+
 function confla_toggle () {
     var body = $(this).parent().find(".confla-togglable");
     var caret = $(this).find(".confla-caret");

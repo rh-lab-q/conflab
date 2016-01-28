@@ -36,3 +36,7 @@
     border-top-color: #a94442;
     border-top-style: solid;
 }
+
+.event-json {
+    display: none;
+}

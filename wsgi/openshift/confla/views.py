@@ -1232,6 +1232,75 @@ class ImportView(generic.TemplateView):
         else:
             return '<div class="import-alerts">'+ created + skipped + '</div>'
 
+    @transaction.atomic
+    def import_event(request, url_id):
+        conf = Conference.objects.get(url_id=url_id)
+        json_string = request.POST['data'].strip().replace("'", '"')
+        event = json.loads(json_string)
+
+        # Create event
+        newevent = Event()
+        newevent.conf_id = conf
+        newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
+        newevent.topic = event['topic']
+        newevent.description = event['description']
+        newevent.lang = event['lang']
+        newevent.full_clean()
+        newevent.save()
+
+        room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
+        created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+
+        # Setup timeslot
+        newslot = Timeslot()
+        newslot.conf_id = conf
+        newslot.room_id = room
+        start = datetime.fromtimestamp(int(event['event_start']))
+        end = datetime.fromtimestamp(int(event['event_end']))
+        newslot.start_time = timezone.get_default_timezone().localize(start)
+        newslot.end_time = timezone.get_default_timezone().localize(end)
+        newslot.event_id = newevent
+        newslot.full_clean()
+        newslot.save()
+
+        # Create speakers
+        for speaker in event['speakers']:
+            username = speaker.replace(" ", "")[:30]
+            username = re.sub('[\W_]+', '', username)
+            username = unidecode(username)
+            newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
+            if created_speaker:
+                newuser.password = "blank"
+                newuser.first_name = speaker
+                newuser.full_clean()
+                newuser.save()
+                users_created += 1
+                user_list.append(newuser.username)
+            newevent.speaker.add(newuser)
+
+        tags = []
+        # Create tags
+        if event['tags']:
+            tags = event['tags'][0].split(",")
+        for tag in tags:
+            tag = tag.strip()
+            newtag, created = EventTag.objects.get_or_create(name=tag)
+            newevent.tags.add(newtag)
+
+        if 'track' in event:
+            if event['track'] and event['room_color']:
+                tag, created = EventTag.objects.get_or_create(name=event['track'])
+                tag.color = event['room_color']
+                tag.save()
+                newevent.prim_tag = EventTag.objects.get(name=event['track'])
+        else:
+            tag = EventTag.objects.get(name=tags[0].strip())
+            newevent.prim_tag = tag
+
+        newevent.save()
+
+        return HttpResponseRedirect(reverse('confla:thanks'))
+
 class ExportView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def export_view(request, url_id):
