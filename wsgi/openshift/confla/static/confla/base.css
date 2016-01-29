@@ -62,3 +62,11 @@
 .js-link:hover, .js-link:focus {
     color: #23527c;
 }
+
+.confla-togglable {
+    overflow:hidden;
+}
+
+.confla-toggle {
+    cursor:pointer;
+}

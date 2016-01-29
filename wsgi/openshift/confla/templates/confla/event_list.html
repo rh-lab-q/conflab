@@ -15,71 +15,84 @@
 
 {% block content %}
 <div class="event-list">
-    {% for event in events %}
-    <div id="event_{{event.id}}" class="event">
-        <div class="event-header">
-            <h3 class="topic">
-                {{ event.topic }}
-            </h3>
+{% for day, events in days.items %}
+    <div class="day-events">
+        <div class="confla-toggle">
+            <h3>{{ day }}</h3>
         </div>
-        <div class="event-body">
-            <div class="location">
-                {{event.timeslot.get_start_time}} - {{event.timeslot.room_id.shortname}}
-            </div>
-            {% if event.tags.all %}
-            <div class="tags">
-                {% for tag in event.tags.all %}
-                <div class="tag tag{{tag.id}}">
-                    {{tag.name}}
+        <div class="confla-togglable toggled">
+        {% for event in events %}
+            <div id="event_{{event.id}}" class="event">
+                <div class="event-header">
+                    <h3 class="topic">
+                        {{ event.topic }}
+                    </h3>
                 </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            <div class="desc">
-                {{ event.description }}
-            </div>
-            <div class="speakers-wrap">
-                {% if event.speaker.all|length > 1 %}
-                <h4>Speakers:</h4>
-                {% else %}
-                <h4>Speaker:</h4>
-                {% endif %}
-                {% for speaker in event.speaker.all %}
-                <div class="speaker">
-                    <div class="avatar">
-                        <a href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
-                            {% if speaker.picture %}
-                            <img src={{speaker.picture|crop:"70x70"}}>
-                            {% else %}
-                            <div class="no-avatar">
-                                <span>?</span>
+                <div class="event-body">
+                    <div class="location">
+                        {{event.timeslot.get_start_time}} - {{event.timeslot.room_id.shortname}}
+                    </div>
+                    {% if event.tags.all %}
+                    <div class="tags">
+                        {% for tag in event.tags.all %}
+                        <div class="tag tag{{tag.id}}">
+                            {{tag.name}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="desc">
+                        {{ event.description }}
+                    </div>
+                    <div class="speakers-wrap">
+                        {% if event.speaker.all|length > 1 %}
+                        <h4>Speakers:</h4>
+                        {% else %}
+                        <h4>Speaker:</h4>
+                        {% endif %}
+                        {% for speaker in event.speaker.all %}
+                        <div class="speaker">
+                            <div class="avatar">
+                                <a href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
+                                    {% if speaker.picture %}
+                                    <img src={{speaker.picture|crop:"70x70"}}>
+                                    {% else %}
+                                    <div class="no-avatar">
+                                        <span>?</span>
+                                    </div>
+                                    {% endif %}
+                                </a>
                             </div>
-                            {% endif %}
-                        </a>
-                    </div>
-                    <div class="speaker-info">
-                        <a class="confla-link" href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
-                            <b>
-                                {{ speaker.first_name }} {{ speaker.last_name }}
-                            </b>
-                        </a>
-                        {% if speaker.company %}
-                        <div class="company">
-                            {{ speaker.company }}
+                            <div class="speaker-info">
+                                <a class="confla-link" href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
+                                    <b>
+                                        {{ speaker.first_name }} {{ speaker.last_name }}
+                                    </b>
+                                </a>
+                                {% if speaker.company %}
+                                <div class="company">
+                                    {{ speaker.company }}
+                                </div>
+                                {% endif %}
+                                {% if speaker.position %}
+                                <div class="position">
+                                    {{ speaker.position }}
+                                </div>
+                                {% endif %}
+                            </div>
                         </div>
-                        {% endif %}
-                        {% if speaker.position %}
-                        <div class="position">
-                            {{ speaker.position }}
-                        </div>
-                        {% endif %}
+                        {% endfor %}
+                        <div class="clear-both"></div>
                     </div>
                 </div>
-                {% endfor %}
-                <div class="clear-both"></div>
             </div>
+        {% endfor %}
         </div>
     </div>
-    {% endfor %}
+{% endfor %}
 </div>
+{% endblock %}
+
+{% block extrascripts %}
+<script src="{% static 'confla/utility.js' %}"></script>
 {% endblock %}
