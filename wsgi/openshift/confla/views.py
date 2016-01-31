@@ -258,7 +258,6 @@ class ScheduleView(generic.TemplateView):
     template_name = 'confla/user_sched.html'
 
     def my_view(request, url_id):
-        #TODO: Add compatibility with archived conferences
         conf = get_conf_or_404(url_id)
 
         slot_list = {}
@@ -295,13 +294,16 @@ class ScheduleView(generic.TemplateView):
                          'conf' : conf,
                          })
 
-    def list_view(request, url_id):
+    def list_view(request, url_id, id=None):
         conf = get_conf_or_404(url_id)
 
         time_list = []
         # Distinct ordered datetime list for the current conference
-        start_list = Timeslot.objects.filter(conf_id=conf).order_by("start_time").values_list("start_time", flat=True).distinct()
-        slot_list = Timeslot.objects.filter(conf_id=conf)
+        if id:
+            slot_list = Timeslot.objects.filter(conf_id=conf, event_id__tags__id=id)
+        else:
+            slot_list = Timeslot.objects.filter(conf_id=conf)
+        start_list = slot_list.order_by("start_time").values_list("start_time", flat=True).distinct()
         for date in conf.get_date_list():
             time_dict = {}
             time_dict["day"] = date
