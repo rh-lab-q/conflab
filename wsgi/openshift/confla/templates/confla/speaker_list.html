@@ -12,7 +12,7 @@
     <div id="speaker_{{speaker.pk}}" class="speaker-wrap">
         <div class="speaker-header">
             <h3 class="name">
-                {{ speaker.first_name }}
+                {{ speaker.first_name }} {{ speaker.last_name }}
             </h3>
         </div>
         <div class="speaker-body">
@@ -43,7 +43,7 @@
                 {% endif %}
             </div>
             <div class="speaker-events clear-both">
-                {% for event in speaker.events_by_time %}
+                {% for event in speaker|filter_events:conf %}
                 <div class="speaker-event">
                     {{ event.timeslot.start_time|date:"D" }}, {{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}: 
                     <a href="{% url 'confla:event_list' url_id %}#event_{{ event.id }}">{{ event.topic }}</a>

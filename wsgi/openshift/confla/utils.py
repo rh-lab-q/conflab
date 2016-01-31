@@ -10,6 +10,15 @@ def validate_papers(value):
     if not ext in extensions:
         raise ValidationError(_("Unsupported file type. File must be a pdf or ... file."))
 
+
+# a helper function for renaming uploaded files
+def conf_rename_and_return_path(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        filename = '{}.{}'.format(instance.url_id, ext)
+        return os.path.join(path, filename)
+    return wrapper
+
 # a helper function for renaming uploaded avatars
 def user_rename_and_return_path(path):
     def wrapper(instance, filename):

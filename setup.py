@@ -12,7 +12,8 @@ packages = ['Django<=1.8',
              'psycopg2',
              'pillow',
              'pytz',
-           ]
+             'unidecode',
+             ]
 
 if 'REDISCLOUD_URL' in os.environ and 'REDISCLOUD_PORT' in os.environ and 'REDISCLOUD_PASSWORD' in os.environ:
      packages.append('django-redis-cache')

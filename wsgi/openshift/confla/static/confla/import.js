@@ -1,7 +1,7 @@
 function showError(response) {
     $(".fa-spinner").remove();
     var resp = response.responseText;
-    var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-circle fa-lg"></i> Import error: ' + resp + '</div>';
+    var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-circle fa-lg"></i> Import error: <pre>' + resp + '</pre> </div>';
     var alerts = '<div class="import-alerts">' + div + '</div>'
     $(".admin-page").prepend(alerts);
     $(".oa_form").show();
@@ -11,25 +11,20 @@ function showAlerts(response) {
     $(".fa-spinner").remove();
     $(".admin-page").prepend(response);
     $(".import-form").show();
+    $(".confla-toggle.alert-header").click(confla_toggle);
 }
 
-function toggle_form () {
-    var body = $(this).closest(".panel").find(".panel-body");
-    var caret = $(this).find("i");
-    if (caret.hasClass("fa-caret-down")) {
-        caret.removeClass("fa-caret-down");
-        caret.addClass("fa-caret-up");
-        body.animate({height: body.get(0).scrollHeight}, 200);
-    }
-    else {
-        caret.removeClass("fa-caret-up");
-        caret.addClass("fa-caret-down");
-        body.animate({height: 0}, 200);
-    }
+function import_event(selector) {
+    var json = $(selector).closest("li").find(".event-json").text();
+    def = $.post("import_event/", {
+        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        data: json});
+    $.when(def).then(function (){
+    }, function (response){
+    });
 }
 
 $(document).ready(function() {
-    $(".panel-heading").click(toggle_form);
     $(".admin-page form").ajaxForm({
         success: showAlerts,
         error: showError,

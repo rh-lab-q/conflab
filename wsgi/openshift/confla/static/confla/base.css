@@ -23,3 +23,50 @@
 .clear-both {
     clear: both;
 }
+
+.footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.footer-text {
+    line-height: 34px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.conf-icon {
+    height: auto;
+    max-height:100%;
+}
+
+#image-brand {
+    padding: 5px;
+    margin: 0;
+}
+
+#home-brand {
+    padding-top: 10px;
+}
+
+#home-brand > .fa-home {
+    font-size: 1.5em;
+}
+
+.js-link {
+    cursor: pointer;
+    color: #337ab7;
+}
+
+.js-link:hover, .js-link:focus {
+    color: #23527c;
+}
+
+.confla-togglable {
+    overflow:hidden;
+}
+
+.confla-toggle {
+    cursor:pointer;
+}

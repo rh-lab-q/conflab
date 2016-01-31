@@ -20,6 +20,7 @@ from django.core.files import File
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.db import transaction
+from unidecode import unidecode
 
 from confla.forms import *
 from confla.models import *
@@ -43,6 +44,11 @@ class AdminView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def schedule(request, url_id):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            return render(request, "confla/admin/user_sched.html",
+                     { 'conf'   : conf,
+                       'url_id' : url_id,
+                     })
 
         slot_list = {}
         rooms = conf.rooms.all()
@@ -145,10 +151,11 @@ class AboutView(generic.TemplateView):
     def splash_view(request, url_id):
         conf = get_conf_or_404(url_id)
 
-        events = str(len(Timeslot.objects.filter(event_id__conf_id=conf))) + ' talks'
-        speakers = str(len(ConflaUser.objects.filter(events__conf_id=conf).distinct())) + ' speakers'
-        topics = str(len(EventTag.objects.filter(events__conf_id=conf,
-                            events__timeslot__isnull=False).distinct())) + ' tags'
+        events = len(Timeslot.objects.filter(event_id__conf_id=conf))
+        speakers = len(ConflaUser.objects.filter(events__conf_id=conf,
+                                                 events__timeslot__isnull=False).distinct())
+        topics = len(EventTag.objects.filter(events__conf_id=conf,
+                            events__timeslot__isnull=False).distinct())
         return render(request, AboutView.template_name,
                         {'url_id' : url_id,
                          'conf' : conf,
@@ -160,7 +167,7 @@ class AboutView(generic.TemplateView):
 class IndexView(generic.TemplateView):
     template_name = 'confla/index.html'
     def my_view(request):
-        conf_list = Conference.objects.all();
+        conf_list = Conference.objects.all().order_by("-start_date")
         return render(request, IndexView.template_name, {'conf_list' : conf_list})
 
 class CfpView(generic.TemplateView):
@@ -219,9 +226,22 @@ class EventView(generic.TemplateView):
     def event_list(request, url_id):
         template_name = 'confla/event_list.html'
         conf = get_conf_or_404(url_id)
+        days = {}
         events = Event.objects.filter(conf_id=conf, timeslot__isnull=False).order_by('timeslot__start_time')
+        if events:
+            current_date = events[0].timeslot.start_time.date()
+            current_date_output = current_date.strftime("%A, %d.%m.")
+            for event in events:
+                if event.timeslot.start_time.date() > current_date:
+                    current_date = event.timeslot.start_time.date()
+                    current_date_output = current_date.strftime("%A, %d.%m.")
+                if current_date_output in days:
+                    days[current_date_output].append(event)
+                else:
+                    days[current_date_output] = [event]
+
         return render(request, template_name, {
-                    'events': events,
+                    'days': days,
                     'tag_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                     'url_id' : url_id,
                     'conf' : conf,
@@ -259,6 +279,8 @@ class ScheduleView(generic.TemplateView):
 
     def my_view(request, url_id):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            raise Http404
 
         slot_list = {}
         rooms = conf.rooms.all()
@@ -296,6 +318,8 @@ class ScheduleView(generic.TemplateView):
 
     def list_view(request, url_id, id=None):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            raise Http404
 
         time_list = []
         # Distinct ordered datetime list for the current conference
@@ -567,6 +591,11 @@ class TimetableView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def view_timetable(request, url_id):
         conf = get_conf_or_404(url_id)
+        if (not conf.has_datetimes()):
+            return render(request, TimetableView.template_name,
+                     { 'conf'      : conf,
+                       'url_id' : url_id,
+                     })
 
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
@@ -786,18 +815,21 @@ class ImportView(generic.TemplateView):
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def json_upload(request):
+    def json_upload(request, url_id=None):
         if request.method == 'POST':
             form = ImportFileForm(request.POST, request.FILES)
             if form.is_valid():
-                alerts = ImportView.json(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
+                alerts = ImportView.json(request,
+                                         request.FILES['file'],
+                                         overwrite=form.cleaned_data['overwrite'],
+                                         url_id=url_id)
                 return HttpResponse(alerts)
             else:
                 # TODO: error checking
                 return HttpResponseRedirect(reverse('confla:thanks'))
 
     @transaction.atomic
-    def json(json_file, overwrite):
+    def json(request, json_file, overwrite, url_id):
         f = io.TextIOWrapper(json_file.file, encoding="utf-8")
         json_string = f.read()
         json_obj = json.loads(json_string)
@@ -811,40 +843,12 @@ class ImportView(generic.TemplateView):
         users_skipped = 0
         users_collisions = 0
 
-        # Setup a Conference if there is none
-        conf_obj = json_obj['conference']
-        try:
-            conf = Conference.objects.get(url_id=conf_obj['id'])
-        except ObjectDoesNotExist:
-            newconf = Conference()
-            newconf.url_id = conf_obj['id']
-            newconf.active = True
-            # TODO: Export timedelta
-            #newconf.timedelta = conf_obj['delta']
-            newconf.name = conf_obj['name']
-            start = datetime.fromtimestamp(conf_obj['start'])
-            end = datetime.fromtimestamp(conf_obj['end'])
-            newconf.start_date = start.date()
-            newconf.start_time = start.time()
-            newconf.end_date = end.date()
-            newconf.end_time = end.time()
-            newconf.save()
-            conf = newconf
-        else:
-            if overwrite:
-                # Update name and start times/dates
-                conf.name = conf_obj['name']
-                start = datetime.fromtimestamp(conf_obj['start'])
-                end = datetime.fromtimestamp(conf_obj['end'])
-                conf.start_date = start.date()
-                conf.start_time = start.time()
-                conf.end_date = end.date()
-                conf.end_time = end.time()
-                conf.save()
+        conf = Conference.objects.get(url_id=url_id)
 
         # Generate sessions
         user_list = []
         event_list = []
+        collision_log = {}
         for event in json_obj['sessions']:
             setup_event = False
             events = Event.objects.filter(conf_id=conf, topic=event['topic'])
@@ -878,7 +882,11 @@ class ImportView(generic.TemplateView):
                     else:
                         # Mulitple events, no idea which to modify
                         # Log the collision
-                        # TODO: Better log
+                        if event['topic'] in collision_log:
+                            collision_log[event['topic']]['col_list'].append(event)
+                        else:
+                            collision_log[event['topic']] = { 'event_list' : events,
+                                                              'col_list' : [event],}
                         events_collisions += 1
                         continue
 
@@ -895,7 +903,7 @@ class ImportView(generic.TemplateView):
                     events_skipped += 1
 
             # Create rooms
-            room, created = Room.objects.get_or_create(shortname=event['room_short'])
+            room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
             created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
 
             setup_slot = False
@@ -909,7 +917,7 @@ class ImportView(generic.TemplateView):
                 setup_slot = True
 
             if setup_slot or setup_event or overwrite:
-                newslot.room_id = Room.objects.get(shortname=event['room_short'])
+                newslot.room_id = room
                 start = datetime.fromtimestamp(int(event['event_start']))
                 end = datetime.fromtimestamp(int(event['event_end']))
                 newslot.start_time = timezone.get_default_timezone().localize(start)
@@ -922,8 +930,9 @@ class ImportView(generic.TemplateView):
             for speaker in event['speakers']:
                 username = speaker.replace(" ", "")[:30]
                 username = re.sub('[\W_]+', '', username)
-                newuser, created = ConflaUser.objects.get_or_create(username=username)
-                if created:
+                username = unidecode(username)
+                newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
+                if created_speaker:
                     newuser.password = "blank"
                     newuser.first_name = speaker
                     newuser.full_clean()
@@ -941,11 +950,15 @@ class ImportView(generic.TemplateView):
                 newtag, created = EventTag.objects.get_or_create(name=tag)
                 newevent.tags.add(newtag)
 
-            if event['track'] and event['room_color']:
-                tag, created = EventTag.objects.get_or_create(name=event['track'])
-                tag.color = event['room_color']
-                tag.save()
-                newevent.prim_tag = EventTag.objects.get(name=event['track'])
+            if 'track' in event:
+                if event['track'] and event['room_color']:
+                    tag, created = EventTag.objects.get_or_create(name=event['track'])
+                    tag.color = event['room_color']
+                    tag.save()
+                    newevent.prim_tag = EventTag.objects.get(name=event['track'])
+            else:
+                tag = EventTag.objects.get(name=tags[0].strip())
+                newevent.prim_tag = tag
 
             newevent.save()   
 
@@ -953,27 +966,32 @@ class ImportView(generic.TemplateView):
         users_list = json_obj['users']
         for user in users_list:
             username = user['name'].replace(" ", "")[:30]
+            if not username:
+                username = user['username'][:30]
             username = re.sub('[\W_]+', '', username)
+            username = unidecode(username)
             newuser, created = ConflaUser.objects.get_or_create(username=username)
             if created or overwrite:
+                # TODO: proper passwords
                 newuser.password = "blank"
                 newuser.first_name = user['name'][:30]
                 newuser.company = user['company']
                 newuser.position = user['position']
                 if user['avatar']:
-                    content = urllib.request.urlretrieve(user['avatar'])
-                    ext = user['avatar'].split('.')[-1]
-                    newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
+                    try:
+                        content = urllib.request.urlretrieve(user['avatar'])
+                        ext = 'jpg'
+                        newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
+                    except (urllib.error.HTTPError, urllib.error.URLError):
+                        pass
                 if overwrite and newuser.username in user_list:
                     users_modified += 1
                 elif created:
                     user_list.append(newuser.username)
                     users_created += 1
-            elif not created and newuser.username not in user_list:
-                users_skipped += 1
 
-            newuser.full_clean()
-            newuser.save()
+                newuser.full_clean()
+                newuser.save()
 
         # Randomly color uncolored tags
         tags = EventTag.objects.filter(events__conf_id=conf, color__exact='').distinct()
@@ -982,23 +1000,37 @@ class ImportView(generic.TemplateView):
             tag.color = '#%02x%02x%02x' % (r(),r(),r())
             tag.save()
 
-        check = '<i class="fa fa-check-circle fa-lg"></i>'
-        warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
-        collisions = ''
-        created = '<div class="alert alert-success">' + check + ' Events created: ' + str(events_created)
-        created += ', Users created: ' + str(users_created) + '</div>'
-        modified ='<div class="alert alert-success">' + check + ' Events modified: ' + str(events_modified)
-        modified += ', Users modified: ' + str(users_modified) + '</div>'
-        skipped = '<div class="alert alert-warning">' + warning + ' Events skipped: ' + str(events_skipped)
-        skipped += ', Users skipped: ' + str(users_skipped) + '</div>'
-        if events_collisions:
-            collisions = '<div class="alert alert-danger">' + warning + ' Event collsions: ' + str(events_collisions) + '</div>'
-        if overwrite:
-            return '<div class="import-alerts">'+ created + modified + collisions + '</div>'
-        else:
-            return '<div class="import-alerts">'+ created + skipped + collisions + '</div>'
+        # Setup start and end dates of the conference
+        max_start = None
+        max_end = None
+        slots = Timeslot.objects.filter(conf_id=conf).order_by('start_time')
+        for slot in slots:
+            if not max_start:
+                max_start = slot.start_time.time()
+            elif max_start > slot.start_time.time():
+                max_start = slot.start_time.time()
+            if not max_end:
+                max_end = slot.end_time.time()
+            elif max_end < slot.end_time.time():
+                max_end = slot.end_time.time()
+        conf.start_time = max_start
+        conf.end_time = max_end
+        conf.start_date = slots[0].start_time.date()
+        conf.end_date = slots.reverse()[0].start_time.date()
+        conf.save()
 
-
+        return render(request, 'confla/admin/import_response.html',
+                     { 'conf'      : conf,
+                       'url_id' : url_id,
+                       'users_created' : users_created,
+                       'events_created' : events_created,
+                       'users_modified' : users_modified,
+                       'events_modified' : events_modified,
+                       'users_skipped' : users_skipped,
+                       'events_skipped' : events_skipped,
+                       'events_collisions' : events_collisions,
+                       'collision_log' : collision_log
+                       })
 
     @transaction.atomic
     def oa2015(csv_file, overwrite=False):
@@ -1058,6 +1090,8 @@ class ImportView(generic.TemplateView):
             else:
                 users_modified += 1
 
+            username1 = unidecode(username1)
+            username2 = unidecode(username2)
             newuser.first_name = row[9][:30]
             newuser.company = row[15]
             newuser.position = row[16]
@@ -1215,6 +1249,75 @@ class ImportView(generic.TemplateView):
         else:
             return '<div class="import-alerts">'+ created + skipped + '</div>'
 
+    @transaction.atomic
+    def import_event(request, url_id):
+        conf = Conference.objects.get(url_id=url_id)
+        json_string = request.POST['data'].strip().replace("'", '"')
+        event = json.loads(json_string)
+
+        # Create event
+        newevent = Event()
+        newevent.conf_id = conf
+        newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
+        newevent.topic = event['topic']
+        newevent.description = event['description']
+        newevent.lang = event['lang']
+        newevent.full_clean()
+        newevent.save()
+
+        room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
+        created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+
+        # Setup timeslot
+        newslot = Timeslot()
+        newslot.conf_id = conf
+        newslot.room_id = room
+        start = datetime.fromtimestamp(int(event['event_start']))
+        end = datetime.fromtimestamp(int(event['event_end']))
+        newslot.start_time = timezone.get_default_timezone().localize(start)
+        newslot.end_time = timezone.get_default_timezone().localize(end)
+        newslot.event_id = newevent
+        newslot.full_clean()
+        newslot.save()
+
+        # Create speakers
+        for speaker in event['speakers']:
+            username = speaker.replace(" ", "")[:30]
+            username = re.sub('[\W_]+', '', username)
+            username = unidecode(username)
+            newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
+            if created_speaker:
+                newuser.password = "blank"
+                newuser.first_name = speaker
+                newuser.full_clean()
+                newuser.save()
+                users_created += 1
+                user_list.append(newuser.username)
+            newevent.speaker.add(newuser)
+
+        tags = []
+        # Create tags
+        if event['tags']:
+            tags = event['tags'][0].split(",")
+        for tag in tags:
+            tag = tag.strip()
+            newtag, created = EventTag.objects.get_or_create(name=tag)
+            newevent.tags.add(newtag)
+
+        if 'track' in event:
+            if event['track'] and event['room_color']:
+                tag, created = EventTag.objects.get_or_create(name=event['track'])
+                tag.color = event['room_color']
+                tag.save()
+                newevent.prim_tag = EventTag.objects.get(name=event['track'])
+        else:
+            tag = EventTag.objects.get(name=tags[0].strip())
+            newevent.prim_tag = tag
+
+        newevent.save()
+
+        return HttpResponseRedirect(reverse('confla:thanks'))
+
 class ExportView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def export_view(request, url_id):
@@ -1223,6 +1326,50 @@ class ExportView(generic.TemplateView):
 
         return render(request, template_name,{ 'url_id' : url_id })
 
+    def conf_list(request):
+        result = {
+            'conferences' : [],
+            'timestamp' : '',
+        }
+
+        for conf in Conference.objects.filter(active=True):
+            tz = timezone.get_default_timezone()
+            rfc_time_format = "%a, %d %b %Y %X %z"
+
+            start = ''
+            end = ''
+            start_rfc = ''
+            end_rfc = ''
+            url = request.build_absolute_uri(reverse('confla:splash', kwargs={'url_id' : conf.url_id}))
+            url_json = request.build_absolute_uri(reverse('confla:export_mapp', kwargs={'url_id' : conf.url_id}))
+
+            # Export conference information
+            if conf.has_datetimes():
+                start = datetime.combine(conf.start_date, conf.start_time).timestamp()
+                start_rfc = datetime.combine(conf.start_date, conf.start_time).strftime(rfc_time_format)
+                end = datetime.combine(conf.end_date, conf.end_time).timestamp()
+                end_rfc = datetime.combine(conf.end_date, conf.end_time).strftime(rfc_time_format)
+
+            conf_dict = {    
+                         'name' : conf.name,
+                         'url' : url,
+                         'url_json' : url_json,
+                         'start' : start,
+                         'end' : end,
+                         'start_rfc' : start_rfc,
+                         'end_rfc' : end_rfc,
+                         }
+            result['conferences'].append(conf_dict)
+
+        # Generate checksum
+        result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
+
+
+
+        return HttpResponse(json.dumps(result), content_type="application/json")
+
+
+
     def m_app(request, url_id):
         conf = get_conf_or_404(url_id)
 
@@ -1230,9 +1377,13 @@ class ExportView(generic.TemplateView):
         tz = timezone.get_default_timezone()
         rfc_time_format = "%a, %d %b %Y %X %z"
 
+        start = ''
+        end = ''
+
         # Export conference information
-        start = datetime.combine(conf.start_date, conf.start_time).timestamp()
-        end = datetime.combine(conf.end_date, conf.end_time).timestamp()
+        if conf.has_datetimes():
+            start = datetime.combine(conf.start_date, conf.start_time).timestamp()
+            end = datetime.combine(conf.end_date, conf.end_time).timestamp()
         result['conference'] = { 'name' : conf.name,
                                  'id' : conf.url_id,
                                  'start' : start,

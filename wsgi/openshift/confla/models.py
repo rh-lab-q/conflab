@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
 from confla.utils import validate_papers, user_rename_and_return_path, paper_rename_and_return_path
+from confla.utils import conf_rename_and_return_path
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
@@ -18,19 +19,19 @@ class Conference(models.Model):
     url_id = models.CharField(max_length=256, unique=True)
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
+    about = models.TextField(blank=True)
+    venue = models.TextField(blank=True)
+    gps = models.CharField(max_length=256, blank=True)
+    splash = models.ImageField(upload_to=conf_rename_and_return_path('splash/'),
+                                blank=True, null=True)
+    icon = models.ImageField(upload_to=conf_rename_and_return_path('icon/'),
+                                blank=True, null=True)
 
     def __str__(self):
         return self.name
 
-    # Returns the active conference
-    def get_active():
-        try:
-            return Conference.objects.get(active=True)
-        except MultipleObjectsReturned as e:
-            # There is more than one active conference
-            raise e
-        except ObjectDoesNotExist:
-            return None
+    def has_datetimes(self):
+        return (self.start_time and self.end_time and self.start_date and self.end_date)
 
     # Returns a list of times during a day for a defined timedelta
     def get_delta_list(self):
@@ -40,10 +41,14 @@ class Conference(models.Model):
                 yield current
                 current = (datetime.combine(date.today(), current) + delta).time()
 
-        mins = self.timedelta
-        delta_list = [x.strftime("%H:%M") for x in delta_func(self.start_time,
-                                                                self.end_time,
-                                                                timedelta(minutes=mins))]
+        if self.has_datetimes():
+            mins = self.timedelta
+            delta_list = [x.strftime("%H:%M") for x in delta_func(self.start_time,
+                                                                    self.end_time,
+                                                                    timedelta(minutes=mins))]
+        else:
+            delta_list = []
+
         return delta_list
 
     # Returns a list of datetimes during a day for a defined timedelta
@@ -54,24 +59,40 @@ class Conference(models.Model):
                 yield current
                 current = (datetime.combine(date.today(), current) + delta).time()
 
-        mins = self.timedelta
-        delta_list = [x for x in delta_func(self.start_time,
-                                                self.end_time,
-                                                timedelta(minutes=mins))]
+        if self.has_datetimes():
+            tz = timezone.get_default_timezone()
+            offset = tz.utcoffset(datetime.now())
+            tz_start = datetime.combine(self.start_date, self.start_time)
+            tz_end = datetime.combine(self.end_date, self.end_time)
+            tz_start = tz_start + offset
+            tz_end = tz_end + offset
+            mins = self.timedelta
+            delta_list = [x for x in delta_func(tz_start.time(),
+                                                    tz_end.time(),
+                                                    timedelta(minutes=mins))]
+        else:
+            delta_list = []
+
         return delta_list
 
     # Returns a list of days formated as a string
     def get_date_list(self):
-        day_num = (self.end_date - self.start_date).days + 1
-        date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
-                        for x in range(0, day_num)]
+        if self.has_datetimes():
+            day_num = (self.end_date - self.start_date).days + 1
+            date_list = [(self.start_date + timedelta(days=x)).strftime("%A, %d.%m.")
+                            for x in range(0, day_num)]
+        else:
+            date_list = []
         return date_list
 
     # Returns a list of days as a datetime
     def get_datetime_date_list(self):
-        day_num = (self.end_date - self.start_date).days + 1
-        date_list = [(self.start_date + timedelta(days=x))
-                        for x in range(0, day_num)]
+        if self.has_datetimes():
+            day_num = (self.end_date - self.start_date).days + 1
+            date_list = [(self.start_date + timedelta(days=x))
+                            for x in range(0, day_num)]
+        else:
+            date_list = []
         return date_list
 
     # gets events in a conference, filter by speaker, room, type
@@ -125,11 +146,6 @@ class ConflaUser(AbstractUser):
 
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0
-
-    @property
-    def events_by_time(self):
-        # Returns scheduled events ordered by start_time
-        return self.events.filter(timeslot__isnull=False).order_by('timeslot__start_time')
 
     class Meta:
         permissions = (

@@ -46,7 +46,7 @@
                     <div class="speakers">
                         {% for speaker in e.speaker.all %}
                         <span class="speaker">
-                            {{speaker.first_name}}{% if not forloop.last %}, {% endif %}
+                            {{speaker.first_name}} {{speaker.last_name}}{% if not forloop.last %}, {% endif %}
                         </span>
                         {% endfor %}
                     </div>
@@ -111,7 +111,7 @@
                                         <div class="speakers">
                                             {% for speaker in e.speaker.all %}
                                             <span class="speaker">
-                                                {{speaker.first_name}}{% if not forloop.last %}, {% endif %}
+                                                {{speaker.first_name}} {{speaker.last_name}}{% if not forloop.last %}, {% endif %}
                                             </span>
                                             {% endfor %}
                                         </div>

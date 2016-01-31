@@ -9,9 +9,35 @@
 {% block content %}
 <div class="confswrap">
     {% for conf in conf_list %}
-    <div>
-        <a href={% url 'confla:splash' conf.url_id %}>{{conf.name}}</a>
+    {%if conf.active %}
+    <div class="conference">
+        <div class="container">
+            <h2 class="conf-name">{{conf.name}}</h2>
+            <div class="conf-splash col-xs-6 col-md-4">
+                {% if conf.splash %}
+                <img src={{conf.splash.url}}>
+                {% endif %}
+            </div>
+            <div class="col-xs-12 col-md-8">
+                <div class="conf-date">
+                    <h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h3>
+                </div>
+                <div class="conf-about">
+                    {% if conf.about %}
+                    <p>{{conf.about|linebreaks}}</p>
+                    {% endif %}
+                </div>
+                <div class="btn-group">
+                    <a href={% url 'confla:splash' conf.url_id %} class="btn btn-default">Details</a>
+                    {% if conf.timeslot_set.all %}
+                    <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-default">Schedule</a>
+                    {% endif %}
+                    <a href="#" class="btn btn-default">Submit talk</a>
+                </div>
+            </div>
+        </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}

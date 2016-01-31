@@ -40,9 +40,13 @@
                 <span class="icon-bar"></span>
             </button>
             {% if url_id %}
-            <a class="navbar-brand" href="{% url 'confla:splash' url_id %}">Logo</a>
-            {% else %}
-            <a class="navbar-brand" href="{% url 'confla:index' %}">Logo</a>
+            <a id="{% if conf.icon %}image-brand{% endif %}"class="navbar-brand" href="{% url 'confla:splash' url_id %}">
+                {% if conf.icon %}
+                    <img class="conf-icon" src={{conf.icon.url}}>
+                {% else %}
+                    {{conf.name}}
+                {% endif %}
+            </a>
             {% endif %}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -53,7 +57,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if url_id %}
-                <li><a href="{% url 'confla:about' url_id %}">{% trans "About" %}</a></li>
+                
                 <li><a href="{% url 'confla:schedule' url_id %}">{% trans "Schedule" %}</a></li>
                 {% endif %}
 
@@ -98,6 +102,11 @@
                         </form>
                     </ul>
                 </li>
+                <li>
+                    <a id="home-brand" class="navbar-brand" href="{% url 'confla:index' %}">
+                        <i class="fa fa-2x fa-home" style="vertical-align: middle;"></i>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -108,7 +117,21 @@
     {% block content %}
     Welcome to Confla system. Not much to be seen around yet.
     {% endblock %}
+
 </div>
+<footer class="footer">
+    <div class="container">
+        <div class="footer-text pull-left">
+            &copy; 2015 Confla - conference management system
+        </div>
+        <div class="pull-right">
+            <a class="btn btn-default" href="https://github.com/rh-lab-q/conflab"><i class="fa fa-github"></i></a>
+            <a class="btn btn-default"><i class="fa fa-facebook"></i></a>
+            <a class="btn btn-default"><i class="fa fa-twitter"></i></a>
+            <a class="btn btn-default"><i class="fa fa-google-plus"></i></a>
+        </div>
+    </div>
+</footer>
   <!-- Bootstrap core JavaScript
   ================================================== -->
   <script src="{% static 'jquery/jquery-1.11.2.min.js' %}"></script>

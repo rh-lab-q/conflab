@@ -5,6 +5,7 @@
 
 {% block extrastyles %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/splash.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}" />
 {% endblock %}
 
 {% block title %}{% endblock %}
@@ -13,10 +14,54 @@
 <div>
     <h1>{{conf.name}}</h1>
 </div>
-<h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
-<h1>
-    <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}}</a>,
-    <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}}</a>,
-    {{topics}}
-</h1>
+<h2>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
+<h3>
+    <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}} topics</a>,
+    <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}} speakers</a>,
+    {{topics}} tags
+</h3>
+<div class="conf-splash">
+    {% if conf.splash %}
+    <img class="conf-splash" src={{conf.splash.url}}>
+    {% endif %}
+</div>
+<div class="container">
+    <div class="btn-group btn-group-justified">
+        <a href={% url 'confla:event_list' conf.url_id %} class="btn btn-lg btn-default {% if not events %}disabled{% endif %}" >Topics</a>
+        <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-lg btn-default {% if not events or not conf.start_date %}disabled{% endif %}">Schedule</a>
+        <a href={% url 'confla:speaker_grid' conf.url_id %} class="btn btn-lg btn-default {% if not speakers %}disabled{% endif %}">Speakers</a>
+    </div>
+    <div class="conf-about">
+        {% if conf.about %}
+        <h3>About:</h3>
+        <p>{{conf.about|linebreaks}}</p>
+        {% endif %}
+    </div>
+    <div class="conf-venue">
+        {% if conf.venue %}
+        <h3>Venue:</h3>
+        <p>{{conf.venue|linebreaks}}</p>
+        {% endif %}
+    </div>
+    <div class="conf-map">
+        {% if conf.gps %}
+        <div id="map" style="width: 100%; height: 300px; border: 0; margin: 0;"></div>
+        <script src={% static 'leaflet/leaflet.js' %}></script>
+        <script type="text/javascript">
+            map = new L.Map('map');
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>; contributors';
+            var osm = new L.TileLayer(osmUrl, {minZoom:4, maxZoom: 18, attribution: osmAttrib});
+
+            map.setView([{{ conf.gps }}], 15);
+            map.addLayer(osm);
+            var marker = L.marker([{{ conf.gps }}]).addTo(map);
+            map.dragging.disable();
+            map.touchZoom.disable();
+            map.doubleClickZoom.disable();
+            map.scrollWheelZoom.disable();
+        </script>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
