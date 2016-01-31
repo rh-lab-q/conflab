@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
-{% block title %}Timetable{% endblock %}
+{% block title %}Schedule{% endblock %}
 {% block extrastyles %}
 <link rel="stylesheet" type="text/css" href="{% static 'confla/timetable.css' %}" />
 <style type='text/css'>
@@ -20,7 +20,11 @@
         {% include "confla/sched_legend.html" %}
     </div>
     <div class="col-xs-9 col-md-10 col-lg-11">
-    {% include "confla/user_table.html" %}
+        <div class="user-wrap">
+        {% block schedule %}
+            {% include "confla/user_table.html" %}
+        {% endblock %}
+        </div>
     </div>
     {% if perms.confla.can_organize %}
     <div class="edit-link" style="position:fixed; left:0; bottom:0; padding:3px; background-color:#ffffff;">

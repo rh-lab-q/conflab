@@ -325,7 +325,9 @@ class ScheduleView(generic.TemplateView):
                          'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in conf.rooms.all()],
-                    })
+                         'url_id' : url_id,
+                         'conf' : conf,
+                         })
 
 class LoginView(generic.TemplateView):
     template_name = 'confla/login.html'
