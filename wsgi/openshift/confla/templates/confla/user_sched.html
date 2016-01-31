@@ -11,20 +11,25 @@
         background : {{tag.color}};
     }
     {% endfor %}
+    {% if tag_id %}
+    .user-wrap {
+        width: 100%;
+    }
+    {% endif %}
 </style>
 {% endblock %}
 
 {% block content %}
     {% csrf_token %}
+    {% if not tag_id %}
     <div id="legend-wrap" class="col-xs-3 col-md-2 col-lg-1">
         {% include "confla/sched_legend.html" %}
     </div>
-    <div class="col-xs-9 col-md-10 col-lg-11">
-        <div class="user-wrap">
-        {% block schedule %}
-            {% include "confla/user_table.html" %}
-        {% endblock %}
-        </div>
+    {% endif %}
+    <div class="user-wrap col-xs-9 col-md-10 col-lg-11">
+    {% block schedule %}
+        {% include "confla/user_table.html" %}
+    {% endblock %}
     </div>
     {% if perms.confla.can_organize %}
     <div class="edit-link" style="position:fixed; left:0; bottom:0; padding:3px; background-color:#ffffff;">

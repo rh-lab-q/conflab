@@ -353,6 +353,7 @@ class ScheduleView(generic.TemplateView):
                                          'room' : x} for x in conf.rooms.all()],
                          'url_id' : url_id,
                          'conf' : conf,
+                         'tag_id' : id,
                          })
 
 class LoginView(generic.TemplateView):

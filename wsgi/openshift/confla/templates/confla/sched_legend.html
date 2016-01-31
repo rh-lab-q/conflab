@@ -3,9 +3,10 @@
         Legenda:
     </div>
     {% for tag in legend_list %}
+    {% url 'confla:listschedTag' url_id tag.id as tag_url %}
     <div class=legend-item>
         <span class="tag-color tag{{tag.id}}"></span>
-        <span class="tag-name"><a href="#">{{tag.name}}</a></span>
+        <span class="tag-name"><a href={{tag_url}}>{{tag.name}}</a></span>
     </div>
     {% endfor %} 
 </div>
