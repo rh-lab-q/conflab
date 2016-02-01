@@ -1458,14 +1458,25 @@ class ExportView(generic.TemplateView):
                 'title' : 'About',
                 'text'  : conf.about
             },
-            {
-                'title' : 'Venue',
-                'text'  : conf.venue
-            },
             ]
 
         # RSS
         result['rss'] = []
+
+        if conf.gps:
+            gps_position = conf.gps.split(',')
+
+            result['places'] = [
+                {
+                    'name' : 'Venue',
+                    'description' : conf.venue,
+                    'icon' : 'default.png',
+                    'lat' : gps_position[0],
+                    'lon' : gps_position[1],
+                },
+                ]
+        else:
+            result['places'] = []
 
         # Generate checksum
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
