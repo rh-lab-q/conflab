@@ -20,11 +20,11 @@ function confla_toggle () {
 function toggle_events(tag) {
     // Get the tag's class
     $(this).toggleClass("tag-color");
-    var tag_name = $(this)[0].classList[0];
+    var tag_name = $(this)[0].className;
     $(this).toggleClass("tag-color");
     // Toggle event visibility for given tag
     var items = $(".sched-wrap ." + tag_name).closest(".item");
-    if ($(this).hasClass("tag-disabled"))
+    if ($(this).parent().hasClass("tag-disabled"))
         items.show();
     else
         items.hide();
@@ -46,7 +46,7 @@ function toggle_events(tag) {
             }
         });
     });
-    $(this).toggleClass("tag-disabled");
+    $(this).parent().toggleClass("tag-disabled");
 }
 
 function legendInit() {
