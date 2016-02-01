@@ -1333,7 +1333,7 @@ class ExportView(generic.TemplateView):
             'timestamp' : '',
         }
 
-        for conf in Conference.objects.filter(active=True):
+        for conf in Conference.objects.filter(active=True).order_by("-start_date"):
             tz = timezone.get_default_timezone()
             rfc_time_format = "%a, %d %b %Y %X %z"
 
