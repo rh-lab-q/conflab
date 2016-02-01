@@ -1454,8 +1454,10 @@ class ExportView(generic.TemplateView):
                 user['lastactive'] = usr.last_login.astimezone(tz).isoformat()[:19].replace('T', ' ')
             else:
                 user['lastactive'] = ''
-            # FIXME: Own avatar field
-            user['avatar'] = usr.github
+            if usr.picture:
+                user['avatar'] = request.build_absolute_uri(usr.picture.url)
+            else:
+                user['avatar'] = ''
             user['web'] = usr.web
             user['facebook'] = usr.facebook
             user['twitter'] = usr.twitter
