@@ -1453,9 +1453,16 @@ class ExportView(generic.TemplateView):
 
         # Export about
         # TODO: Proper about section once we have it
-        result['about'] = [{ 'title' : conf.name,
-                             'text'  : 'placeholder'
-                           }]
+        result['about'] = [
+            {
+                'title' : 'About',
+                'text'  : conf.about
+            },
+            {
+                'title' : 'Venue',
+                'text'  : conf.venue
+            },
+            ]
 
         # RSS
         result['rss'] = []
