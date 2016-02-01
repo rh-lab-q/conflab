@@ -1484,7 +1484,7 @@ class ExportView(generic.TemplateView):
                 {
                     'name' : 'Venue',
                     'description' : conf.venue,
-                    'icon' : 'default.png',
+                    'icon' : '',
                     'lat' : gps_position[0],
                     'lon' : gps_position[1],
                 },
