@@ -1344,6 +1344,16 @@ class ExportView(generic.TemplateView):
             url = request.build_absolute_uri(reverse('confla:splash', kwargs={'url_id' : conf.url_id}))
             url_json = request.build_absolute_uri(reverse('confla:export_mapp', kwargs={'url_id' : conf.url_id}))
 
+            if conf.icon:
+                icon = request.build_absolute_uri(conf.icon.url)
+            else:
+                icon = ''
+
+            if conf.splash:
+                splash = request.build_absolute_uri(conf.splash.url)
+            else:
+                splash = ''
+
             # Export conference information
             if conf.has_datetimes():
                 start = datetime.combine(conf.start_date, conf.start_time).timestamp()
@@ -1359,6 +1369,8 @@ class ExportView(generic.TemplateView):
                          'end' : end,
                          'start_rfc' : start_rfc,
                          'end_rfc' : end_rfc,
+                         'icon' : icon,
+                         'splash' : splash,
                          }
             result['conferences'].append(conf_dict)
 
