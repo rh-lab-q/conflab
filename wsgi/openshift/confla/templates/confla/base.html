@@ -50,11 +50,12 @@
             {% endif %}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+<!--            <ul class="nav navbar-nav">
                 {% if url_id %}
                 <li><a href="{% url 'confla:cfp' url_id %}"><strong>{% trans "Call for Participation" %}</strong></a></li>
                 {% endif %}
             </ul>
+-->
             <ul class="nav navbar-nav navbar-right">
                 {% if url_id %}
                 
@@ -141,6 +142,7 @@
   <script src="{% static 'bootsidemenu/BootSideMenu.js' %}"></script>
   <script src="{% static 'bootbox/bootbox.min.js' %}"></script>
   <script src="http://malsup.github.com/jquery.form.js"></script>
+  <script src="{% static 'confla/utility.js' %}"></script>
   {% block extrascripts %}{% endblock %}
 </body>
 </html>

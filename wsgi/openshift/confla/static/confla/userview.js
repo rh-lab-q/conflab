@@ -113,6 +113,7 @@ function userPopoverInit() {
 
 function user_setup() {
     userPopoverInit();
+    legendInit();
 
     // Setup tabs for days
     $("#sched-tabs li:not(.active)").click(changeDay);
