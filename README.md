@@ -17,3 +17,12 @@ Other software for conference planning:
 - https://github.com/openSUSE/osem
 - http://indico-software.org/
 - http://pentabarf.org/
+
+# Installation
+```bash
+python3 setup.py install
+cd ./wsgi/openshift/
+python3 manage.py syncdb
+python3 manage.py runserver
+```
+

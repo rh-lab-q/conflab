@@ -1333,7 +1333,7 @@ class ExportView(generic.TemplateView):
             'timestamp' : '',
         }
 
-        for conf in Conference.objects.filter(active=True):
+        for conf in Conference.objects.filter(active=True).order_by("-start_date"):
             tz = timezone.get_default_timezone()
             rfc_time_format = "%a, %d %b %Y %X %z"
 
@@ -1343,6 +1343,16 @@ class ExportView(generic.TemplateView):
             end_rfc = ''
             url = request.build_absolute_uri(reverse('confla:splash', kwargs={'url_id' : conf.url_id}))
             url_json = request.build_absolute_uri(reverse('confla:export_mapp', kwargs={'url_id' : conf.url_id}))
+
+            if conf.icon:
+                icon = request.build_absolute_uri(conf.icon.url)
+            else:
+                icon = ''
+
+            if conf.splash:
+                splash = request.build_absolute_uri(conf.splash.url)
+            else:
+                splash = ''
 
             # Export conference information
             if conf.has_datetimes():
@@ -1359,6 +1369,8 @@ class ExportView(generic.TemplateView):
                          'end' : end,
                          'start_rfc' : start_rfc,
                          'end_rfc' : end_rfc,
+                         'icon' : icon,
+                         'splash' : splash,
                          }
             result['conferences'].append(conf_dict)
 
@@ -1410,7 +1422,7 @@ class ExportView(generic.TemplateView):
                     session['track'] = ''
                 session['room'] = slot.room_id.shortname
                 session['room_short'] = slot.room_id.shortname
-                session['speakers'] = [x.first_name for x in event.speaker.all()]
+                session['speakers'] = [x.first_name + ' ' + x.last_name for x in event.speaker.all()]
                 session['description'] = event.description
                 session['tags'] = [x.name for x in event.tags.all()]
                 session['topic'] = event.topic
@@ -1434,7 +1446,7 @@ class ExportView(generic.TemplateView):
         for usr in ConflaUser.objects.all().exclude(username="admin"):
             user = {}
             user['username'] = usr.username
-            user['name'] = usr.first_name
+            user['name'] = usr.first_name + ' ' + usr.last_name
             user['position'] = usr.position
             user['company'] = usr.company
             user['joined'] = usr.date_joined.astimezone(tz).isoformat()[:19].replace('T', ' ')
@@ -1442,8 +1454,10 @@ class ExportView(generic.TemplateView):
                 user['lastactive'] = usr.last_login.astimezone(tz).isoformat()[:19].replace('T', ' ')
             else:
                 user['lastactive'] = ''
-            # FIXME: Own avatar field
-            user['avatar'] = usr.github
+            if usr.picture:
+                user['avatar'] = request.build_absolute_uri(usr.picture.url)
+            else:
+                user['avatar'] = ''
             user['web'] = usr.web
             user['facebook'] = usr.facebook
             user['twitter'] = usr.twitter
@@ -1453,12 +1467,30 @@ class ExportView(generic.TemplateView):
 
         # Export about
         # TODO: Proper about section once we have it
-        result['about'] = [{ 'title' : conf.name,
-                             'text'  : 'placeholder'
-                           }]
+        result['about'] = [
+            {
+                'title' : 'About',
+                'text'  : conf.about
+            },
+            ]
 
         # RSS
         result['rss'] = []
+
+        if conf.gps:
+            gps_position = conf.gps.split(',')
+
+            result['places'] = [
+                {
+                    'name' : 'Venue',
+                    'description' : conf.venue,
+                    'icon' : '',
+                    'lat' : gps_position[0],
+                    'lon' : gps_position[1],
+                },
+                ]
+        else:
+            result['places'] = []
 
         # Generate checksum
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
