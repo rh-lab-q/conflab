@@ -637,7 +637,7 @@ class TimetableView(generic.TemplateView):
                          'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
                          'time_list' : time_list,
                          'room_list' : room_list,
-                         'user_list' : [{'name' : u.first_name + ' ' + u.last_name,
+                         'user_list' : [{'name' : (u.first_name + ' ' + u.last_name).strip(),
                                          'username' : u.username} for u in users],
                          'url_id' : url_id,
                      })

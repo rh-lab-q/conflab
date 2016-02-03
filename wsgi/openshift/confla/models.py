@@ -147,6 +147,10 @@ class ConflaUser(AbstractUser):
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0
 
+    @property
+    def get_fullname(self):
+        return (self.first_name + ' ' + self.last_name).strip()
+
     class Meta:
         permissions = (
             ("can_volunteer", "Is a volunteer in a Conference"),

@@ -745,6 +745,14 @@ function popoverInit(selector) {
             }
         });
 
+        // Propagate speaker edits into the the original event
+        var speakers = "";
+        $(original).find("select.sel-speaker :selected").each(function() {
+            speakers = speakers + selSpeaker[0].selectize.options[$(this).text()].name + ", ";
+        });
+        speakers = speakers.slice(0, -2);
+        $(original).closest(".event").find(".speakers").text(speakers);
+
         var items = selTag[0].selectize.items;
         // Move the primary tag to the correct place
         tagId = items[0];
