@@ -206,7 +206,7 @@ class Event(models.Model):
     slides = models.URLField(max_length=512, blank=True)
     video = models.URLField(max_length=512, blank=True)
     google_doc_url = models.URLField(max_length=512, blank=True)
-    speaker = models.ManyToManyField(ConflaUser, related_name='events')
+    speaker = models.ManyToManyField(ConflaUser, blank=True, related_name='events')
     tags = models.ManyToManyField(EventTag, related_name='events', blank=True, null=True)
     prim_tag = models.ForeignKey(EventTag, null=True, blank=True)
     notes = models.TextField(blank=True)
