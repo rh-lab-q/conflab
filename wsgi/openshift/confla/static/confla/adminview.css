@@ -24,3 +24,16 @@ body > #page-container {
     background-color: #428bca;
     color: #fff;
 }
+
+.dropdown-menu {
+    top: 0;
+    left: 100%;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+.dropdown-label {
+    margin-right: 5px;
+}

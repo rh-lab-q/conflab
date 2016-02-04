@@ -1,4 +1,24 @@
 <ul class="nav nav-sidebar">
+    <li class="dropdown">
+        <a class="dropdown-toggle" id="conf-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="dropdown-label">
+            {% if conf %}
+                {{conf.name}}
+            {% else %}
+                Conferences
+            {% endif %}
+            </span>
+            <i class="fa fa-caret-right"></i>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="conf-menu">
+            <li><a href="#">Create conference</a></li>
+            <li role="separator" class="divider"></li>
+            {% for conference in conf_list %}
+            {% url 'confla:dashboard' conference.url_id as url %}
+            <li><a href={{url}}>{{conference.name}}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
     {% if url_id %}
     <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>Overview</a></li>
     <li {% if active == "schedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminviewsched' url_id %}>Schedule</a>

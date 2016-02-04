@@ -35,10 +35,13 @@ class AdminView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
     def dashboard(request, url_id=None):
+        conf = None
         if url_id:
             conf = get_conf_or_404(url_id)
         return render(request, "confla/admin/admin_base.html",
                         {   'url_id' : url_id,
+                            'conf' : conf,
+                            'conf_list' : Conference.objects.all(),
                         })
 
     @permission_required('confla.can_organize', raise_exception=True)
@@ -48,7 +51,8 @@ class AdminView(generic.TemplateView):
             return render(request, "confla/admin/user_sched.html",
                      { 'conf'   : conf,
                        'url_id' : url_id,
-                     })
+                       'conf_list' : Conference.objects.all(),
+                    })
 
         slot_list = {}
         rooms = conf.rooms.all()
@@ -80,6 +84,7 @@ class AdminView(generic.TemplateView):
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                          'url_id' : url_id,
+                         'conf_list' : Conference.objects.all(),
                     })
 
 class EventEditView(generic.TemplateView):
@@ -640,6 +645,7 @@ class TimetableView(generic.TemplateView):
                          'user_list' : [{'name' : (u.first_name + ' ' + u.last_name).strip(),
                                          'username' : u.username} for u in users],
                          'url_id' : url_id,
+                         'conf_list' : Conference.objects.all(),
                      })
 
     @transaction.atomic
@@ -795,13 +801,14 @@ class ImportView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def import_view(request, url_id=None):
         template_name = 'confla/admin/import.html'
-        if url_id:
-            conf = get_conf_or_404(url_id)
+        conf = get_conf_or_404(url_id)
 
         form = ImportFileForm()
         return render(request, template_name,
                         {   'url_id' : url_id,
                             'form'   : form,
+                            'conf' : conf,
+                            'conf_list' : Conference.objects.all(),
                             })
 
     @permission_required('confla.can_organize', raise_exception=True)
@@ -1325,7 +1332,10 @@ class ExportView(generic.TemplateView):
         template_name = 'confla/admin/export.html'
         conf = get_conf_or_404(url_id)
 
-        return render(request, template_name,{ 'url_id' : url_id })
+        return render(request, template_name,{ 'url_id' : url_id,
+                            'conf_list' : Conference.objects.all(),
+                            'conf' : conf,
+        })
 
     def conf_list(request):
         result = {
