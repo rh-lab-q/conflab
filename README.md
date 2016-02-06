@@ -17,6 +17,7 @@ Other software for conference planning:
 - https://github.com/openSUSE/osem
 - http://indico-software.org/
 - http://pentabarf.org/
+- TBD judy, symposium, zookeepr, frab, openconferenceware, djep, wafer, funnel, .. https://mail.python.org/pipermail/conferences/2015-August/thread.html
 
 # Installation
 ```bash
