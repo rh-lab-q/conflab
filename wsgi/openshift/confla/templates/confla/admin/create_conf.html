@@ -1,0 +1,112 @@
+{% extends "confla/admin/admin_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load confla_filters %}
+{% block title %}Create Conference{% endblock %}
+
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" %}
+{% endblock %}
+
+{% block admin_page %}
+<div class="container">
+<form action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% trans "Basic Information" %}
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="id_name">{% trans "Conference Name" %}</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_url_id">{% trans "URL Identifier" %}</label>
+                    {{ form.url_id }}
+                </div>
+                <div class="form-group">
+                    <label for="id_rooms">{% trans "Rooms" %}</label>
+                    {{ form.rooms }}
+                </div> 
+                <div class="form-group">
+                    <label class="checkbox-inline" for="id_active">{{form.active}} {% trans "Public" %}</label>
+                </div> 
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% trans "Date and Time" %}
+            </div>
+            <div class="panel-body">
+                {% with "yyyy-mm-dd" as format %}
+                <div class="form-group">
+                    <label for="conf-date">{% trans "Start/End Date" %}</label>
+                    <div id="conf-date" class="input-group input-daterange">
+                        <input type="text" class="form-control" value={{format}}>
+                        <span class="input-group-addon">to</span>
+                        <input type="text" class="form-control" value={{format}}>
+                    </div>
+                </div>
+                {% endwith %}
+                <div class="form-group">
+                    <label for="conf-time">{% trans "Start/End Time" %}</label>
+                    <div id="conf-time" class="input-group input-daterange">
+                        <input type="text" class="form-control" value="08:00">
+                        <span class="input-group-addon">to</span>
+                        <input type="text" class="form-control" value="20:00">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="id_timedelta">{% trans "Minutes per slot" %}</label>
+                        {{ form.timedelta }}
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="conf-timezone">{% trans "Timezone" %}</label>
+                        <select class="form-control input-sm"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% trans "Additional Information" %}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="id_splash">{% trans "Splash Logo" %}</label>
+                        {{ form.splash }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_icon">{% trans "Conference Icon" %}</label>
+                        {{ form.icon }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_about">{% trans "About" %}</label>
+                    {{ form.about }}
+                </div>
+                <div class="form-group">
+                    <label for="id_venue">{% trans "Venue" %}</label>
+                    {{ form.venue }}
+                </div>
+                <div class="form-group">
+                    <label for="id_gps">{% trans "GPS Location" %}</label>
+                    {{ form.gps }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+</div>
+{% endblock %}
+{% block extrascripts %}
+{% endblock %}

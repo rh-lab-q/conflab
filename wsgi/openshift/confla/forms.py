@@ -17,17 +17,26 @@ class ConfCreateForm(forms.ModelForm):
 
     class Meta:
         model = Conference
+        choices = (('5', '5'),('10', '10'),('15', '15'),('30', '30'),('60', '60'),)
         fields = ['name', 'start_date', 'end_date', 'start_time',
-            'end_time', 'rooms']
+            'end_time', 'rooms', 'url_id', 'timedelta', 'active',
+            'about', 'venue', 'gps', 'splash', 'icon']
+
+        widgets = {
+            'timedelta' : forms.Select(choices=choices),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ConfCreateForm, self).__init__(*args, **kwargs)
 
+        self.initial['timedelta'] = '15'
+
+        classes = 'form-control input-sm'
         for key in self.fields.keys():
-            classes = 'form-control input-sm'
-            if key in ['start_date', 'end_date']:
-                classes += ' datepicker'
-            self.fields[key].widget.attrs.update({'class' : classes})
+            if key not in ['splash', 'icon', 'active']:
+                self.fields[key].widget.attrs.update({'class' : classes})
+
+        self.fields['rooms'].widget.attrs.update({'class' : 'form-control input-sm selectized-input',})
 
 class RoomCreateForm(forms.ModelForm):
 

@@ -11,7 +11,8 @@
             <i class="fa fa-caret-right"></i>
         </a>
         <ul class="dropdown-menu" aria-labelledby="conf-menu">
-            <li><a href="#">Create conference</a></li>
+            <li><a href={% url 'confla:create_conf'%}>Create conference</a></li>
+            
             <li role="separator" class="divider"></li>
             {% for conference in conf_list %}
             {% url 'confla:dashboard' conference.url_id as url %}

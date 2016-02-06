@@ -87,6 +87,15 @@ class AdminView(generic.TemplateView):
                          'conf_list' : Conference.objects.all(),
                     })
 
+class ConferenceView(generic.TemplateView):
+    def create_conf(request):
+        template_name = 'confla/admin/create_conf.html'
+        return render(request, template_name,
+                     {
+                        'form' : ConfCreateForm(),
+                        'conf_list' : Conference.objects.all(),
+                     })
+
 class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 
