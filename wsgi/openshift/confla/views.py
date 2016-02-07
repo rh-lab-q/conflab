@@ -41,7 +41,7 @@ class AdminView(generic.TemplateView):
         return render(request, "confla/admin/admin_base.html",
                         {   'url_id' : url_id,
                             'conf' : conf,
-                            'conf_list' : Conference.objects.all(),
+                            'conf_list' : Conference.objects.all().order_by('start_date'),
                         })
 
     @permission_required('confla.can_organize', raise_exception=True)
@@ -51,7 +51,7 @@ class AdminView(generic.TemplateView):
             return render(request, "confla/admin/user_sched.html",
                      { 'conf'   : conf,
                        'url_id' : url_id,
-                       'conf_list' : Conference.objects.all(),
+                       'conf_list' : Conference.objects.all().order_by('start_date'),
                     })
 
         slot_list = {}
@@ -84,7 +84,7 @@ class AdminView(generic.TemplateView):
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                          'url_id' : url_id,
-                         'conf_list' : Conference.objects.all(),
+                         'conf_list' : Conference.objects.all().order_by('start_date'),
                     })
 
 class ConferenceView(generic.TemplateView):
@@ -94,7 +94,18 @@ class ConferenceView(generic.TemplateView):
         return render(request, template_name,
                      {
                         'form' : ConfCreateForm(),
-                        'conf_list' : Conference.objects.all(),
+                        'conf_list' : Conference.objects.all().order_by('start_date'),
+                     })
+
+    def edit_conf(request, url_id):
+        template_name = 'confla/admin/create_conf.html'
+        conf = get_conf_or_404(url_id)
+        return render(request, template_name,
+                     {
+                        'form' : ConfCreateForm(instance=conf),
+                        'conf_list' : Conference.objects.all().order_by('start_date'),
+                        'url_id' : url_id,
+                        'conf' : conf,
                      })
 
     @transaction.atomic
@@ -112,7 +123,7 @@ class ConferenceView(generic.TemplateView):
             return render(request, template_name,
                  {
                     'form' : form,
-                    'conf_list' : Conference.objects.all(),
+                    'conf_list' : Conference.objects.all().order_by('start_date'),
                  })
         url_id = request.POST['url_id'] 
         return HttpResponseRedirect(reverse('confla:dashboard',kwargs={'url_id' : url_id}))
@@ -675,7 +686,7 @@ class TimetableView(generic.TemplateView):
                          'user_list' : [{'name' : (u.first_name + ' ' + u.last_name).strip(),
                                          'username' : u.username} for u in users],
                          'url_id' : url_id,
-                         'conf_list' : Conference.objects.all(),
+                         'conf_list' : Conference.objects.all().order_by('start_date'),
                      })
 
     @transaction.atomic
@@ -838,7 +849,7 @@ class ImportView(generic.TemplateView):
                         {   'url_id' : url_id,
                             'form'   : form,
                             'conf' : conf,
-                            'conf_list' : Conference.objects.all(),
+                            'conf_list' : Conference.objects.all().order_by('start_date'),
                             })
 
     @permission_required('confla.can_organize', raise_exception=True)
@@ -1363,7 +1374,7 @@ class ExportView(generic.TemplateView):
         conf = get_conf_or_404(url_id)
 
         return render(request, template_name,{ 'url_id' : url_id,
-                            'conf_list' : Conference.objects.all(),
+                            'conf_list' : Conference.objects.all().order_by('start_date'),
                             'conf' : conf,
         })
 
