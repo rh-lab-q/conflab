@@ -131,6 +131,11 @@ class ConferenceView(generic.TemplateView):
         url_id = request.POST['url_id'] 
         return HttpResponseRedirect(reverse('confla:dashboard',kwargs={'url_id' : url_id}))
 
+    @permission_required('confla.can_organize', raise_exception=True)
+    def create_room(request):
+        room, created = Room.objects.get_or_create(shortname=request.POST['data'])
+        return HttpResponse(room.id)
+
 class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 

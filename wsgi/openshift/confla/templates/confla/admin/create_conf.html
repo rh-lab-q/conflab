@@ -15,7 +15,7 @@
 {% if form.errors %}
     {{form.errors}}
 {% endif %}
-<form action="{% url 'confla:save_conf' %}" method="post">{% csrf_token %}
+<form class="conf-form" action="{% url 'confla:save_conf' %}" method="post">{% csrf_token %}
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-default">
@@ -118,11 +118,14 @@
 <div class="row col-md-12">
     <button class="btn btn-default" type="submit">{% trans "Create Conference" %}</button>
 </div>
-
-
 </form>
 
 </div>
 {% endblock %}
 {% block extrascripts %}
+<script src="{% static 'confla/edit_conf.js' %}"></script>
+<script class="js-setup">
+var room_link = "{% url 'confla:create_room' %}"
+</script>
+
 {% endblock %}
