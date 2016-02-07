@@ -88,6 +88,7 @@ class AdminView(generic.TemplateView):
                     })
 
 class ConferenceView(generic.TemplateView):
+    @permission_required('confla.can_organize', raise_exception=True)
     def create_conf(request):
         template_name = 'confla/admin/create_conf.html'
         return render(request, template_name,
@@ -95,6 +96,26 @@ class ConferenceView(generic.TemplateView):
                         'form' : ConfCreateForm(),
                         'conf_list' : Conference.objects.all(),
                      })
+
+    @transaction.atomic
+    @permission_required('confla.can_organize', raise_exception=True)
+    def save_conf(request):
+        print(request.POST)
+        form = ConfCreateForm(request.POST)
+        if form.is_valid():
+            conf = form.save(commit=False)
+            conf.save()
+            for room in form.cleaned_data.get('rooms'):
+                created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+        else:
+            template_name = 'confla/admin/create_conf.html'
+            return render(request, template_name,
+                 {
+                    'form' : form,
+                    'conf_list' : Conference.objects.all(),
+                 })
+        url_id = request.POST['url_id'] 
+        return HttpResponseRedirect(reverse('confla:dashboard',kwargs={'url_id' : url_id}))
 
 class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
