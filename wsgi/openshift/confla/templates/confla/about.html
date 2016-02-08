@@ -16,9 +16,11 @@
 </div>
 <h2>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
 <h3>
+    {% if conf.timeslot_set.all %}
     <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}} topics</a>,
     <a class="confla-link" href={% url 'confla:speaker_grid' url_id %}>{{speakers}} speakers</a>,
     {{topics}} tags
+    {% endif %}
 </h3>
 <div class="conf-splash">
     {% if conf.splash %}
@@ -26,20 +28,23 @@
     {% endif %}
 </div>
 <div class="container">
+    {% if conf.timeslot_set.all %}
+
     <div class="btn-group btn-group-justified">
         <a href={% url 'confla:event_list' conf.url_id %} class="btn btn-lg btn-default {% if not events %}disabled{% endif %}" >Topics</a>
         <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-lg btn-default {% if not events or not conf.start_date %}disabled{% endif %}">Schedule</a>
         <a href={% url 'confla:speaker_grid' conf.url_id %} class="btn btn-lg btn-default {% if not speakers %}disabled{% endif %}">Speakers</a>
     </div>
+    {% endif %}
     <div class="conf-about">
         {% if conf.about %}
-        <h3>About:</h3>
+        <h3>{% trans "About" %}</h3>
         <p>{{conf.about|linebreaks}}</p>
         {% endif %}
     </div>
     <div class="conf-venue">
         {% if conf.venue %}
-        <h3>Venue:</h3>
+        <h3>{% trans "Venue" %}</h3>
         <p>{{conf.venue|linebreaks}}</p>
         {% endif %}
     </div>
