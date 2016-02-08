@@ -136,7 +136,7 @@ class ConflaUser(AbstractUser):
     google_plus = models.URLField(max_length=512, blank=True)
     linkedin = models.URLField(max_length=512, blank=True)
     bio = models.TextField (blank=True)
-    schedule = models.ManyToManyField('Event', related_name='sched+', blank=True, null=True)
+    schedule = models.ManyToManyField('Event', related_name='sched+', blank=True)
 
     def __str__(self):
         return self.username
@@ -211,7 +211,7 @@ class Event(models.Model):
     video = models.URLField(max_length=512, blank=True)
     google_doc_url = models.URLField(max_length=512, blank=True)
     speaker = models.ManyToManyField(ConflaUser, blank=True, related_name='events')
-    tags = models.ManyToManyField(EventTag, related_name='events', blank=True, null=True)
+    tags = models.ManyToManyField(EventTag, related_name='events', blank=True)
     prim_tag = models.ForeignKey(EventTag, null=True, blank=True)
     notes = models.TextField(blank=True)
     reqs = models.TextField(blank=True)
@@ -265,7 +265,7 @@ class Paper(models.Model):
                                 blank=True, null=True,
                                 validators=[validate_papers])
     accepted = models.NullBooleanField()
-    reviewer = models.ManyToManyField(ConflaUser, related_name='rev+', blank=True, null=True)
+    reviewer = models.ManyToManyField(ConflaUser, related_name='rev+', blank=True)
     review_notes = models.TextField()
 
     def __str__(self):
