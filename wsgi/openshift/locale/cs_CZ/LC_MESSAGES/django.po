@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-24 12:47+0100\n"
+"POT-Creation-Date: 2016-02-08 10:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,57 +17,230 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: settings.py:136
-msgid "Czech"
-msgstr "Čeština"
+#: confla/forms.py:67 confla/templates/confla/event_modal.html:15
+msgid "Topic"
+msgstr "Téma"
 
-#: settings.py:137
-msgid "English"
-msgstr "Angličtina"
+#: confla/forms.py:69 confla/templates/confla/event_modal.html:17
+msgid "Description"
+msgstr "Popis"
 
-#: confla/forms.py:88
+#: confla/forms.py:71
+msgid "Notes"
+msgstr "Poznámky"
+
+#: confla/forms.py:177
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: confla/forms.py:93
+#: confla/forms.py:182
 msgid "Password"
 msgstr "Heslo"
 
-#: confla/utils.py:11
-msgid "Unsupported file type. File must be a pdf or ... file."
-msgstr "Nepodporovaný typ souboru. Soubor musí být typu pdf nebo ..."
+#: confla/templates/confla/add_rooms.html:6
+msgid "Add rooms"
+msgstr "Přidat místnosti"
 
-#: confla/views.py:59
-msgid "Your account is disabled."
-msgstr "Váš účet není aktivní."
+#: confla/templates/confla/add_rooms.html:13
+#: confla/templates/confla/reg_talk.html:11
+#: confla/templates/confla/register.html:16
+#, fuzzy
+#| msgid "Submit changes"
+msgid "Submit"
+msgstr "Potvrdit změny"
 
-#: confla/views.py:67
-msgid "Wrong username/password."
-msgstr "Chybné uživatelské jméno nebo heslo."
+#: confla/templates/confla/add_rooms_success.html:4
+msgid "Success!"
+msgstr ""
 
-#: confla/templates/confla/base.html:31
-msgid "Send us your talk"
-msgstr "Zašlete nám svůj výtvor"
+#: confla/templates/confla/add_rooms_success.html:7
+msgid "The rooms were added successfully."
+msgstr ""
 
-#: confla/templates/confla/base.html:34
+#: confla/templates/confla/admin/create_conf.html:23
+msgid "Basic Information"
+msgstr "Základní informace"
+
+#: confla/templates/confla/admin/create_conf.html:27
+msgid "Conference Name"
+msgstr "Název konference"
+
+#: confla/templates/confla/admin/create_conf.html:31
+msgid "URL Identifier"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:35
+msgid "Rooms"
+msgstr "Místnosti"
+
+#: confla/templates/confla/admin/create_conf.html:39
+msgid "Public"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:45
+msgid "Date and Time"
+msgstr "Datum a čas"
+
+#: confla/templates/confla/admin/create_conf.html:49
+msgid "Start/End Date"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:61
+msgid "Start/End Time"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:74
+msgid "Minutes per slot"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:78
+msgid "Timezone"
+msgstr "Časová zóna"
+
+#: confla/templates/confla/admin/create_conf.html:89
+msgid "Additional Information"
+msgstr "Doplňující informace"
+
+#: confla/templates/confla/admin/create_conf.html:94
+msgid "Splash Logo"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:98
+msgid "Conference Icon"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:103
+#: confla/templates/confla/profile.html:14
 msgid "About"
 msgstr "O konferenci"
 
-#: confla/templates/confla/base.html:35
+#: confla/templates/confla/admin/create_conf.html:107
+msgid "Venue"
+msgstr ""
+
+#: confla/templates/confla/admin/create_conf.html:111
+msgid "GPS Location"
+msgstr "GPS souřadnice"
+
+#: confla/templates/confla/admin/create_conf.html:119
+msgid "Create Conference"
+msgstr "Vytvořit konferenci"
+
+#: confla/templates/confla/admin/edit_sched.html:56
+#: confla/templates/confla/admin/edit_sched.html:121
+#: confla/templates/confla/schedlist.html:29
+msgid "Edit event"
+msgstr ""
+
+#: confla/templates/confla/admin/edit_sched.html:80
+#: confla/templates/confla/user_table.html:39
+msgid "Time"
+msgstr "Čas"
+
+#: confla/templates/confla/admin/import.html:25
+#: confla/templates/confla/admin/import.html:39
+#: confla/templates/confla/admin/menu.html:7
+msgid "Import"
+msgstr ""
+
+#: confla/templates/confla/admin/menu.html:5
+#, fuzzy
+#| msgid "Conflab Administration"
+msgid "Configuration"
+msgstr "Admin sekce"
+
+#: confla/templates/confla/admin/menu.html:6
+#: confla/templates/confla/base.html:63
 msgid "Schedule"
 msgstr "Program"
 
-#: confla/templates/confla/base.html:37
+#: confla/templates/confla/admin/menu.html:8
+msgid "Export"
+msgstr ""
+
+#: confla/templates/confla/admin/menu.html:15
+msgid "Conferences"
+msgstr ""
+
+#: confla/templates/confla/admin/menu.html:20
+msgid "Create conference"
+msgstr ""
+
+#: confla/templates/confla/admin/menu.html:29
+#, fuzzy
+#| msgid "Username"
+msgid "Users"
+msgstr "Uživatelské jméno"
+
+#: confla/templates/confla/base.html:56
+msgid "Call for Participation"
+msgstr ""
+
+#: confla/templates/confla/base.html:76 confla/templates/confla/base.html:78
+#, fuzzy
+#| msgid "Conflab Administration"
+msgid "Administration"
+msgstr "Admin sekce"
+
+#: confla/templates/confla/base.html:82
 msgid "Profile"
 msgstr "Profil"
 
-#: confla/templates/confla/base.html:38
+#: confla/templates/confla/base.html:83
 msgid "Logout"
 msgstr "Odhlásit se"
 
-#: confla/templates/confla/base.html:40
+#: confla/templates/confla/base.html:87
 msgid "Login"
 msgstr "Přihlášení"
+
+#: confla/templates/confla/event_modal.html:19
+msgid "Event type"
+msgstr ""
+
+#: confla/templates/confla/event_modal.html:21
+msgid "Speaker"
+msgstr "Přednášející"
+
+#: confla/templates/confla/event_modal.html:23
+msgid "Tags"
+msgstr ""
+
+#: confla/templates/confla/event_modal.html:25
+msgid "Language"
+msgstr "Jazyk"
+
+#: confla/templates/confla/event_modal.html:27
+msgid "Presentation"
+msgstr ""
+
+#: confla/templates/confla/event_modal.html:29
+msgid "Google doc"
+msgstr ""
+
+#: confla/templates/confla/event_modal.html:31
+msgid "Video"
+msgstr ""
+
+#: confla/templates/confla/event_popover.html:4
+msgid "Description:"
+msgstr ""
+
+#: confla/templates/confla/event_popover.html:6
+msgid "Speaker(s):"
+msgstr "Přednášející:"
+
+#: confla/templates/confla/event_popover.html:15
+msgid "Tags:"
+msgstr ""
+
+#: confla/templates/confla/event_popover.html:22
+msgid "Prerequisites:"
+msgstr "Požadavky:"
+
+#: confla/templates/confla/event_popover_admin.html:12
+msgid "Advanced"
+msgstr "Pokročilé"
 
 #: confla/templates/confla/login.html:9
 msgid "User Login"
@@ -85,9 +258,99 @@ msgstr "Nová registrace"
 msgid "You must be logged in!"
 msgstr "Musíte se přihlásit"
 
-#: confla/templates/confla/profile.html:10
+#: confla/templates/confla/profile.html:17
+msgid "Company"
+msgstr ""
+
+#: confla/templates/confla/profile.html:19
+msgid "Position"
+msgstr ""
+
+#: confla/templates/confla/profile.html:21
+msgid "Website"
+msgstr ""
+
+#: confla/templates/confla/profile.html:23
+msgid "Facebook"
+msgstr ""
+
+#: confla/templates/confla/profile.html:25
+msgid "Linkedin"
+msgstr ""
+
+#: confla/templates/confla/profile.html:27
+msgid "Twitter"
+msgstr ""
+
+#: confla/templates/confla/profile.html:29
+msgid "Google+"
+msgstr ""
+
+#: confla/templates/confla/profile.html:31
+#, fuzzy
+#| msgid "About"
+msgid "About me"
+msgstr "O konferenci"
+
+#: confla/templates/confla/profile.html:39
+msgid "Personal information"
+msgstr "Osobní údaje"
+
+#: confla/templates/confla/profile.html:42
+msgid "First name"
+msgstr "Křestní jméno"
+
+#: confla/templates/confla/profile.html:44
+msgid "Last name"
+msgstr "Příjmení"
+
+#: confla/templates/confla/profile.html:46
+msgid "Telephone number"
+msgstr "Telefonní číslo"
+
+#: confla/templates/confla/profile.html:60
 msgid "Submit changes"
 msgstr "Potvrdit změny"
+
+#: confla/templates/confla/register.html:11
+msgid "Registration"
+msgstr ""
+
+#: confla/templates/confla/user_table.html:19
+msgid "Display as"
+msgstr ""
+
+#: confla/templates/confla/user_table.html:21
+msgid "Grid"
+msgstr "Mřížka"
+
+#: confla/templates/confla/user_table.html:22
+msgid "List"
+msgstr "Seznam"
+
+#: confla/utils.py:11
+msgid "Unsupported file type. File must be a pdf or ... file."
+msgstr "Nepodporovaný typ souboru. Soubor musí být typu pdf nebo ..."
+
+#: confla/views.py:443
+msgid "Your account is disabled."
+msgstr "Váš účet není aktivní."
+
+#: confla/views.py:451
+msgid "Wrong username/password."
+msgstr "Chybné uživatelské jméno nebo heslo."
+
+#: confla/views.py:501
+msgid "Cannot remove primary email."
+msgstr ""
+
+#: settings.py:136
+msgid "Czech"
+msgstr "Čeština"
+
+#: settings.py:137
+msgid "English"
+msgstr "Angličtina"
 
 #: templates/admin/base_site.html:4
 msgid "Conflab Administration"
@@ -109,7 +372,7 @@ msgstr ""
 
 #: templates/admin/index.html:33
 msgid "Add"
-msgstr ""
+msgstr "Přidat"
 
 #: templates/admin/index.html:39
 msgid "Change"
@@ -134,6 +397,9 @@ msgstr ""
 #: templates/admin/index.html:76
 msgid "Unknown content"
 msgstr ""
+
+#~ msgid "Send us your talk"
+#~ msgstr "Zašlete nám svůj výtvor"
 
 #~ msgid "Welcome to Confla system. Not much to be seen around yet."
 #~ msgstr "Vitejte v Confla systemu. Zatim tu nic moc neni"

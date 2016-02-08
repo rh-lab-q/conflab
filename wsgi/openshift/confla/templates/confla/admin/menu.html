@@ -1,39 +1,33 @@
+{% load i18n %}
 <ul class="nav nav-sidebar">
+    {% if url_id %}
+    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>{{ conf.name }}</a></li>
+    <li {% if active == "edit" %} class="cf-active" {% endif %}><a href={% url 'confla:edit_conf' url_id %}>{% trans "Configuration" %}</a></li>
+    <li {% if active == "editschedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminsched' url_id %}>{% trans "Schedule" %}</a></li>
+    <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>{% trans "Import" %}</a></li>
+    <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">{% trans "Export" %}</a></li>
+    {% else %}
+    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>Overview</a></li>
+
     <li class="dropdown">
         <a class="dropdown-toggle" id="conf-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="dropdown-label">
-            {% if conf %}
-                {{conf.name}}
-            {% else %}
-                Conferences
-            {% endif %}
-            </span>
-            <i class="fa fa-caret-right"></i>
+            {% trans "Conferences" %}
+            </spn>
         </a>
         <ul class="dropdown-menu" aria-labelledby="conf-menu">
-            <li><a href={% url 'confla:create_conf'%}>Create conference</a></li>
-            
-            <li role="separator" class="divider"></li>
+
+            <li><a href={% url 'confla:create_conf'%}>{% trans "Create conference" %}</a></li>
             {% for conference in conf_list %}
             {% url 'confla:dashboard' conference.url_id as url %}
             <li><a href={{url}}>{{conference.name}}</a></li>
             {% endfor %}
+
         </ul>
+
     </li>
-    {% if url_id %}
-    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>Overview</a></li>
-    <li {% if active == "schedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminviewsched' url_id %}>Schedule</a>
-    {% if active == "editschedule" or active == "schedule" %}
-    <ul class="nav nav-inner-sidebar">
-        <li {% if active == "editschedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminsched' url_id %}>Edit schedule</a></li>
-    </ul>
-    {% endif %}
-    </li>
-    <li {% if active == "edit" %} class="cf-active" {% endif %}><a href={% url 'confla:edit_conf' url_id %}>Edit Conference</a></li>
-    <li {% if active == "config" %} class="cf-active" {% endif %}><a href="#">Configuration</a></li>
-    <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>Import</a></li>
-    <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">Export</a></li>
-    {% else %}
-    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>Overview</a></li>
+    <li> <a href="#">{% trans "Users" %}</a> </li>
+
+
     {% endif %}
 </ul>
