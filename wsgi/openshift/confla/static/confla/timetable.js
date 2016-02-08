@@ -803,7 +803,7 @@ function popoverInit(selector) {
             error: function(response) {
                 // Create error message and scroll to it
                 var error = response.responseText || 'Unknown error.';
-                var div = $('<div class="alert alert-danger">' + error + '</div>');
+                var div = $('<div class="alert alert-danger">' + (error + '').replace(/\n/g, '<br/>') + '</div>');
                 $(div).prepend('<span><i class="fa fa-exclamation-triangle fa-lg"></i> Error while saving event: </span>');
                 $(".sched-wrap").prepend(div);
                 // Smooth scroll
