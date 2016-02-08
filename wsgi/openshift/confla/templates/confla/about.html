@@ -20,7 +20,7 @@
   {% if conf.start_date|date:"y-m" == conf.end_date|date:"y-m" %}
 <h2>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
   {% else %}
-<h2>{{conf.start_date|date:"j. E"}} - {{conf.end_date|date:"j. E Y"}}</h2>
+<h2>{{conf.start_date|date:"j. E Y"}} - {{conf.end_date|date:"j. E Y"}}</h2>
   {% endif %}
 {% endif %}
 <h3>
