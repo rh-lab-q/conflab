@@ -20,7 +20,19 @@
             </div>
             <div class="col-xs-12 col-md-8">
                 <div class="conf-date">
-                    <h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h3>
+
+{% if conf.start_date = conf.end_date %}
+<h3>{{conf.end_date|date:"j. E Y"}}</h3>
+{% else %}
+  {% if conf.start_date|date:"y-m" == conf.end_date|date:"y-m" %}
+<h3>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h3>
+  {% else %}
+<h3>{{conf.start_date|date:"j. E"}} - {{conf.end_date|date:"j. E Y"}}</h3>
+  {% endif %}
+{% endif %}
+                    
+                    
+                    
                 </div>
                 <div class="conf-about">
                     {% if conf.about %}

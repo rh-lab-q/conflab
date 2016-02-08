@@ -14,7 +14,15 @@
 <div>
     <h1>{{conf.name}}</h1>
 </div>
+{% if conf.start_date = conf.end_date %}
+<h2>{{conf.end_date|date:"j. E Y"}}</h2>
+{% else %}
+  {% if conf.start_date|date:"y-m" == conf.end_date|date:"y-m" %}
 <h2>{{conf.start_date|date:"j."}} - {{conf.end_date|date:"j. E Y"}}</h2>
+  {% else %}
+<h2>{{conf.start_date|date:"j. E"}} - {{conf.end_date|date:"j. E Y"}}</h2>
+  {% endif %}
+{% endif %}
 <h3>
     {% if conf.timeslot_set.all %}
     <a class="confla-link" href={% url 'confla:event_list' url_id %}>{{events}} topics</a>,
