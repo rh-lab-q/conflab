@@ -76,7 +76,7 @@ class EventCreateForm(forms.ModelForm):
 class EventEditForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['topic', 'e_type_id', 'description', 'lang', 'slides', 'video',
+        fields = ['topic', 'description', 'lang', 'slides', 'video',
                   'google_doc_url', 'speaker', 'tags', 'prim_tag']
 
     def __init__(self, *args, **kwargs):

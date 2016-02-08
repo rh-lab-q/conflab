@@ -140,6 +140,13 @@ class EventEditView(generic.TemplateView):
     template_name = 'confla/event_edit.html'
 
     @permission_required('confla.can_organize', raise_exception=True)
+    def create_event_tag(request):
+        r = lambda: (random.randint(0,255)+255) // 2
+        c = '#%02x%02x%02x' % (r(),r(),r())
+        tag, created_id = EventTag.objects.get_or_create(name=request.POST['data'], color = c )
+        return HttpResponse(json.dumps({'name' :tag.name, 'color': tag.color, 'id': tag.id}), content_type="application/json")
+
+    @permission_required('confla.can_organize', raise_exception=True)
     def event_view(request, url_id, id=None):
         conf = get_conf_or_404(url_id)
 

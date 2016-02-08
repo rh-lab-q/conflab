@@ -588,6 +588,21 @@ function selectizePopover(selector) {
             labelField: 'name',
             searchField: ['name'],
             items: itemlist,
+            create: function(input, callback) {
+                var def = $.post(event_tag_link, {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    data: input
+                });
+                $.when(def).then(function (response){
+                    // Success
+                    var popover_id = $(select).closest(".popover")[0].id;
+                    // Propagate created option into the original form
+                    var option = "<option value=" + response.id + ">" + response.name + "</option>";
+                    $("[aria-describedby=" + popover_id + "]").closest(".event").find("#id_tags").append(option);
+                    callback(response);
+                });
+            },
+
             render: {
                 item: function(item, escape) {
                     return '<div>' +

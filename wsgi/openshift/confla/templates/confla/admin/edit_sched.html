@@ -150,6 +150,7 @@ var users = {{ user_list|safe }};
 var form_action = "{% url 'confla:saveEvent' url_id %}";
 var save_link = "{% url 'confla:saveTable' url_id %}"
 var popover_link = "{% url 'confla:eventPop_admin' url_id %}"
+var event_tag_link = "{% url 'confla:create_event_tag' %}"
 </script>
 </div><!-- sched-wrap -->
 {% endblock %}

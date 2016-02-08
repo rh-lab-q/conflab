@@ -24,7 +24,6 @@ class TimeslotAdmin(admin.ModelAdmin):
 
 admin.site.register(Room, RoomAdmin)
 admin.site.register(ConflaUser, UserAdmin)
-admin.site.register(EventType)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Paper, PaperAdmin)
 admin.site.register(Conference, ConfAdmin)
