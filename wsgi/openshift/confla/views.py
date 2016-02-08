@@ -119,6 +119,8 @@ class ConferenceView(generic.TemplateView):
         if form.is_valid():
             conf = form.save(commit=False)
             conf.save()
+            # Delete existing HasRoom relations
+            HasRoom.objects.filter(conference=conf).delete()
             for room in form.cleaned_data.get('rooms'):
                 created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
         else:

@@ -29,8 +29,6 @@ class ConfCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ConfCreateForm, self).__init__(*args, **kwargs)
 
-        self.initial['timedelta'] = '15'
-
         classes = 'form-control input-sm'
         for key in self.fields.keys():
             if key not in ['splash', 'icon', 'active']:
