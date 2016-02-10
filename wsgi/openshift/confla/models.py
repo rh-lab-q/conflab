@@ -102,8 +102,6 @@ class Conference(models.Model):
             event_set = event_set.filter(speaker=speaker_id)
         if room_id:
             event_set = event_set.filter(room=room_id)
-        if type_id:
-            event_set = event_set.filter(e_type=type_id)
         return event_set
 
 
@@ -195,15 +193,8 @@ class EventTag(models.Model):
     def __str__(self):
         return self.name
 
-class EventType(models.Model):
-    name = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.name
-
 class Event(models.Model):
     conf_id = models.ForeignKey(Conference)
-    e_type_id = models.ForeignKey(EventType)
     topic = models.CharField(max_length=256)
     description = models.TextField(blank=True)
     lang = models.CharField(max_length=6)

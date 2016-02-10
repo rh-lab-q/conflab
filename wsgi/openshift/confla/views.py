@@ -726,7 +726,6 @@ class TimetableView(generic.TemplateView):
                 if form.is_valid():
                     new_event = form.save(commit=False)
                     new_event.conf_id = conf
-                    new_event.e_type_id = EventType.objects.all()[0]
                     new_event.lang = "cz"
                     if "tags" in request.POST:
                         new_event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
@@ -922,7 +921,6 @@ class ImportView(generic.TemplateView):
                 # No existing event with given name, create one
                 newevent = Event()
                 newevent.conf_id = conf
-                newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
                 newevent.topic = event['topic']
                 newevent.description = event['description']
                 newevent.lang = event['lang']
@@ -957,7 +955,6 @@ class ImportView(generic.TemplateView):
                         continue
 
                 if setup_event or overwrite:
-                    newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
                     newevent.topic = event['topic']
                     newevent.description = event['description']
                     newevent.lang = event['lang']
@@ -1265,8 +1262,6 @@ class ImportView(generic.TemplateView):
                 else:
                     events_modified += 1
                 newevent.conf_id = conf
-                etype, created = EventType.objects.get_or_create(name=row[sp+1+i])
-                newevent.e_type_id = etype
                 newevent.topic = row[sp+2+i]
                 newevent.description = row[sp+3+i]
                 newevent.lang = 'CZ'
@@ -1324,7 +1319,6 @@ class ImportView(generic.TemplateView):
         # Create event
         newevent = Event()
         newevent.conf_id = conf
-        newevent.e_type_id, created = EventType.objects.get_or_create(name=event['type'])
         newevent.topic = event['topic']
         newevent.description = event['description']
         newevent.lang = event['lang']
@@ -1480,7 +1474,6 @@ class ExportView(generic.TemplateView):
                 session = {}
                 session['session_id'] = event.pk
                 session['lang'] = event.lang
-                session['type'] = event.e_type_id.name
                 # Primary tag color
                 if event.prim_tag:
                     session['room_color'] = event.prim_tag.color 
