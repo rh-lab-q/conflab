@@ -14,6 +14,10 @@ function setup_form(form){
         plugins: ['drag_drop'],
         maxItems: null,
     });
+
+    $('.input-daterange').each(function() {
+        $(this).datepicker({ format : "yyyy-mm-dd"});
+    });
 }
 
 $(document).ready(function() {

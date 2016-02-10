@@ -116,7 +116,13 @@
     </div>
 </div>
 <div class="row col-md-12">
-    <button class="btn btn-default" type="submit">{% trans "Create Conference" %}</button>
+    <button class="btn btn-default" type="submit">
+    {% if conf %}
+        {% trans "Save Changes" %}
+    {% else %}
+        {% trans "Create Conference" %}
+    {% endif %}
+    </button>
 </div>
 </form>
 
