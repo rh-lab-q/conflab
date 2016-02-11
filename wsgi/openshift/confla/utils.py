@@ -2,35 +2,42 @@ import os
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.utils.deconstruct import deconstructible
 
-#TODO: security++, more file types?
-def validate_papers(value):
-    extensions = ['.pdf']
-    ext = os.path.splitext(value.name)[1]
-    if not ext in extensions:
-        raise ValidationError(_("Unsupported file type. File must be a pdf or ... file."))
+@deconstructible
+class ConfRenamePath(object):
 
+    def __init__(self, path):
+        self.path = path
 
-# a helper function for renaming uploaded files
-def conf_rename_and_return_path(path):
-    def wrapper(instance, filename):
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
         filename = '{}.{}'.format(instance.url_id, ext)
-        return os.path.join(path, filename)
-    return wrapper
+        return os.path.join(self.path, filename)
 
-# a helper function for renaming uploaded avatars
-def user_rename_and_return_path(path):
-    def wrapper(instance, filename):
+@deconstructible
+class UserRenamePath(object):
+
+    def __init__(self, path):
+        self.path = path
+
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
         filename = '{}.{}'.format(instance.username, ext)
-        return os.path.join(path, filename)
-    return wrapper
+        return os.path.join(self.path, filename)
 
-# a helper function for renaming uploaded papers
-def paper_rename_and_return_path(path):
-    def wrapper(instance, filename):
+@deconstructible
+class PaperRenamePath(object):
+
+    def __init__(self, path):
+        self.path = path
+
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
         filename = '{}.{}'.format(instance.user.username, ext)
         return os.path.join(path, filename)
-    return wrapper
+
+splash_rename_and_return_path = ConfRenamePath('splash/')
+icon_rename_and_return_path = ConfRenamePath('icon/')
+user_rename_and_return_path = UserRenamePath('avatars/')
+paper_rename_and_return_path = PaperRenamePath('papers/')

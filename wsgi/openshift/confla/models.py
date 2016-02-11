@@ -6,8 +6,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
-from confla.utils import validate_papers, user_rename_and_return_path, paper_rename_and_return_path
-from confla.utils import conf_rename_and_return_path
+from confla.utils import user_rename_and_return_path, paper_rename_and_return_path
+from confla.utils import icon_rename_and_return_path, splash_rename_and_return_path
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
@@ -15,6 +15,8 @@ class Conference(models.Model):
     end_time = models.TimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
+    cfp_start = models.DateField(blank=True, null=True)
+    cfp_end = models.DateField(blank=True, null=True)
     rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+')
     url_id = models.CharField(max_length=256, unique=True)
     timedelta = models.IntegerField(default=10)
@@ -22,9 +24,9 @@ class Conference(models.Model):
     about = models.TextField(blank=True)
     venue = models.TextField(blank=True)
     gps = models.CharField(max_length=256, blank=True)
-    splash = models.ImageField(upload_to=conf_rename_and_return_path('splash/'),
+    splash = models.ImageField(upload_to=splash_rename_and_return_path,
                                 blank=True, null=True)
-    icon = models.ImageField(upload_to=conf_rename_and_return_path('icon/'),
+    icon = models.ImageField(upload_to=icon_rename_and_return_path,
                                 blank=True, null=True)
 
     def __str__(self):
@@ -122,7 +124,7 @@ class HasRoom(models.Model):
 class ConflaUser(AbstractUser):
     # name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
-    picture = models.ImageField(upload_to=user_rename_and_return_path('avatars/'),
+    picture = models.ImageField(upload_to=user_rename_and_return_path,
                                 blank=True, null=True)
     #avatar_url = models.URLField(max_length=512, blank=True, null=True)
     company = models.CharField(max_length=256, blank=True)
@@ -252,9 +254,8 @@ class Paper(models.Model):
     user = models.ForeignKey(ConflaUser)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
-    source = models.FileField(upload_to=paper_rename_and_return_path('papers/'),
-                                blank=True, null=True,
-                                validators=[validate_papers])
+    source = models.FileField(upload_to=paper_rename_and_return_path,
+                                blank=True, null=True)
     accepted = models.NullBooleanField()
     reviewer = models.ManyToManyField(ConflaUser, related_name='rev+', blank=True)
     review_notes = models.TextField()
