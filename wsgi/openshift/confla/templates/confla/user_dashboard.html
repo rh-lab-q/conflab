@@ -1,4 +1,5 @@
 {% extends "confla/base.html" %}
+{% load confla_filters %}
 
 {% load i18n %}
 {% load staticfiles %}
@@ -12,6 +13,46 @@
 
 <h2>{% trans "My profile" %}</h2>
 
+    <div id="speaker_{{speaker.pk}}" class="speaker-wrap">
+        <div class="speaker-header">
+            <h3 class="name">
+                {{ user.first_name }} {{ user.last_name }}
+            </h3>
+        </div>
+        <div class="speaker-body">
+
+            <div class="avatar">
+                {% if user.picture %}
+                <img src={{user.picture|crop:"100x100"}}>
+                {% else %}
+                <div class="no-avatar">
+                    <span>?</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                {% if user.company %}
+                <div class="company">
+                    {{ user.company }}
+                </div>
+                {% endif %}
+                {% if user.position %}
+                <div class="position">
+                    {{ user.position }}
+                </div>
+                {% endif %}
+                {% if user.bio %}
+                <div class="about">
+                    {{ user.bio }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+            <div style="clear:both;">&nbsp;</div>
+
+
+<a href={% url 'confla:profile' %} class="btn btn-default"> {% trans "Edit profile" %}</a>
 <a href="#" class="btn btn-default" disabled="disabled"> connect with linkedin</a>
 <a href="#" class="btn btn-default" disabled="disabled"> connect with facebook</a>
 <a href="#" class="btn btn-default" disabled="disabled"> connect with twitter</a>
@@ -21,9 +62,15 @@
 {% for conf in conf_list %}
   <h3>{{ conf.name }}</h3>
   {% for event in events %}
-    {{ event.get_start_time }}
-    {{ event.event_id.topic }}
-    <u>     {{ event.event_id.speaker.all }} </u>
+    {% if event.conf_id == conf %}
+
+      <a href="#">{{ event.topic }}</a>
+      {% if event.timeslot.start_time %}
+        {{ event.timeslot.start_time }}
+      {% else %}
+        Not scheduled
+      {% endif %}
+    {% endif %}
     <br/>
   {% endfor %}
 {% endfor %}

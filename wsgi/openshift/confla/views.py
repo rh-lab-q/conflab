@@ -502,8 +502,10 @@ class UserView(generic.TemplateView):
         user = request.user
         return render(request, 'confla/user_dashboard.html', 
             {
-                'conf_list' : Conference.objects.all().order_by('start_date'),
-                'events' : Timeslot.objects.all()
+                'conf_list' : Conference.objects.filter(event__speaker=user).order_by('start_date').distinct(),
+                'events' : Event.objects.filter(speaker=user),
+#                'events' : Timeslot.objects.filter(event_id__speaker=user)
+                'user' : ConflaUser.objects.get(username=user),
             })
 
     @login_required
