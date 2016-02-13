@@ -38,9 +38,20 @@ class AdminView(generic.TemplateView):
         conf = None
         if url_id:
             conf = get_conf_or_404(url_id)
+            events = Timeslot.objects.filter(event_id__conf_id=conf)
+            speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
+            tags = EventTag.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
+        else:
+            events = None
+            speakers = None
+            tags = None
+
         return render(request, "confla/admin/admin_base.html",
                         {   'url_id' : url_id,
                             'conf' : conf,
+                            'events' : events,
+                            'speakers' : speakers,
+                            'tags': tags,
                             'conf_list' : Conference.objects.all().order_by('start_date'),
                         })
 
@@ -84,6 +95,21 @@ class AdminView(generic.TemplateView):
                          'room_list' : [{'conf' : conf,
                                          'room' : x} for x in rooms],
                          'url_id' : url_id,
+                         'conf_list' : Conference.objects.all().order_by('start_date'),
+                    })
+
+    @permission_required('confla.can_organize', raise_exception=True)
+    def users(request, url_id=None):
+        if url_id:
+            conf = get_conf_or_404(url_id)
+            users = ConflaUser.objects.filter(events__conf_id=conf).distinct()
+        else:
+            conf = None
+            users = ConflaUser.objects.distinct()
+        return render(request, "confla/admin/users.html",
+                    {    'url_id' : url_id,
+                         'conf': conf,
+                         'users': users,
                          'conf_list' : Conference.objects.all().order_by('start_date'),
                     })
 

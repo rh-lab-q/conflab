@@ -16,6 +16,37 @@
 </div>
 <div class="admin-page col-xs-9 col-md-10 col-lg-11">
 {% block admin_page %}
+
+{% if url_id %}
+
+<h1> {% trans "Dashboard" %} </h1>
+Events is sidebar: XYZ | XYZ|minutes <br/>
+Events in schedule: {{ events|length }} | events|minutes <br/>
+Speakers in schedule: {{ speakers|length }} <br/>
+<br/>
+
+<table class="table table-striped table-hover">
+  <tr>
+    <th> {% trans "Tag" %} </th>
+    <th> {% trans "#" %}</th>
+    <th> {% trans "Duration" %}</th>
+    <th> {% trans "#" %}</th>
+    <th> {% trans "Duration" %}</th>
+  </tr>
+{% for tag in tags %}
+  <tr>
+    <td> {{ tag }} </td>
+    <td> tag.scheduled|length </td>
+    <td> tag.scheduled|minutes </td>
+    <td> tag.not_scheduled|length </td>
+    <td> tag.not_scheduled|minutes </td>
+  </tr>
+{% endfor %}
+</table>
+
+
+{% endif %}
+
 {% endblock %}
 </div>
 {% endblock %}
