@@ -113,6 +113,13 @@ class AdminView(generic.TemplateView):
                          'conf_list' : Conference.objects.all().order_by('start_date'),
                     })
 
+    @permission_required('confla.can_organize', raise_exception=True)
+    def conf_list(request):
+        return render(request, "confla/admin/conf_list.html",
+                    {
+                         'conf_list' : Conference.objects.all().order_by('start_date'),
+                    })
+
 class ConferenceView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def create_conf(request):

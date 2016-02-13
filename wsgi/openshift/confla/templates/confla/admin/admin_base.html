@@ -48,8 +48,8 @@ Speakers in schedule: {{ speakers|length }} <br/>
 
 <h1> {% trans "Dashboard" %} </h1>
 
-Conferences: {{ conf_list|length }} <br/>
-Users: {{ speakers|length }}
+{% trans "Conferences:" %} {{ conf_list|length }} <br/>
+{% trans "Users:" %} {{ speakers|length }}
 
 {% endif %}
 
