@@ -15,7 +15,7 @@
 {% if form.errors %}
     {{form.errors}}
 {% endif %}
-<form class="conf-form" action="{% url 'confla:save_conf' %}" method="post">{% csrf_token %}
+<form class="conf-form" action="{% url 'confla:save_conf' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-default">

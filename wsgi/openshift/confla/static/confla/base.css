@@ -70,3 +70,7 @@
 .confla-toggle {
     cursor:pointer;
 }
+
+.input-timerange input {
+    text-align: center;
+}

@@ -141,7 +141,7 @@ class ConferenceView(generic.TemplateView):
             conf = Conference.objects.get(url_id=request.POST['url_id'])
         except ObjectDoesNotExist:
             conf = None
-        form = ConfCreateForm(request.POST, instance=conf)
+        form = ConfCreateForm(request.POST, request.FILES, instance=conf)
         if form.is_valid():
             conf = form.save(commit=False)
             conf.save()
