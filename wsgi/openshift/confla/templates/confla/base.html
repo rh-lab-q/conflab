@@ -79,7 +79,7 @@
                         {% endif %}
                         <li role="separator" class="divider"></li>
                         {% endif %}
-                        <li><a href="{% url 'confla:profile' %}">{% trans "Profile" %}</a></li>
+                        <li><a href="{% url 'confla:profile' 'me' %}">{% trans "Profile" %}</a></li>
                         <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
                     </ul>
                 </li>

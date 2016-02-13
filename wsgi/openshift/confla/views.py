@@ -549,7 +549,9 @@ class UserView(generic.TemplateView):
             return HttpResponseRedirect(reverse('confla:profile'))
 
     @login_required
-    def view_profile(request):
+    def view_profile(request, url_username):
+        user = ConflaUser.objects.get(username=url_username),
+        # FIXME use selected user instead
         if request.method == 'POST':
             form = ProfileForm(data=request.POST, instance=request.user)
             if form.is_valid():
