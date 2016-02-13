@@ -136,9 +136,9 @@ class ConferenceView(generic.TemplateView):
 
     @transaction.atomic
     @permission_required('confla.can_organize', raise_exception=True)
-    def save_conf(request):
+    def save_conf(request, url_id=None):
         try:
-            conf = Conference.objects.get(url_id=request.POST['url_id'])
+            conf = Conference.objects.get(url_id=url_id)
         except ObjectDoesNotExist:
             conf = None
         form = ConfCreateForm(request.POST, request.FILES, instance=conf)
