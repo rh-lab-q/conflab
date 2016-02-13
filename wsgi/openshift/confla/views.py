@@ -15,7 +15,7 @@ from django.views import generic
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist, PermissionDenied
 from django.core.files import File
 from django.utils.translation import ugettext as _
 from django.utils import timezone
@@ -557,10 +557,12 @@ class UserView(generic.TemplateView):
 
     @login_required
     def view_profile(request, url_username):
-        user = ConflaUser.objects.get(username=url_username),
-        # FIXME use selected user instead
+        user = ConflaUser.objects.get(username=url_username)
+        # Don't allow to view/edit other persons' information without permission
+        if user != request.user and not request.user.has_perm('confla.can_organize'):
+            raise PermissionDenied
         if request.method == 'POST':
-            form = ProfileForm(data=request.POST, instance=request.user)
+            form = ProfileForm(data=request.POST, instance=user)
             if form.is_valid():
                 user = form.save(commit=False)
                 user.save()
