@@ -499,7 +499,12 @@ class UserView(generic.TemplateView):
 
     @login_required
     def my_view(request):
-        return render(request, UserView.template_name)
+        user = request.user
+        return render(request, 'confla/user_dashboard.html', 
+            {
+                'conf_list' : Conference.objects.all().order_by('start_date'),
+                'events' : Timeslot.objects.all()
+            })
 
     @login_required
     def add_email(request):

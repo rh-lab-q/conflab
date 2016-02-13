@@ -1,0 +1,36 @@
+{% extends "confla/base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrastyles %}
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+<h2>{% trans "My profile" %}</h2>
+
+<a href="#" class="btn btn-default" disabled="disabled"> connect with linkedin</a>
+<a href="#" class="btn btn-default" disabled="disabled"> connect with facebook</a>
+<a href="#" class="btn btn-default" disabled="disabled"> connect with twitter</a>
+
+<h2>{% trans "My talks" %}</h2>
+
+{% for conf in conf_list %}
+  <h3>{{ conf.name }}</h3>
+  {% for event in events %}
+    {{ event.get_start_time }}
+    {{ event.event_id.topic }}
+    <u>     {{ event.event_id.speaker.all }} </u>
+    <br/>
+  {% endfor %}
+{% endfor %}
+
+
+
+
+<h2></h2>
+
+{% endblock %}
