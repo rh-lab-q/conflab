@@ -1,3 +1,12 @@
+function setup_url_field() {
+    $("#id_name").change(function() {
+        $("#id_url_id").val($(this).val().replace(/ /g,'').toLowerCase());
+        return false;
+    }).keyup(function() {
+        $(this).change();
+    });
+}
+
 function setup_form(form){
     $(form).find(".selectized-input").selectize({
         create: function(input, callback) {
@@ -18,6 +27,8 @@ function setup_form(form){
     $('.input-daterange').each(function() {
         $(this).datepicker({ format : "yyyy-mm-dd"});
     });
+
+    setup_url_field();
 }
 
 $(document).ready(function() {
