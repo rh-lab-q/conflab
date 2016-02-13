@@ -40,6 +40,8 @@
                 </div> 
             </div>
         </div>
+
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 {% trans "Date and Time" %}
@@ -56,10 +58,11 @@
                         <input name="end_date" type="text" class="form-control" value={{end|date:"Y-m-d"}}>
                         {% endwith %}
                     </div>
+
                 </div>
                 <div class="form-group">
                     <label for="conf-time">{% trans "Start/End Time" %}</label>
-                    <div id="conf-time" class="input-group input-daterange">
+                    <div id="conf-time" class="input-group input-timerange">
                         {% with form.start_time.value|default_if_none:"" as start %}
                         <input name="start_time" type="text" class="form-control" value={{start|time:"H:i"}}>
                         {% endwith %}
@@ -82,7 +85,28 @@
             </div>
         </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% trans "Submission opened" %}
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="conf-date">{% trans "Start/End Date" %}</label>
+                    <div id="conf-date" class="input-group input-daterange">
+                        {% with form.cfp_start.value|default_if_none:"" as cfp_start %}
+                        <input name="cfp_start" type="text" class="form-control" value={{cfp_start|date:"Y-m-d"}}>
+                        {% endwith %}
+                        <span class="input-group-addon">to</span>
+                        {% with form.cfp_end.value|default_if_none:"" as cfp_end %}
+                        <input name="cfp_end" type="text" class="form-control" value={{cfp_end|date:"Y-m-d"}}>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">

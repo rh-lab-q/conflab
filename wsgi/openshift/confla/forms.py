@@ -18,9 +18,9 @@ class ConfCreateForm(forms.ModelForm):
     class Meta:
         model = Conference
         choices = (('5', '5'),('10', '10'),('15', '15'),('30', '30'),('60', '60'),)
-        fields = ['name', 'start_date', 'end_date', 'start_time',
+        fields = ['name', 'start_date', 'end_date', 'cfp_start', 'cfp_end', 'start_time',
             'end_time', 'rooms', 'url_id', 'timedelta', 'active',
-            'about', 'venue', 'gps', 'splash', 'icon']
+            'about', 'venue', 'gps', 'splash', 'icon' ]
 
         widgets = {
             'timedelta' : forms.Select(choices=choices),
