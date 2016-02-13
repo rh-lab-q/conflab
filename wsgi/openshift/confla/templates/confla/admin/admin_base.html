@@ -44,6 +44,12 @@ Speakers in schedule: {{ speakers|length }} <br/>
 {% endfor %}
 </table>
 
+{% else %}
+
+<h1> {% trans "Dashboard" %} </h1>
+
+Conferences: {{ conf_list|length }} <br/>
+Users: {{ speakers|length }}
 
 {% endif %}
 

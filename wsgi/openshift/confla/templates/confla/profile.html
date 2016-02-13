@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container">
-    <form action="{% url 'confla:profile' %}" method="post">{% csrf_token %}
+    <form action="{% url 'confla:profile' 'me' %}" method="post">{% csrf_token %}
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
