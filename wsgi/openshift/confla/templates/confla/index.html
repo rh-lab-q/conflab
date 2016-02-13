@@ -44,7 +44,9 @@
                     {% if conf.timeslot_set.all %}
                     <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-default">Schedule</a>
                     {% endif %}
+                    {% if conf.cfp_open %}
                     <a href="#" class="btn btn-default">Submit talk</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

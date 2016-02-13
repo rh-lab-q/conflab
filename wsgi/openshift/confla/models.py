@@ -32,6 +32,11 @@ class Conference(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def cfp_open(self):
+        return (self.cfp_start and self.cfp_end and
+            self.cfp_start <= datetime.now().date() <= self.cfp_end)
+
     def has_datetimes(self):
         return (self.start_time and self.end_time and self.start_date and self.end_date)
 
