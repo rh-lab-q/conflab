@@ -24,13 +24,13 @@
       <th> {% trans "Name" %} </th>
       <th> {% trans "Phone" %} </th>
       <th> {% trans "E-mail" %} </th>
-    <tr>
+    </tr>
     {% for user in users %}
     <tr>
       <td> <a href={% url 'confla:profile' user.username %}>{{ user.first_name }} {{ user.last_name }}</a> </td>
       <td> {{ user.phone }} </td>
       <td> {{ user.email }} </td>
-    <tr>
+    </tr>
     {% endfor %}
 </table>
 
