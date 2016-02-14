@@ -74,3 +74,8 @@
 .input-timerange input {
     text-align: center;
 }
+
+.required:after {
+    color: #e32;
+    content: ' *';
+}

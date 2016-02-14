@@ -31,15 +31,15 @@
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                    <label for="id_name">{% trans "Conference Name" %}</label>
+                    <label class="required" for="id_name">{% trans "Conference Name" %}</label>
                     {{ form.name }}
                 </div>
                 <div class="form-group">
-                    <label for="id_url_id">{% trans "URL Identifier" %}</label>
+                    <label class="required" for="id_url_id">{% trans "URL Identifier" %}</label>
                     {{ form.url_id }}
                 </div>
                 <div class="form-group">
-                    <label for="id_rooms">{% trans "Rooms" %}</label>
+                    <label class="required" for="id_rooms">{% trans "Rooms" %}</label>
                     {{ form.rooms }}
                 </div> 
                 <div class="form-group">
