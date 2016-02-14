@@ -11,6 +11,8 @@ from confla.utils import icon_rename_and_return_path, splash_rename_and_return_p
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
+    url_id = models.CharField(max_length=256, unique=True)
+    timezone = models.CharField(max_length=256)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
@@ -18,7 +20,6 @@ class Conference(models.Model):
     cfp_start = models.DateField(blank=True, null=True)
     cfp_end = models.DateField(blank=True, null=True)
     rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+')
-    url_id = models.CharField(max_length=256, unique=True)
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
     about = models.TextField(blank=True)

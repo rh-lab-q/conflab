@@ -1,3 +1,5 @@
+from pytz import common_timezones as tzs
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
@@ -20,10 +22,11 @@ class ConfCreateForm(forms.ModelForm):
         choices = (('5', '5'),('10', '10'),('15', '15'),('30', '30'),('60', '60'),)
         fields = ['name', 'start_date', 'end_date', 'cfp_start', 'cfp_end', 'start_time',
             'end_time', 'rooms', 'url_id', 'timedelta', 'active',
-            'about', 'venue', 'gps', 'splash', 'icon' ]
+            'about', 'venue', 'gps', 'splash', 'icon', 'timezone', ]
 
         widgets = {
             'timedelta' : forms.Select(choices=choices),
+            'timezone' : forms.Select(choices=zip(tzs, tzs)),
         }
 
     def __init__(self, *args, **kwargs):
