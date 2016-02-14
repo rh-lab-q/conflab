@@ -23,10 +23,12 @@ class ConfCreateForm(forms.ModelForm):
         fields = ['name', 'start_date', 'end_date', 'cfp_start', 'cfp_end', 'start_time',
             'end_time', 'rooms', 'url_id', 'timedelta', 'active',
             'about', 'venue', 'gps', 'splash', 'icon', 'timezone', ]
+        timezones = [(x,x) for x in tzs]
+        timezones.insert(0, ('',''))
 
         widgets = {
             'timedelta' : forms.Select(choices=choices),
-            'timezone' : forms.Select(choices=zip(tzs, tzs)),
+            'timezone' : forms.Select(choices=timezones),
         }
 
     def __init__(self, *args, **kwargs):

@@ -12,7 +12,7 @@ from confla.utils import icon_rename_and_return_path, splash_rename_and_return_p
 class Conference(models.Model):
     name = models.CharField(max_length=256)
     url_id = models.CharField(max_length=256, unique=True)
-    timezone = models.CharField(max_length=256)
+    timezone = models.CharField(max_length=256, blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
