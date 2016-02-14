@@ -117,7 +117,7 @@ class AdminView(generic.TemplateView):
     def conf_list(request):
         return render(request, "confla/admin/conf_list.html",
                     {
-                         'conf_list' : Conference.objects.all().order_by('start_date'),
+                         'conf_list' : Conference.objects.all().order_by('-start_date'),
                     })
 
 class ConferenceView(generic.TemplateView):
