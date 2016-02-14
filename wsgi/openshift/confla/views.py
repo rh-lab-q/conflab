@@ -42,9 +42,9 @@ class AdminView(generic.TemplateView):
             speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
             tags = EventTag.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
         else:
-            events = None
+            events = Event.objects.all()
             speakers = ConflaUser.objects.all()
-            tags = None
+            tags = EventTag.objects.all()
 
         return render(request, "confla/admin/admin_base.html",
                         {   'url_id' : url_id,

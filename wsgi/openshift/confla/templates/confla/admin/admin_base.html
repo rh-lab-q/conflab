@@ -49,7 +49,9 @@ Speakers in schedule: {{ speakers|length }} <br/>
 <h1> {% trans "Dashboard" %} </h1>
 
 {% trans "Conferences:" %} {{ conf_list|length }} <br/>
-{% trans "Users:" %} {{ speakers|length }}
+{% trans "Users:" %} {{ speakers|length }} <br/>
+{% trans "Events:" %} {{ events|length }} <br/>
+{% trans "Tags:" %} {{ tags|length }}
 
 {% endif %}
 
