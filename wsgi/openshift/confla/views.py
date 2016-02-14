@@ -1548,7 +1548,7 @@ class ExportView(generic.TemplateView):
 
         # Export users
         result ['users'] = []
-        for usr in ConflaUser.objects.all().exclude(username="admin"):
+        for usr in ConflaUser.objects.filter(events__conf_id=conf).distinct():
             user = {}
             user['username'] = usr.username
             user['name'] = usr.first_name + ' ' + usr.last_name
