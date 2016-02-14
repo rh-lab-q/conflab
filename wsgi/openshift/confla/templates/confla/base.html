@@ -78,6 +78,7 @@
                         {% endif %}
                         <li role="separator" class="divider"></li>
                         {% endif %}
+                        <li><a href="{% url 'confla:users' %}">{% trans "Dashboard" %}</a></li>
                         <li><a href="{% url 'confla:profile' user.username %}">{% trans "Profile" %}</a></li>
                         <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
                     </ul>
