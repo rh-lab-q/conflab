@@ -1,4 +1,5 @@
 {% extends "confla/base.html" %}
+{% load confla_filters %}
 {% load staticfiles %}
 {% load i18n %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/ownforms.css' %}" />
@@ -30,6 +31,8 @@
                             {{ form.google_plus }}
                     <label for="id_bio">{% trans "About me" %}</label>
                             {{ form.bio }}
+                    <label for="id_avatar">{% trans "Avatar" %}</label>
+                            {{ form.picture }}
                 </div>
             </div>
         </div>
@@ -51,6 +54,25 @@
                             <dd>{% if email.is_primary %}Primary: {% endif%}{{ email.address }}
                             {% endfor %}
                         </dl>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                   {% trans "Avatar" %}
+                </div>
+                <div class="panel-body">
+                    {{ form.picture }}
+                    <br/>
+                    {% if user.picture %}
+                    <img src={{user.picture|crop:"100x100"}}>
+                    {% else %}
+                    <div class="no-avatar">
+                        <span>?</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
