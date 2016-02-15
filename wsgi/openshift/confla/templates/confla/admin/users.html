@@ -27,7 +27,11 @@
     </tr>
     {% for user in users %}
     <tr>
+    {% if user.first_name|length == 0 and user.last_name|length == 0 %}
+      <td> <a href={% url 'confla:profile' user.username %}>{{ user.username }}</a> </td>
+    {% else %}
       <td> <a href={% url 'confla:profile' user.username %}>{{ user.first_name }} {{ user.last_name }}</a> </td>
+    {% endif %}
       <td> {{ user.phone }} </td>
       <td> {{ user.email }} </td>
     </tr>
