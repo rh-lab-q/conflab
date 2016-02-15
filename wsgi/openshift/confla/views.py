@@ -576,7 +576,7 @@ class UserView(generic.TemplateView):
                 # TODO: make own "Your changes have been saved." page
                 return HttpResponseRedirect(reverse('confla:thanks'))
         else:
-                form = ProfileForm(instance=request.user)
+                form = ProfileForm(instance=user)
                 email_form = EmailForm()
 
         return render(request, 'confla/profile.html',{
