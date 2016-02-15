@@ -173,7 +173,8 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
 
         for key in self.fields.keys():
-            self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
+            if key not in ['picture']:
+                self.fields[key].widget.attrs.update({'class' : 'form-control input-sm'})
 
 class AuthForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

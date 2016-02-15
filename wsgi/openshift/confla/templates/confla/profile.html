@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="container">
-    <form action="{% url 'confla:profile' user.username %}" method="post">{% csrf_token %}
+    <form action="{% url 'confla:profile' url_user.username %}" method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
@@ -64,8 +64,8 @@
                 <div class="panel-body">
                     {{ form.picture }}
                     <br/>
-                    {% if user.picture %}
-                    <img src={{user.picture|crop:"100x100"}}>
+                    {% if url_user.picture %}
+                    <img src={{url_user.picture|crop:"100x100"}}>
                     {% else %}
                     <div class="no-avatar">
                         <span>?</span>

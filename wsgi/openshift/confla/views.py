@@ -569,7 +569,7 @@ class UserView(generic.TemplateView):
         if user != request.user and not request.user.has_perm('confla.can_organize'):
             raise PermissionDenied
         if request.method == 'POST':
-            form = ProfileForm(data=request.POST, instance=user)
+            form = ProfileForm(request.POST, request.FILES, instance=user)
             if form.is_valid():
                 user = form.save(commit=False)
                 user.save()
@@ -581,6 +581,7 @@ class UserView(generic.TemplateView):
 
         return render(request, 'confla/profile.html',{
             'form' : form,
+            'url_user' : user,
             'email_list' : EmailAdress.objects.filter(user=request.user),
             'email_form' : email_form,
             })
