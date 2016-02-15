@@ -159,7 +159,6 @@ class ConferenceView(generic.TemplateView):
             rooms = []
             for room in request.POST.getlist('rooms'):
                 rooms.append(Room.objects.get(id=room))
-            print(rooms)
             for i, room in enumerate(rooms):
                 hr, created = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
                 hr.order = i;
