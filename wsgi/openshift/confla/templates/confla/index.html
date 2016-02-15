@@ -40,12 +40,12 @@
                     {% endif %}
                 </div>
                 <div class="btn-group">
-                    <a href={% url 'confla:splash' conf.url_id %} class="btn btn-default">Details</a>
+                    <a href={% url 'confla:splash' conf.url_id %} class="btn btn-default">{% trans "Details" %}</a>
                     {% if conf.timeslot_set.all %}
-                    <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-default">Schedule</a>
+                    <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-default">{% trans "Schedule" %}</a>
                     {% endif %}
                     {% if conf.cfp_open %}
-                    <a href="#" class="btn btn-default">Submit talk</a>
+                    <a href={% url 'confla:cfp' conf.url_id %} class="btn btn-default">{% trans "Submit talk" %}</a>
                     {% endif %}
                 </div>
             </div>
