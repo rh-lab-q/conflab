@@ -154,8 +154,14 @@ class ConferenceView(generic.TemplateView):
             conf.save()
             # Delete existing HasRoom relations
             HasRoom.objects.filter(conference=conf).delete()
-            for room in form.cleaned_data.get('rooms'):
-                created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+            rooms = []
+            for room in request.POST.getlist('rooms'):
+                rooms.append(Room.objects.get(id=room))
+            print(rooms)
+            for i, room in enumerate(rooms):
+                hr, created = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+                hr.order = i;
+                hr.save()
         else:
             template_name = 'confla/admin/create_conf.html'
             return render(request, template_name,
@@ -379,7 +385,7 @@ class ScheduleView(generic.TemplateView):
             raise Http404
 
         slot_list = {}
-        rooms = conf.rooms.all()
+        rooms = conf.rooms.all().order_by('hasroom__order')
         for room in rooms:
             slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
         time_list = []

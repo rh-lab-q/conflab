@@ -126,6 +126,7 @@ class HasRoom(models.Model):
     room = models.ForeignKey(Room)
     conference = models.ForeignKey(Conference)
     slot_length = models.IntegerField(default=10)
+    order = models.IntegerField(null=True)
 
 class ConflaUser(AbstractUser):
     # name = models.CharField(max_length=32)
