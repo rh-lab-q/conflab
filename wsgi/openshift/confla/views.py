@@ -7,6 +7,7 @@ import io
 import urllib
 from datetime import datetime, date, time
 
+from django.db.models import Count
 from django.template.loader import render_to_string
 from django.template.defaultfilters import date as _date
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, Http404
@@ -38,9 +39,10 @@ class AdminView(generic.TemplateView):
         conf = None
         if url_id:
             conf = get_conf_or_404(url_id)
-            events = Timeslot.objects.filter(event_id__conf_id=conf)
+            events = Event.objects.filter(conf_id=conf)
             speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
-            tags = EventTag.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
+#            tags = EventTag.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
+            tags = EventTag.objects.filter(event__conf_id=conf).values('name', 'color').annotate(count=Count('pk')).order_by('-count')
         else:
             events = Event.objects.all()
             speakers = ConflaUser.objects.all()
