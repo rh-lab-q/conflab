@@ -36,14 +36,6 @@
     {% endif %}
 </div>
 <div class="container">
-    {% if conf.timeslot_set.all %}
-
-    <div class="btn-group btn-group-justified">
-        <a href={% url 'confla:event_list' conf.url_id %} class="btn btn-lg btn-default {% if not events %}disabled{% endif %}" >Topics</a>
-        <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-lg btn-default {% if not events or not conf.start_date %}disabled{% endif %}">Schedule</a>
-        <a href={% url 'confla:speaker_grid' conf.url_id %} class="btn btn-lg btn-default {% if not speakers %}disabled{% endif %}">Speakers</a>
-    </div>
-    {% endif %}
     <div class="conf-about">
         {% if conf.about %}
         <h3>{% trans "About" %}</h3>

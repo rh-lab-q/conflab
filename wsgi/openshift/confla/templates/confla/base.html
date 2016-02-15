@@ -59,7 +59,19 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if url_id %}
 
-                <li><a href="{% url 'confla:schedule' url_id %}">{% trans "Schedule" %}</a></li>
+                <li>
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans "Schedule" %}
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                    <li><a href={% url 'confla:schedule' conf.url_id %} class="{% if not events or not conf.start_date %}disabled{% endif %}">{% trans "Grid" %}</a></li>
+                    <li><a href={% url 'confla:event_list' conf.url_id %} class="{% if not events %}disabled{% endif %}" >Topics</a></li>
+                    <li><a href={% url 'confla:speaker_grid' conf.url_id %} class="{% if not speakers %}disabled{% endif %}">Speakers</a></li>
+                </ul>
+                </li>
+
+
                 {% endif %}
 
                 {% if user.is_authenticated %}
@@ -78,13 +90,13 @@
                         {% endif %}
                         <li role="separator" class="divider"></li>
                         {% endif %}
-                        <li><a href="{% url 'confla:users' %}">{% trans "Dashboard" %}</a></li>
-                        <li><a href="{% url 'confla:profile' user.username %}">{% trans "Profile" %}</a></li>
-                        <li><a href="{% url 'confla:logout' %}">{% trans "Logout" %}</a></li>
+                        <li><a href="{% url 'confla:users' %}"> {% trans "Dashboard" %}</a></li>
+                        <li><a href="{% url 'confla:profile' user.username %}"><i class="fa fa-cog"></i> {% trans "Profile" %}</a></li>
+                        <li><a href="{% url 'confla:logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a></li>
                     </ul>
                 </li>
                 {% else %}
-                <li><a href="{% url 'confla:login' %}">{% trans "Login" %}</a></li>
+                <li><a href="{% url 'confla:login' %}"><i class="fa fa-sign-in"></i> {% trans "Login" %}</a></li>
                 {% endif %}
 
                 <li class="dropdown" id="language">
