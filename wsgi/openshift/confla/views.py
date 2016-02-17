@@ -1475,6 +1475,9 @@ class ExportView(generic.TemplateView):
                 end = datetime.combine(conf.end_date, conf.end_time).timestamp()
                 end_rfc = datetime.combine(conf.end_date, conf.end_time).strftime(rfc_time_format)
 
+            conf_checksum = 'FIXME' # this should be same value as in "/<url_id>/export/m_app/" for the conference
+            # i.e. it should change when events changes
+
             conf_dict = {    
                          'name' : conf.name,
                          'url' : url,
@@ -1485,6 +1488,7 @@ class ExportView(generic.TemplateView):
                          'end_rfc' : end_rfc,
                          'icon' : icon,
                          'splash' : splash,
+                         'checksum': conf_checksum,
                          }
             result['conferences'].append(conf_dict)
 
