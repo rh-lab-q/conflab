@@ -25,11 +25,6 @@ body > #page-container {
     color: #fff;
 }
 
-.dropdown-menu {
-    top: 0;
-    left: 100%;
-}
-
 .dropdown-toggle {
     cursor: pointer;
 }
