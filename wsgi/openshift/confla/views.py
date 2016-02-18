@@ -15,13 +15,16 @@ from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.staticfiles.storage import StaticFilesStorage
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, PermissionDenied
 from django.core.files import File
+from django.core.files.base import ContentFile
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.db import transaction
 from unidecode import unidecode
+
 
 from confla.forms import *
 from confla.models import *
@@ -1503,6 +1506,22 @@ class ExportView(generic.TemplateView):
 
     def m_app(request, url_id):
         conf = get_conf_or_404(url_id)
+        fn = conf.url_id + '.json'
+
+        # Check if the export exists
+        if not StaticFilesStorage().exists('exports/' + fn):
+            # Need to generate the export
+            ExportView.generate_json(request, url_id)
+
+        f = StaticFilesStorage().open('exports/' + fn, 'r')
+        content = f.read()
+        f.close()
+
+        return HttpResponse(content, content_type="application/json")
+
+    def generate_json(request, url_id):
+        conf = get_conf_or_404(url_id)
+        fn = conf.url_id + '.json'
 
         result = {}
         tz = timezone.get_default_timezone()
@@ -1612,7 +1631,16 @@ class ExportView(generic.TemplateView):
         # Generate checksum
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
 
-        return HttpResponse(json.dumps(result), content_type="application/json")
+        # Save the export into a file
+        content = json.dumps(result)
+        if StaticFilesStorage().exists('exports/' + fn):
+            # File already exists
+            f = StaticFilesStorage().open('exports/' + fn, 'w')
+            f.write(content)
+            f.close()
+        else:
+            # Need to create the file through the storage manager
+            StaticFilesStorage().save('exports/' + fn, ContentFile(content))
 
     def csv(request, url_id):
         conf = get_conf_or_404(url_id)
