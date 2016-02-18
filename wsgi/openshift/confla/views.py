@@ -37,10 +37,10 @@ class AdminView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
     def dashboard(request, url_id=None):
         conf = None
+        events = None
         if url_id:
             conf = get_conf_or_404(url_id)
-            events = Event.objects.filter(conf_id=conf)
-            speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
+            speakers = conf.get_speakers
 #            tags = EventTag.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
             tags = EventTag.objects.filter(event__conf_id=conf).values('name', 'color').annotate(count=Count('pk')).order_by('-count')
         else:

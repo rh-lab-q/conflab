@@ -1,4 +1,4 @@
-{% extends "confla/base.html" %}
+{% extends "confla/admin/admin_base.html" %}
 {% load i18n %}
 {% load staticfiles %}
 
@@ -10,30 +10,34 @@
         {% include "confla/admin/menu.html" with active="conf_list" %}
     {% endblock %}
     </div>
-
     {% block bott_menu %}
     {% endblock %}
 </div>
 <div class="admin-page col-xs-9 col-md-10 col-lg-11">
 {% block admin_page %}
-
 <h1>{%trans "Conferences" %}</h1>
-
 <table class="table table-striped table-hover">
     <tr>
-      <th> {% trans "Name" %} </th>
-    <tr>
+        <th> {% trans "Name" %} </th>
+        <th> {% trans "Start" %} </th>
+        <th> {% trans "End" %} </th>
+        <th> {% trans "Events (scheduled)" %} </th>
+        <th> {% trans "Speakers" %} </th>
+        <th> {% trans "Tags" %} </th>
+    </tr>
     {% for conference in conf_list %}
         {% url 'confla:dashboard' conference.url_id as url %}
     <tr>
-      <td><a href={{url}}>{{conference.name}}</a></td>
-    <tr>
+        <td><a href={{url}}>{{conference.name}}</a></td>
+        <td>{{conference.start_date}}</td>
+        <td>{{conference.end_date}}</td>
+        <td>{{conference.get_scheduled_events|length}}</td>
+        <td>{{conference.get_speakers|length}}</td>
+        <td>{{conference.get_tags|length}}</td>
+    </tr>
     {% endfor %}
 </table>
-
 <a href={% url 'confla:create_conf'%} class="btn btn-default" type="submit">{% trans "Create conference" %}</a>
-
-
 {% endblock %}
 </div>
 {% endblock %}

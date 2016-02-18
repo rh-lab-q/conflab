@@ -6,8 +6,8 @@
 {% if url_id %}
 
 <h1> {% trans "Dashboard" %} </h1>
-Events is sidebar: X <br/>
-Events in schedule: {{ events|length }} <br/>
+Scheduled events: {{ conf.get_scheduled_events|length }} <br/>
+Unscheduled events: {{ conf.get_unscheduled_events|length }} <br/>
 Speakers in schedule: {{ speakers|length }} <br/>
 <br/>
 
@@ -21,7 +21,7 @@ Speakers in schedule: {{ speakers|length }} <br/>
 
 {% for tag in tags %}
   <tr>
-    <td> <i style="color: {{ tag.color }}" class="fa fa-circle"></i> {{ tag.name }}   </td>
+    <td> <span style="background: {{ tag.color }}" class="tag-color"></span> {{ tag.name }}   </td>
     <td> {{ tag.count }} </td>
   </tr>
 {% empty %}

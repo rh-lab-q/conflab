@@ -103,15 +103,21 @@ class Conference(models.Model):
             date_list = []
         return date_list
 
-    # gets events in a conference, filter by speaker, room, type
-    def get_Events(self, speaker_id=None, room_id=None, type_id=None):
-        event_set = Event.objects.filter(conf=self.id)
-        if speaker_id:
-            event_set = event_set.filter(speaker=speaker_id)
-        if room_id:
-            event_set = event_set.filter(room=room_id)
-        return event_set
+    @property
+    def get_unscheduled_events(self):
+        return Event.objects.filter(conf_id=self, timeslot__isnull=True)
 
+    @property
+    def get_scheduled_events(self):
+        return Event.objects.filter(conf_id=self, timeslot__isnull=False)
+
+    @property
+    def get_speakers(self):
+        return ConflaUser.objects.filter(events__conf_id=self, events__timeslot__isnull=False).distinct()
+
+    @property
+    def get_tags(self):
+        return EventTag.objects.filter(event__conf_id=self, event__timeslot__isnull=False).distinct()
 
 class Room(models.Model):
     shortname = models.CharField(max_length=16)
