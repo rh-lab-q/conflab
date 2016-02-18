@@ -39,6 +39,8 @@ class ConfCreateForm(forms.ModelForm):
             if key not in ['splash', 'icon', 'active']:
                 self.fields[key].widget.attrs.update({'class' : classes})
 
+        for key in ['name', 'url_id']:
+            self.fields[key].widget.attrs.update({'required' : 'true'})
         self.fields['rooms'].widget.attrs.update({'class' : 'form-control input-sm selectized-input',})
 
 class RoomCreateForm(forms.ModelForm):

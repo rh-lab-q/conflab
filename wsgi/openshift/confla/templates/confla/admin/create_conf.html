@@ -13,7 +13,14 @@
 {% block admin_page %}
 <div class="container">
 {% if form.errors %}
-    {{form.errors}}
+
+    <div class="alert alert-danger">
+        <div class="alert-header">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+            <b>Error while creating conference:</b>
+        </div>
+        {{form.errors}}
+    </div>
 {% endif %}
 <form class="conf-form" action=
     {% if url_id %}
