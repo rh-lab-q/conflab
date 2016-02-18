@@ -48,7 +48,7 @@ class AdminView(generic.TemplateView):
             speakers = ConflaUser.objects.all()
             tags = EventTag.objects.all()
 
-        return render(request, "confla/admin/admin_base.html",
+        return render(request, "confla/admin/dashboard.html",
                         {   'url_id' : url_id,
                             'conf' : conf,
                             'events' : events,
