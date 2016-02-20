@@ -1483,8 +1483,10 @@ class ExportView(generic.TemplateView):
 
             conf_dict = {    
                          'name' : conf.name,
+                         'url_id': conf.url_id,
                          'url' : url,
                          'url_json' : url_json,
+                         'url_feedback': 'http://python-conflab.rhcloud.com/feedback/{url_id}/{session_id}/', # this is template, the {url_id} and {session_id} should be replaced in client
                          'start' : start,
                          'end' : end,
                          'start_rfc' : start_rfc,
