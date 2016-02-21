@@ -1639,6 +1639,8 @@ class ExportView(generic.TemplateView):
         else:
             result['places'] = []
 
+        result['timestamp'] = int(datetime.now().strftime("%s"))
+
         # Generate checksum
         result['checksum'] = hashlib.sha1(json.dumps(result).encode("utf-8")).hexdigest()
 
