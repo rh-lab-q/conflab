@@ -107,10 +107,10 @@ class AdminView(generic.TemplateView):
     def users(request, url_id=None):
         if url_id:
             conf = get_conf_or_404(url_id)
-            users = ConflaUser.objects.filter(events__conf_id=conf).distinct()
+            users = ConflaUser.objects.filter(events__conf_id=conf).distinct().order_by('username')
         else:
             conf = None
-            users = ConflaUser.objects.distinct()
+            users = ConflaUser.objects.distinct().order_by('username')
         return render(request, "confla/admin/users.html",
                     {    'url_id' : url_id,
                          'conf': conf,
