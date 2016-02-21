@@ -768,6 +768,8 @@ class TimetableView(generic.TemplateView):
 
         if(request.method == 'POST'):
             TimetableView.json_to_timeslots(request.POST['data'], url_id)
+            # Update JSON export
+            ExportView.generate_json(request, url_id)
             return HttpResponseRedirect(reverse('confla:thanks'))
 
     @permission_required('confla.can_organize', raise_exception=True)
