@@ -7,15 +7,6 @@
     height: 102px;
 }
 
-.no-avatar {
-    text-align: center;
-    color: #999;
-}
-
-.no-avatar > span {
-    font-size: 70px;
-}
-
 .speaker-wrap {
     border-top: 1px solid #999;
     padding-bottom: 20px;

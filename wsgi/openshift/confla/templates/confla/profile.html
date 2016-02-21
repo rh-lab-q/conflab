@@ -67,9 +67,7 @@
                     {% if url_user.picture %}
                     <img src={{url_user.picture|crop:"100x100"}}>
                     {% else %}
-                    <div class="no-avatar">
-                        <span>?</span>
-                    </div>
+                    <img style="width: 100px;" src={% static "confla/images/avatar_default.png" %}>
                     {% endif %}
                 </div>
             </div>

@@ -57,9 +57,7 @@
                                     {% if speaker.picture %}
                                     <img src={{speaker.picture|crop:"70x70"}}>
                                     {% else %}
-                                    <div class="no-avatar">
-                                        <span>?</span>
-                                    </div>
+                                    <img style="width: 70px;" src={% static "confla/images/avatar_default.png" %}>
                                     {% endif %}
                                 </a>
                             </div>
