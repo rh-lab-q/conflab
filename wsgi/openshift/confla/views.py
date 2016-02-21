@@ -1480,8 +1480,15 @@ class ExportView(generic.TemplateView):
                 end = datetime.combine(conf.end_date, conf.end_time).timestamp()
                 end_rfc = datetime.combine(conf.end_date, conf.end_time).strftime(rfc_time_format)
 
-            conf_checksum = 'FIXME' # this should be same value as in "/<url_id>/export/m_app/" for the conference
-            # i.e. it should change when events changes
+            if not StaticFilesStorage().exists('exports/' + conf.url_id + '.json'):
+                # Need to generate the export
+                ExportView.generate_json(request, conf.url_id)
+
+            f = StaticFilesStorage().open('exports/' + conf.url_id + '.json', 'r')
+            content = f.read()
+            f.close()
+            # Conference's export checksum
+            conf_checksum = json.loads(content)['checksum']
 
             conf_dict = {    
                          'name' : conf.name,
