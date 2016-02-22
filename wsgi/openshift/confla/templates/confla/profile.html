@@ -47,19 +47,11 @@
                     <label for="id_phone">{% trans "Telephone number" %}</label>
                         {{ form.phone }}
                     <br/>
-                        <dl>
-                            {% for email in email_list %}
-                            <dd>{% if email.is_primary %}Primary: {% endif%}{{ email.address }}
-                            {% endfor %}
-                        </dl>
-
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                   {% trans "Avatar" %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                       {% trans "Avatar" %}
                 </div>
                 <div class="panel-body">
                     {{ form.picture }}
@@ -69,6 +61,14 @@
                     {% else %}
                     <img style="width: 100px;" src={% static "confla/images/avatar_default.png" %}>
                     {% endif %}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                       {% trans "Email" %}
+                </div>
+                <div class="panel-body">
+                    <label for="id_email">{% trans "Email Address" %}</label>
                 </div>
             </div>
         </div>

@@ -11,15 +11,17 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 from django.template.defaultfilters import date as _date
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, Http404
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.staticfiles.storage import StaticFilesStorage
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, PermissionDenied
 from django.core.files import File
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.db import transaction
@@ -618,14 +620,18 @@ class UserView(generic.TemplateView):
 class RegisterView(generic.TemplateView):
     template_name = 'confla/thanks.html'
 
+    @transaction.atomic
     def user_register(request):
         if request.method == 'POST': # the form was submitted
             form = RegisterForm(request.POST)
             if form.is_valid():
                 user = form.save()
+                user.is_active = False
+                user.save()
                 email = EmailAdress()
                 email.user = user
                 email.address = user.email
+                email.is_active = True
                 try:
                     email.full_clean()
                 except ValidationError as e:
@@ -639,6 +645,27 @@ class RegisterView(generic.TemplateView):
                 else:
                     email.save()
 
+                email.activation_token = default_token_generator.make_token(user)
+                email.save()
+                url = request.build_absolute_uri(reverse('confla:activate_email',
+                                                 kwargs={'token' : email.activation_token}))
+                # Try sending activation token
+                try:
+                    # TODO: Proper email body
+                    send_mail('Confla: Activation Email',
+                              url,
+                              'cmconflab@gmail.com',
+                              [email.address])
+                except ConnectionRefusedError:
+                    # Email not set up properly in settings.py
+                    # FIXME: Dont activate account when live
+                    user.is_active = True
+                    email.is_active = True
+                    user.save()
+                    email.save()
+                    # Debugging output
+                    print(email.activation_token)
+
                 return HttpResponseRedirect(reverse('confla:thanks'))
         else:
             form = RegisterForm()
@@ -646,6 +673,22 @@ class RegisterView(generic.TemplateView):
         return render(request, 'confla/register.html', {
             'form' : form,
         })
+
+    @transaction.atomic
+    def activate_email(request, token):
+        # Get an email address object from the token
+        email = get_object_or_404(EmailAdress, activation_token=token)
+        if default_token_generator.check_token(email.user, token):
+            email.user.is_active = True
+            # Make sure the code can't be used again
+            email.user.last_login = datetime.now()
+            email.user.save()
+            email.is_active = True
+            email.save()
+        else:
+            raise Http404
+
+        return HttpResponseRedirect(reverse('confla:thanks'))
 
 class AddRoomsView(generic.TemplateView):
     template_name="confla/add_rooms.html"

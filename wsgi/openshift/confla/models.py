@@ -135,11 +135,9 @@ class HasRoom(models.Model):
     order = models.IntegerField(null=True)
 
 class ConflaUser(AbstractUser):
-    # name = models.CharField(max_length=32)
     phone = models.CharField(max_length=32, blank=True)
     picture = models.ImageField(upload_to=user_rename_and_return_path,
                                 blank=True, null=True)
-    #avatar_url = models.URLField(max_length=512, blank=True, null=True)
     company = models.CharField(max_length=256, blank=True)
     position = models.CharField(max_length=256, blank=True)
     web = models.URLField(max_length=512, blank=True)
