@@ -79,11 +79,15 @@
                 <li class="dropdown" id="user">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% if user.picture %}
-                        <img src={{user.picture|crop:"17x17"}}>
+                        <img id="home-avatar"  src={{user.picture|crop:"30x30"}}>
                         {% else %}
-                        <img style="width: 17px;" src={% static "confla/images/avatar_default.png" %}>
+                        <img id="home-avatar" src={% static "confla/images/avatar_default.png" %}>
                         {% endif %}
-                        {{ user.get_username }}
+                        {% if not user.first_name and not user.last_name %}
+                        {{ user.username }}
+                        {% else %}
+                        {{ user.first_name }} {{ user.last_name }}
+                        {% endif %}
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="userDropdown">

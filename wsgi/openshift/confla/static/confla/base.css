@@ -41,6 +41,15 @@
     max-height:100%;
 }
 
+#home-avatar {
+    float: left;
+    position: relative;
+    height: 30px;
+    width: 30px;
+    left: -5px;
+    top: -5px;
+}
+
 #image-brand {
     padding: 5px;
     margin: 0;
