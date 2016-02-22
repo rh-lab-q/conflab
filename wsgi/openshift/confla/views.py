@@ -300,6 +300,7 @@ class CfpView(generic.TemplateView):
             'user_form': user_form,
             'paper_form': paper_form,
             'url_id' : url_id,
+            'conf' : Conference.objects.get(url_id=url_id),
         })
 
     @login_required
