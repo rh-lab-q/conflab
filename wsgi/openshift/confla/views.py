@@ -278,7 +278,6 @@ class IndexView(generic.TemplateView):
 
 class CfpView(generic.TemplateView):
     # TODO: Combine these two methods
-    # TODO: Conference.objects.get(url_id=url_id) to get conference
     @login_required
     def save_form_and_register(request, url_id):
         conf = get_conf_or_404(url_id)
@@ -300,7 +299,7 @@ class CfpView(generic.TemplateView):
             'user_form': user_form,
             'paper_form': paper_form,
             'url_id' : url_id,
-            'conf' : Conference.objects.get(url_id=url_id),
+            'conf' : conf,
         })
 
     @login_required
@@ -319,6 +318,8 @@ class CfpView(generic.TemplateView):
 
         return render(request, 'confla/reg_talk.html', {
             'paper_form': paper_form,
+            'url_id' : url_id,
+            'conf' : conf,
         })
 
 class VolunteerView(generic.TemplateView):
