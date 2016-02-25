@@ -557,22 +557,39 @@ class UserView(generic.TemplateView):
 
         return email
 
+    @transaction.atomic
     @login_required
-    def delete_email(request):
-        if request.method == 'POST' and 'id' in request.POST:
-            email = EmailAdress.objects.get(id=request.POST['id'])
-            if email.is_primary:
-                return render(request, 'confla/profile.html',{
-                            'form' : ProfileForm(instance=request.user),
-                            'email_list' : EmailAdress.objects.filter(user=request.user),
-                            'email_form' : EmailForm(),
-                            'error_message' : _("Cannot remove primary email."),
-                })
-            else:
-                email.delete()
-            return HttpResponseRedirect(reverse('confla:profile'))
-        else:
-            return HttpResponseRedirect(reverse('confla:profile'))
+    def delete_email(request, url_username, id):
+        user = ConflaUser.objects.get(username=url_username)
+        email = user.emailadress_set.filter(id=id)
+        # Don't allow to edit other persons' information without permission
+        if user != request.user and not request.user.has_perm('confla.can_organize'):
+            raise PermissionDenied
+
+        # Check if the address actually belongs to the user
+        if not email:
+            raise PermissionDenied
+
+        email.delete()
+        return HttpResponseRedirect(reverse('confla:profile', kwargs={'url_username' : url_username}))
+
+
+    def set_email_primary(request, url_username, id):
+        user = ConflaUser.objects.get(username=url_username)
+        email = user.emailadress_set.filter(id=id)
+        # Don't allow to edit other persons' information without permission
+        if user != request.user and not request.user.has_perm('confla.can_organize'):
+            raise PermissionDenied
+
+        # Check if the address actually belongs to the user
+        if not email:
+            raise PermissionDenied
+
+        # If the email is inactive, don't make it primary
+        if not email.is_active:
+            user.email = email[0].address
+            user.save()
+        return HttpResponseRedirect(reverse('confla:profile', kwargs={'url_username' : url_username}))
 
     @login_required
     def view_profile(request, url_username):

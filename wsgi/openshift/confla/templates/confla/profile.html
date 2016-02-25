@@ -76,17 +76,25 @@
                                 {% if email.address == url_user.email %}
                                 <b>Primary</b>
                                 {% else %}
-                                <a href="#"><i class="pop-close fa fa-close fa-lg" title="Remove email"></i></a>
+                                    {% if email.is_active %}
+                                <a href={% url 'confla:set_primary_email' url_user.username email.id %}>Make primary</a>
+                                    {% else %}
+                                Inactive
+                                    {% endif %}
                                 {% endif %}
-                                <a href="#"><i class="pop-close fa fa-close fa-lg" title="Remove email"></i></a>
+                                <a href={% url 'confla:delete_email' url_user.username email.id %}><i class="pop-close fa fa-close fa-lg" title="Remove email" style="color: red"></i></a>
                             </span>
                         </div>
                         {% endfor %}
                     </div>
                     <div class="clear-both">
                         <label for="id_email">{% trans "New Address" %}</label>
-                        <input type="email" name="new_email" maxlength="254" id="id_email" class="form-control input-sm">
-                        <button class="btn btn-default" type="submit" name="submit-email">{% trans "Add email" %}</button>
+                        <div class="input-group">
+                            <input type="email" name="new_email" maxlength="254" id="id_email" class="form-control input-sm">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-sm" type="submit" name="submit-email">{% trans "Add email" %}</button>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
