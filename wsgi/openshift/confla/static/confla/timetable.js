@@ -599,6 +599,9 @@ function selectizePopover(selector) {
                     // Propagate created option into the original form
                     var option = "<option value=" + response.id + ">" + response.name + "</option>";
                     $("[aria-describedby=" + popover_id + "]").closest(".event").find("#id_tags").append(option);
+                    // Setup css class for the tag
+                    var rule = "<style type='text/css'>.tag" + response.id + "{ background : " + response.color + ";}"
+                    $("head").append(rule);
                     callback(response);
                 });
             },

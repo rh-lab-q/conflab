@@ -191,7 +191,7 @@ class EventEditView(generic.TemplateView):
         r = lambda: (random.randint(0,255)+255) // 2
         c = '#%02x%02x%02x' % (r(),r(),r())
         tag, created_id = EventTag.objects.get_or_create(name=request.POST['data'], color = c )
-        return HttpResponse(json.dumps({'name' :tag.name, 'color': tag.color, 'id': tag.id}), content_type="application/json")
+        return HttpResponse(json.dumps({'name' : tag.name, 'color': tag.color, 'id': tag.id}), content_type="application/json")
 
     @permission_required('confla.can_organize', raise_exception=True)
     def event_view(request, url_id, id=None):
