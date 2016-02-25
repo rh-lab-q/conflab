@@ -529,28 +529,33 @@ class UserView(generic.TemplateView):
                 'user' : ConflaUser.objects.get(username=user),
             })
 
-    @login_required
-    def add_email(request):
-        if request.method == 'POST':
-            form = EmailForm(request.POST)
-            user = request.user
-            email = EmailAdress()
-            email.user = user
-            email.address = request.POST['address']
-            try:
-                email.full_clean()
-            except ValidationError:
-                user_form = ProfileForm(instance=request.user)
-                return render(request, 'confla/profile.html', {
-                     'email_form' : form,
-                     'email_list' : EmailAdress.objects.filter(user=request.user),
-                     'form' : user_form,
-                    })
-            else:
-                email.save()
-            return HttpResponseRedirect(reverse('confla:profile'))
-        else:
-            return HttpResponseRedirect(reverse('confla:profile'))
+    @transaction.atomic
+    def add_email(request, user, address):
+        email = EmailAdress()
+        email.user = user
+        email.address = address
+        email.is_active = False
+        email.full_clean()
+        email.activation_token = default_token_generator.make_token(user)
+        email.save()
+        url = request.build_absolute_uri(reverse('confla:activate_email',
+                                         kwargs={'token' : email.activation_token}))
+        # Try sending activation token
+        try:
+            # TODO: Proper email body
+            send_mail('Confla: Activation Email',
+                      url,
+                      'cmconflab@gmail.com',
+                      [email.address])
+        except ConnectionRefusedError:
+            # Email not set up properly in settings.py
+            # FIXME: Dont activate email when live
+            email.is_active = True
+            email.save()
+            # Debugging output
+            print(email.activation_token)
+
+        return email
 
     @login_required
     def delete_email(request):
@@ -576,12 +581,15 @@ class UserView(generic.TemplateView):
         if user != request.user and not request.user.has_perm('confla.can_organize'):
             raise PermissionDenied
         if request.method == 'POST':
-            form = ProfileForm(request.POST, request.FILES, instance=user)
-            if form.is_valid():
-                user = form.save(commit=False)
-                user.save()
-                # TODO: make own "Your changes have been saved." page
-                return HttpResponseRedirect(reverse('confla:thanks'))
+            if 'submit-email' in request.POST:
+                UserView.add_email(request, user, request.POST['new_email'])
+            else:
+                form = ProfileForm(request.POST, request.FILES, instance=user)
+                if form.is_valid():
+                    user = form.save(commit=False)
+                    user.save()
+            # TODO: make own "Your changes have been saved." page
+            return HttpResponseRedirect(reverse('confla:thanks'))
         else:
                 form = ProfileForm(instance=user)
                 email_form = EmailForm()
@@ -628,12 +636,8 @@ class RegisterView(generic.TemplateView):
                 user = form.save()
                 user.is_active = False
                 user.save()
-                email = EmailAdress()
-                email.user = user
-                email.address = user.email
-                email.is_active = True
                 try:
-                    email.full_clean()
+                    UserView.add_email(request, user, user.email)
                 except ValidationError as e:
                     user.delete()
                     errors = []
@@ -642,29 +646,6 @@ class RegisterView(generic.TemplateView):
                     form.errors['__all__'] = form.error_class(errors)
                     return render(request, 'confla/register.html', {
                          'form' : form})
-                else:
-                    email.save()
-
-                email.activation_token = default_token_generator.make_token(user)
-                email.save()
-                url = request.build_absolute_uri(reverse('confla:activate_email',
-                                                 kwargs={'token' : email.activation_token}))
-                # Try sending activation token
-                try:
-                    # TODO: Proper email body
-                    send_mail('Confla: Activation Email',
-                              url,
-                              'cmconflab@gmail.com',
-                              [email.address])
-                except ConnectionRefusedError:
-                    # Email not set up properly in settings.py
-                    # FIXME: Dont activate account when live
-                    user.is_active = True
-                    email.is_active = True
-                    user.save()
-                    email.save()
-                    # Debugging output
-                    print(email.activation_token)
 
                 return HttpResponseRedirect(reverse('confla:thanks'))
         else:

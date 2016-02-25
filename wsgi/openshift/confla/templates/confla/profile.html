@@ -65,17 +65,36 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                       {% trans "Email" %}
+                       {% trans "Emails" %}
                 </div>
                 <div class="panel-body">
-                    <label for="id_email">{% trans "Email Address" %}</label>
+                    <div class="email-wrapper" style="border-bottom: 1px solid #ddd; margin-bottom: 10px; padding-bottom: 10px">
+                        {% for email in url_user.emailadress_set.all %}
+                        <div class="clear-both">
+                            {{ email.address }}
+                            <span style="float:right;">
+                                {% if email.address == url_user.email %}
+                                <b>Primary</b>
+                                {% else %}
+                                <a href="#"><i class="pop-close fa fa-close fa-lg" title="Remove email"></i></a>
+                                {% endif %}
+                                <a href="#"><i class="pop-close fa fa-close fa-lg" title="Remove email"></i></a>
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="clear-both">
+                        <label for="id_email">{% trans "New Address" %}</label>
+                        <input type="email" name="new_email" maxlength="254" id="id_email" class="form-control input-sm">
+                        <button class="btn btn-default" type="submit" name="submit-email">{% trans "Add email" %}</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class=col-md-1>
-            <button class="btn btn-default" type="submit">{% trans "Submit changes" %}</button>
+            <button class="btn btn-default" type="submit" name="submit-profile">{% trans "Submit changes" %}</button>
         <div/>
         <div class=col-md-11>
             {% if error_message %} <p>{{ error_message }}</a> {% endif %}
