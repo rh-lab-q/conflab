@@ -19,7 +19,7 @@ class Conference(models.Model):
     end_date = models.DateField(blank=True, null=True)
     cfp_start = models.DateField(blank=True, null=True)
     cfp_end = models.DateField(blank=True, null=True)
-    rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+')
+    rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+', blank=True)
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
     about = models.TextField(blank=True)
