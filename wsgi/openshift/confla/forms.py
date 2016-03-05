@@ -164,7 +164,7 @@ class ProfileForm(forms.ModelForm):
         model = ConflaUser
         fields = ['first_name', 'last_name', 'phone',
                   'company', 'position', 'web', 'facebook',
-                  'twitter', 'google_plus', 'linkedin', 'bio',
+                  'twitter', 'google_plus', 'linkedin', 'github', 'bio',
                   'picture',
             ]
         widgets = {
