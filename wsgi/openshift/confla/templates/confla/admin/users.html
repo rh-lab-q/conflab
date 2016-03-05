@@ -35,6 +35,11 @@
       <td> {{ user.phone }} </td>
       <td> {{ user.email }} </td>
     </tr>
+    {% empty %}
+    <tr>
+      <td colspan="3"> {% trans "List is empty" %} </td>
+    </tr>
+
     {% endfor %}
 </table>
 

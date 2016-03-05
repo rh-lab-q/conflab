@@ -64,6 +64,19 @@
 {% endblock %}
 
 {% block admin_page %}
+
+{% if not room_list %}
+
+    <div class="alert alert-warning">
+        <div class="alert-header">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+            {% trans "Warning: Conference have no rooms" %}
+        </div>
+    </div>
+
+
+{% endif %}
+
 <div class="spinnerwrap"><i style="text-align:center" class="fa fa-5x fa-spinner fa-spin"></i></div>
 {% csrf_token %}
 <div class="sched-wrap" style="display:none">
