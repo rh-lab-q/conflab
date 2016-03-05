@@ -47,9 +47,9 @@
                     <div class="speakers-wrap">
                         {% if event.speaker.all|length == 0 %}
                         {% elif event.speaker.all|length > 1 %}
-                        <h4>Speakers:</h4>
+                        <h4>{% trans "Speakers:" %}</h4>
                         {% else %}
-                        <h4>Speaker:</h4>
+                        <h4>{% trans "Speaker:" %}</h4>
                         {% endif %}
                         {% for speaker in event.speaker.all %}
                         <div class="speaker">
