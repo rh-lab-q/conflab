@@ -108,23 +108,6 @@
                 <li><a href="{% url 'confla:login' %}"><i class="fa fa-sign-in"></i> {% trans "Login" %}</a></li>
                 {% endif %}
 
-                <li class="dropdown" id="language">
-                    {% get_language_info_list for LANGUAGES as languages %}
-                    {% get_language_info for LANGUAGE_CODE as lang %}
-                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ lang.name_local|capfirst }}
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="languageMenu">
-                        <form action="{% url 'confla:set_language' %}" method="post">
-                            {% csrf_token %}
-                            {% for language in languages %}
-                            <li><button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-default lang" style="border-width:0;" title="{{ language.name_local }}" >
-    {{ language.name_local|capfirst }}</button></li>
-                            {% endfor %}
-                        </form>
-                    </ul>
-                </li>
                 <li>
                     <a id="home-brand" class="navbar-brand" href="{% url 'confla:index' %}">
                         <i class="fa fa-2x fa-home" style="vertical-align: middle;"></i>
