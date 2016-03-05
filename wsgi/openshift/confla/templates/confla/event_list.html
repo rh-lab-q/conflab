@@ -51,35 +51,8 @@
                         {% else %}
                         <h4>{% trans "Speaker:" %}</h4>
                         {% endif %}
-                        {% for speaker in event.speaker.all %}
-                        <div class="speaker">
-                            <div class="avatar">
-                                <a href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
-                                    {% if speaker.picture %}
-                                    <img src={{speaker.picture|crop:"70x70"}}>
-                                    {% else %}
-                                    <img style="width: 70px;" src={% static "confla/images/avatar_default.png" %}>
-                                    {% endif %}
-                                </a>
-                            </div>
-                            <div class="speaker-info">
-                                <a class="confla-link" href="{% url 'confla:speaker_list' url_id %}#speaker_{{ speaker.pk }}">
-                                    <b>
-                                        {{ speaker.first_name }} {{ speaker.last_name }}
-                                    </b>
-                                </a>
-                                {% if speaker.company %}
-                                <div class="company">
-                                    {{ speaker.company }}
-                                </div>
-                                {% endif %}
-                                {% if speaker.position %}
-                                <div class="position">
-                                    {{ speaker.position }}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
+                        {% for user in event.speaker.all %}
+                          {% include 'confla/user_detail.html' %}
                         {% endfor %}
                         <div class="clear-both"></div>
                     </div>
