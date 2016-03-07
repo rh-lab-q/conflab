@@ -3,13 +3,14 @@
     margin-right: 10px;
     float: left;
     /* 100x100 + 1px per border */
-    width: 102px;
-    height: 102px;
+    width: 72px;
+    height: 72px;
 }
 
 .speaker-wrap {
     border-top: 1px solid #999;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 .speaker-events {

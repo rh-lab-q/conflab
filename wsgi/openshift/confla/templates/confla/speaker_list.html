@@ -8,47 +8,17 @@
 
 {% block content %}
 <div class="speaker-list">
-    {% for speaker in speakers %}
-    <div id="speaker_{{speaker.pk}}" class="speaker-wrap">
-        <div class="speaker-header">
-            <h3 class="name">
-                {{ speaker.first_name }} {{ speaker.last_name }}
-            </h3>
-        </div>
-        <div class="speaker-body">
-            <div class="avatar">
-                {% if speaker.picture %}
-                <img src={{speaker.picture|crop:"100x100"}}>
-                {% else %}
-                <img style="width: 100px;" src={% static "confla/images/avatar_default.png" %}>
-                {% endif %}
-            </div>
-            <div class="speaker-info">
-                {% if speaker.company %}
-                <div class="company">
-                    {{ speaker.company }}
-                </div>
-                {% endif %}
-                {% if speaker.position %}
-                <div class="position">
-                    {{ speaker.position }}
-                </div>
-                {% endif %}
-                {% if speaker.bio %}
-                <div class="about">
-                    {{ speaker.bio }}
-                </div>
-                {% endif %}
-            </div>
+    {% for user in speakers %}
+    <div id="speaker_{{user.pk}}" class="speaker-wrap">
+      {% include 'confla/user_detail.html' %}
             <div class="speaker-events clear-both">
-                {% for event in speaker|filter_events:conf %}
+                {% for event in user|filter_events:conf %}
                 <div class="speaker-event">
                     {{ event.timeslot.start_time|date:"D" }}, {{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}: 
                     <a href="{% url 'confla:event_list' url_id %}#event_{{ event.id }}">{{ event.topic }}</a>
                 </div>
                 {% endfor %}
             </div>
-        </div>
     </div>
     {% endfor %}
 </div>
