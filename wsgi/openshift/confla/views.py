@@ -63,49 +63,6 @@ class AdminView(generic.TemplateView):
                         })
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def schedule(request, url_id):
-        conf = get_conf_or_404(url_id)
-        if (not conf.has_datetimes()):
-            return render(request, "confla/admin/user_sched.html",
-                     { 'conf'   : conf,
-                       'url_id' : url_id,
-                       'conf_list' : Conference.objects.all().order_by('start_date'),
-                    })
-
-        slot_list = {}
-        rooms = conf.rooms.all().order_by('hasroom__order')
-        for room in rooms:
-            slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
-        time_list = []
-        start_list = conf.get_datetime_time_list()
-        for date in conf.get_datetime_date_list():
-            time_dict = {}
-            time_dict["day"] = date.strftime("%A, %d.%m.")
-            time_dict["list"] = []
-            for start_time in start_list:
-                time = {}
-                time['short'] = start_time.strftime("%H:%M") 
-                time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
-                time['slots'] = []
-                for room in rooms:
-                    for slot in slot_list[room.shortname]:
-                        if slot.get_start_datetime.strftime("%x %H:%M") == time['full']:
-                            time['slots'].append(slot)
-                            break
-                    else:
-                        time['slots'].append(None)
-                time_dict["list"].append(time)
-            time_list.append(time_dict)
-        return render(request, "confla/admin/user_sched.html",
-                    {    'time_list' : time_list,
-                         'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
-                         'room_list' : [{'conf' : conf,
-                                         'room' : x} for x in rooms],
-                         'url_id' : url_id,
-                         'conf_list' : Conference.objects.all().order_by('start_date'),
-                    })
-
-    @permission_required('confla.can_organize', raise_exception=True)
     def users(request, url_id=None):
         if url_id:
             conf = get_conf_or_404(url_id)
@@ -763,7 +720,7 @@ class TimetableView(generic.TemplateView):
 
         users = ConflaUser.objects.all()
         tags = EventTag.objects.all()
-        rooms = conf.rooms.all()
+        rooms = conf.rooms.all().order_by('hasroom__order')
         slot_list = {}
         for room in rooms:
             slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
@@ -788,7 +745,7 @@ class TimetableView(generic.TemplateView):
                 time_dict["list"].append(time)
             time_list.append(time_dict)
         room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
-                      'room' : x} for x in conf.rooms.all()]
+                      'room' : x} for x in rooms]
         return render(request, TimetableView.template_name,
                       {  'conf'      : conf,
                          'event_create' : EventCreateForm(),

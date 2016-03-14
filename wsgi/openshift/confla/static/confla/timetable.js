@@ -125,11 +125,11 @@ function eventInit(selector) {
                     return true;
                 }
             },
-            containment: "body",
+            containment: "#table-wrap",
             cursor: "grabbing",
             opacity: 0.7,
             //stack: ".item",
-            appendTo: "body",
+            appendTo: "#table-wrap",
             zIndex: 10000,
             cursorAt: { top: 20, left: 20 },
             helper: function () {
