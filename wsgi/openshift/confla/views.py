@@ -89,7 +89,7 @@ class AdminView(generic.TemplateView):
                 time['slots'] = []
                 for room in rooms:
                     for slot in slot_list[room.shortname]:
-                        if slot.get_start_datetime == time['full']:
+                        if slot.get_start_datetime.strftime("%x %H:%M") == time['full']:
                             time['slots'].append(slot)
                             break
                     else:
@@ -392,6 +392,7 @@ class ScheduleView(generic.TemplateView):
         if (not conf.has_datetimes()):
             raise Http404
 
+        delta = timedelta(minutes=conf.timedelta)
         slot_list = {}
         rooms = conf.rooms.all().order_by('hasroom__order')
         for room in rooms:
@@ -404,16 +405,17 @@ class ScheduleView(generic.TemplateView):
             time_dict["list"] = []
             for start_time in start_list:
                 time = {}
+                tz = timezone.get_default_timezone()
+                slot_dt = tz.localize(datetime.combine(date, start_time))
                 time['short'] = start_time.strftime("%H:%M") 
-                time['full'] = datetime.combine(date, start_time).strftime("%x %H:%M") 
+                time['full'] = slot_dt.strftime("%x %H:%M")
+                time['dt'] = slot_dt
                 time['slots'] = []
-                for room in rooms:
+                for i, room in enumerate(rooms):
+                    time['slots'].append([])
                     for slot in slot_list[room.shortname]:
-                        if slot.get_start_datetime == time['full']:
-                            time['slots'].append(slot)
-                            break
-                    else:
-                        time['slots'].append(None)
+                        if slot_dt <= slot.get_start_datetime < slot_dt+delta:
+                            time['slots'][i].append(slot)
                 time_dict["list"].append(time)
             time_list.append(time_dict)
 
@@ -450,7 +452,7 @@ class ScheduleView(generic.TemplateView):
                     time['full'] = start_time.strftime("%x %H:%M") 
                     time['slots'] = []
                     for slot in slot_list:
-                        if slot.get_start_datetime == time['full']:
+                        if slot.get_start_datetime.strftime("%x %H:%M") == time['full']:
                             time['slots'].append(slot)
                     time_dict["list"].append(time)
             time_list.append(time_dict)
@@ -778,7 +780,7 @@ class TimetableView(generic.TemplateView):
                 time['slots'] = []
                 for room in rooms:
                     for slot in slot_list[room.shortname]:
-                        if slot.get_start_datetime == time['full']:
+                        if slot.get_start_datetime.strftime("%x %H:%M") == time['full']:
                             time['slots'].append(slot)
                             break
                     else:
@@ -1723,7 +1725,7 @@ class ExportView(generic.TemplateView):
                 time['slots'] = []
                 for room in rooms:
                     for slot in slot_list[room.shortname]:
-                        if slot.get_start_datetime == time['full']:
+                        if slot.get_start_datetime.strftime("%x %H:%M") == time['full']:
                             end_time = slot.get_end_time
                             time['slots'].append(start_time.strftime("%H:%M") + ' - ' + end_time)
                             time['slots'].append(slot.event_id.topic)

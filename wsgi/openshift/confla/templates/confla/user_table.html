@@ -46,12 +46,12 @@
                 {% for t in day.list %}
                     <tr>
                         <td>{{ t.short }}</td>
-                        {% for s in t.slots %}
-                        {% if s %}
+                        {% for slot in t.slots %}
+                        {% if slot %}
                         <td>
                         <div class="wrap">
-                        {% if s.event_id %}
-                            <div class="item" style="height: {{ s.length|set_height:"31"}}">
+                        {% for s in slot %}
+                        <div class="item" style="top: {{ s|event_offset:t.dt}}; height: {{ s|set_height}}">
                             {% with e=s.event_id %}
                             <div class="event" style="position:absolute" event-id={{e.id}}>
                                     <div class="event-visible {{e|tag_class}}">
@@ -67,7 +67,8 @@
                                 </div>
                             {% endwith %}
                             </div>
-                        {% endif %}
+                        </div>
+                        {% endfor %}
                         </div><!-- wrap -->
                         </td>
                         {% else %}

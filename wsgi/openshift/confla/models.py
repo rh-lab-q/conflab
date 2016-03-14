@@ -244,7 +244,7 @@ class Timeslot(models.Model):
 
     @property
     def get_start_datetime(self):
-        return self.start_time.astimezone(timezone.get_default_timezone()).strftime("%x %H:%M")
+        return self.start_time.astimezone(timezone.get_default_timezone())
 
     @property
     def get_end_time(self):
@@ -258,7 +258,7 @@ class Timeslot(models.Model):
     @property
     def length(self):
         if self.start_time and self.end_time:
-            return round(((self.end_time - self.start_time).seconds / 60) / self.conf_id.timedelta)
+            return ((self.end_time - self.start_time).seconds / 60) / self.conf_id.timedelta
 
 class Paper(models.Model):
     conf_id = models.ForeignKey(Conference)

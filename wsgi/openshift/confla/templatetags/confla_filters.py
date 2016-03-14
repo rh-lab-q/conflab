@@ -10,6 +10,7 @@ from confla.forms import EventCreateForm, EventEditForm
 
 
 register = template.Library()
+cellsize = 31
 
 @register.filter
 def filter_events(speaker, conf):
@@ -35,9 +36,17 @@ def tag_class(value):
     return "tag" + str(value.prim_tag.id) if value.prim_tag else "tag0"
 
 @register.filter
-def set_height(value, arg):
-    size = int(arg)
-    return str(size*value-2) + "px" # 2 is border size in pixels
+def set_height(slot):
+    return str(cellsize*slot.length-2) + "px" # 2 is border size in pixels
+
+@register.filter
+def event_offset(slot, slot_dt):
+    time_offset = (slot.get_start_datetime - slot_dt).seconds/60
+    delta = slot.event_id.conf_id.timedelta
+    offset = (time_offset * cellsize)/delta
+    if offset == 1:
+        offset = 0
+    return str(offset) + 'px';
 
 def resized_path(path, size):
     "Returns the path for the resized image."
