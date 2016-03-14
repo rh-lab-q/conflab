@@ -594,7 +594,7 @@ class UserView(generic.TemplateView):
 
         conf = get_conf_or_404(url_id)
 
-        speakers = ConflaUser.objects.filter(events__conf_id=conf).distinct()
+        speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
         return render(request, template_name, {
                         'speakers' : speakers,
                         'url_id' : url_id,
