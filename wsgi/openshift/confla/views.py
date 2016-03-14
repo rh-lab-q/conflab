@@ -73,7 +73,7 @@ class AdminView(generic.TemplateView):
                     })
 
         slot_list = {}
-        rooms = conf.rooms.all()
+        rooms = conf.rooms.all().order_by('hasroom__order')
         for room in rooms:
             slot_list[room.shortname] = Timeslot.objects.filter(conf_id=conf, room_id=room).order_by("start_time")
         time_list = []
