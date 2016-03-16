@@ -744,7 +744,6 @@ class TimetableView(generic.TemplateView):
                     for slot in slot_list[room.shortname]:
                         if slot_dt <= slot.get_start_datetime < slot_dt+delta:
                             time['slots'][i].append(slot)
-                print(time['slots'])
                 time_dict["list"].append(time)
             time_list.append(time_dict)
         room_list = [{'slot_len' : x.hasroom_set.get(conference=conf).slot_length,
