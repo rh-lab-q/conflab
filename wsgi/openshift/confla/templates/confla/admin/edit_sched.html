@@ -100,11 +100,12 @@
             {% for t in day.list %}
                 <tr>
                     <td>{{ t.short }}</td>
-                    {% for s in t.slots %}
+                    {% for slot in t.slots %}
                     <td>
                         <div class="wrap">
-                        {% if s %}
-                        <div class="item" deltalen={{s.length}} data-toggle="popover">
+                        {% if slot %}
+                        {% for s in slot %}
+                        <div class="item" style="top: {{ s|event_offset:t.dt}}" deltalen={{s.length}} data-toggle="popover">
                             <span class="start" style=" display:none">Starts at: {{t.short}}</span>
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}
@@ -139,6 +140,7 @@
                             {% endwith %}
                             {% endif %}
                         </div><!-- item -->
+                        {% endfor %}
                         {% else %}
                         <div class="item empty" deltalen="default" slot-id=0 data-toggle="popover">
                             <span class="start" style=" display:none">Starts at: {{t.short}}</span>
