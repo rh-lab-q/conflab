@@ -184,11 +184,12 @@ function itemInit(selector) {
         })
     });
     // Setup wrap as the droppable
-    $(selector).parent().droppable({
+    $(selector).droppable({
         accept: ".event",
         tolerance: "pointer",
         drop: function( event, ui ) {
-            item = $(this).find(".item");
+            event.stopImmediatePropagation();
+            item = $(this);
             // Dropped into another slot
             if (!$(item).is($(ui.draggable).parent())) {
                 // Don't append empty events to event list
@@ -227,7 +228,8 @@ function itemInit(selector) {
             $(".drag-help").remove();
         },
         over: function(event, ui) {
-            var item = $(this).find(".item");
+            event.stopImmediatePropagation();
+            var item = $(this);
             var col = item.closest("td");
             var row = item.closest("tr");
             var index = col.index() + 1;
@@ -247,16 +249,16 @@ function itemInit(selector) {
                         var slot_len_drag = $(ui.draggable).closest("table").find("th:nth-child(" + index_drag + ")").attr("slot_len");
                         item_drag.addClass("empty");
                         item_drag.append($(item).find(".event").clone().addClass("drag-help").show());
-                        item.addClass("empty");
+                        //item.addClass("empty");
                         $(item).find(".event").hide();
                         $(item).append($(ui.draggable).clone().addClass("drag-help").show());
                         $(ui.draggable).hide();
 
-                        var new_height = countEventHeight(row, col, item_drag.height());
+                        var new_height = item_drag.height();
                         item.css("overflow", "visible");
                         item.find(".drag-help").height(new_height);
 
-                        new_height = countEventHeight(row_drag, col_drag, item.height());
+                        new_height = item.height();
                         item_drag.css("overflow", "visible");
                         item_drag.find(".drag-help").height(new_height);
                     }
@@ -278,7 +280,7 @@ function itemInit(selector) {
             }, 0);
         },
         out: function(event, ui) {
-            item = $(this).find(".item");
+            item = $(this);
             if (!$(ui.draggable).parent().is("#event-list")) {
                 // Dragged out of a item
                 if ($(item).is($(ui.draggable).parent())) {
@@ -299,7 +301,7 @@ function itemInit(selector) {
 
             item.css("overflow", "");
             $(ui.draggable).parent().css("overflow", "");
-            $(".drag-help").remove();
+            item.find(".drag-help").remove();
             // Fix wrong class for nonempty items
             $(".empty .event:visible").filter(":not(.drag-help)").each(function() {
                 $(this).closest(".item").removeClass("empty");
@@ -309,11 +311,14 @@ function itemInit(selector) {
 }
 
 function emptyItemInit(selector) {
-    $(selector).parent().droppable({
+    $(selector).droppable({
         accept: ".event",
         tolerance: "pointer",
         drop: function( event, ui ) {
-            var item = $(this).find(".item");
+            var item = $(this);
+            // Exit if there is no helper present
+            if (!$(".drag-help").length)
+                return
             // Dont drop into itself
             if (!$(item).is($(ui.draggable).parent())) {
                 if (!$(ui.draggable).parent().is("#event-list")) {
@@ -321,7 +326,7 @@ function emptyItemInit(selector) {
                     var slot = $(ui.draggable).parent();
                     slot.addClass("empty");
                     slot.resizable("destroy");
-                    slot.parent().droppable("destroy");
+                    slot.droppable("destroy");
                     emptyItemInit(slot);
                 }
                 else {
@@ -343,8 +348,7 @@ function emptyItemInit(selector) {
             $(".drag-help").remove();
         },
         over: function(event, ui) {
-            var item = $(this).find(".item");
-            $(".drag-help").remove();
+            var item = $(this);
             // Ignore over event from yourself
             if (!$(item).is($(ui.draggable).parent())) {
                 var new_height;
@@ -352,6 +356,11 @@ function emptyItemInit(selector) {
                 var row = item.closest("tr");
                 // Ensure the code is run after out finishes
                 setTimeout(function () {
+                    // Exit if there's another helper present
+                    if ($(".drag-help").length)
+                        return
+                    $(".drag-help").remove();
+
                     if (!$(ui.draggable).parent().is("#event-list")) {
                         // Dragged from a different item
                         if (!$(item).is($(ui.draggable).parent())) {
@@ -376,13 +385,14 @@ function emptyItemInit(selector) {
             }
         },
         out: function(event, ui) {
-            var item = $(this).find(".item");
+            var item = $(this);
 
-            $(".drag-help").remove();
+            item.find(".drag-help").remove();
             item.css("overflow", "");
         }
     });
     $(selector).closest("td").off("click").on("click", ".item", appendEvent);
+    $(selector).height(itemHeight);
 }
 
 function createEvent() {
@@ -841,7 +851,7 @@ window.addEventListener("beforeunload", function (event) {
 });
 
 $(document).ready(function() {
-    // Go through all .item objects and make them the right size
+
     $(".item").height(function(){
         var len = $(this).attr("deltalen");
         if (len == "default") len = 1;
@@ -871,7 +881,7 @@ $(document).ready(function() {
             if (!$(ui.draggable).parent().is("#event-list")) {
                 var item = $(ui.draggable).parent()
                 item.addClass("empty");
-                item.parent().droppable("destroy");
+                item.droppable("destroy");
                 item.resizable("destroy");
                 emptyItemInit(item);
             }
@@ -879,13 +889,13 @@ $(document).ready(function() {
             $(this).find("#event-list").append($(ui.draggable).show());
             $(".item-buttons:visible", this).hide();
             $("#filter_input").change();
-            $(".wrap .empty").closest(".wrap").droppable("enable");
+            $(".wrap .empty").droppable("enable");
             $(".event:hidden").show();
             $(".drag-help").remove();
         },
         over: function(event, ui) {
             if ($(".toggler").parent().attr("data-status") == "opened") {
-                $(".wrap .empty").closest(".wrap").droppable("disable");
+                $(".wrap .empty").droppable("disable");
                 // Remove drag helpers from all items and show original events
                 $(".drag-help").parent().find(".event").show();
                 $(".drag-help").remove();
@@ -895,7 +905,7 @@ $(document).ready(function() {
             }
         },
         out: function(event, ui) {
-            $(".wrap .empty").closest(".wrap").droppable("enable");
+            $(".wrap .empty").droppable("enable");
             $(ui.draggable).parent().removeClass("empty");
             if ($(".toggler").parent().attr("data-status") == "opened")
                 $(".toggler").trigger("click");
@@ -918,34 +928,6 @@ $(document).ready(function() {
     });
     listFilter($("#filter_input"), $("#event-list"), "div");
 
-    // Setup slot lengths for empty slots
-    var total = $(".table:first tbody tr").length;
-    $(".table").each(function() {
-        var that = this;
-        // For each room name table header except the first one (time)
-        $("th:not(:first-child)", that).each(function() {
-            var index = $(this).index() + 1;
-            var slot_len = $(this).attr("slot_len")
-            $("tr", that).each(function(i){
-                row = this;
-                // Setup the length of every empty slot to the rooms default for a column
-                // given by "index" and a row given by "row"
-                $("td:nth-child("+ index +") .empty", row).closest(".item").each(function() {
-                    // If there is no more room for a slot of given size
-                    // set the item's length to 1
-                    if (total-i < slot_len-1) {
-                        $(this).height(itemHeight);
-                        setItemEndtime($(this));
-                    }
-                    else {
-                        $(this).height(itemHeight+cellSize*(slot_len-1));
-                        // Setup end time for timetable update
-                        setItemEndtime($(this));
-                    }
-                });
-            });
-        });
-    });
     // Setup modal
     setupModal(".modal");
     timetableEnable();
