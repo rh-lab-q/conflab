@@ -393,6 +393,7 @@ function emptyItemInit(selector) {
     });
     $(selector).closest("td").off("click").on("click", ".item", appendEvent);
     $(selector).height(itemHeight);
+    $(selector).attr("style", "");
 }
 
 function createEvent() {
@@ -808,11 +809,32 @@ function popoverInit(selector) {
         $(form).ajaxSubmit({
             success: function(response) {
                 var event_id = form.find("[name=event_id]");
+                // When creating a new event
                 if (event_id.attr("value") == 0) {
                     event_id.attr("value", response);
                     visible.closest(".event").attr("event-id", response);
                     visible.closest(".event").find(".pop-title span").html("Edit event");
                     visible.closest(".event").find(".pop-move-right").show();
+                }
+                // Otherwise check for slot information
+                else if (response.start_pos) {
+                    console.log(response);
+                    var item = original.closest(".item");
+                    var evnt = original.closest(".event");
+                    var index = original.closest("td").index() + 1;
+                    var tbody = original.closest("tbody");
+                    var item2 = $("tr:nth-child("+ response.start_pos +") td:nth-child("+ index + ") .item", tbody);
+                    if (!item.is(item2) && item2.length == 1 && item2.hasClass("empty")) {
+                        // Not the same slot, needs to be empty
+                        item2.append(evnt);
+                        item.addClass("empty");
+                        item.droppable("destroy");
+                        item.resizable("destroy");
+                        emptyItemInit(item);
+                        itemInit(item2);
+                    }
+                    // Setup offset and height
+                    item2.attr("style", response.style);
                 }
             },
             error: function(response) {

@@ -804,7 +804,11 @@ class TimetableView(generic.TemplateView):
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
                 if form.is_valid():
-                    result = {}
+                    result = {  'start_pos' : '',
+                                'end' : '',
+                                'error' : '',
+                                'style' : '',
+                                }
                     event = form.save(commit=False)
                     if 'tags' in request.POST:
                         event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
@@ -812,19 +816,31 @@ class TimetableView(generic.TemplateView):
                         event.prim_tag = None
                     event.save()
                     form.save_m2m()
-                    # Check if the event needs to be moved into a different slot
+                    # Setup data needed to move the event to a slot
                     start = event.timeslot.get_start_datetime.time()
                     end = event.timeslot.get_end_datetime.time()
                     new_start = datetime.strptime(request.POST['start_time'], '%H:%M').time()
                     new_end = datetime.strptime(request.POST['end_time'], '%H:%M').time()
-                    if (not (new_start == start and new_end == end)):
-                        delta = timedelta(minutes=conf.timedelta)
-                        dt = datetime.now()
-                        start_list = conf.get_datetime_time_list()
-                        for start_time in start_list:
-                            start_time_dt = (datetime.combine(dt, start_time) + delta).time()
-                            if start_time <= new_start < start_time_dt:
-                                result['start'] = start_time.strftime('%H:%M')
+                    delta = timedelta(minutes=conf.timedelta)
+                    dt = datetime.now()
+                    start_list = conf.get_datetime_time_list()
+                    for i, start_time in enumerate(start_list):
+                        start_time_dt = (datetime.combine(dt, start_time) + delta).time()
+                        if start_time <= new_start < start_time_dt:
+                            result['start_pos'] = i+1
+                            # Get grid offset for the event
+                            time_offset = (datetime.combine(dt, new_start) - datetime.combine(dt, start_time)).seconds/60
+                            offset = (time_offset * 31)/conf.timedelta
+                            if offset == 1:
+                                offset = 0
+                            # CSS styles
+                            height = str(31*event.timeslot.length-1) + 'px;'
+                            result['style'] = 'top : ' + str(offset) + 'px;' + 'height : ' + height
+                            break;
+                    else:
+                        # FIXME: Better error message
+                        result['error'] = 'Wrong start time'
+
                     return HttpResponse(json.dumps(result), content_type="application/json")
                 else:
                     return HttpResponseBadRequest(form.errors.as_ul())
