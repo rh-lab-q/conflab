@@ -2,6 +2,17 @@
 <div class="popover-content">
     <form method="post" action="{% url 'confla:saveEvent' url_id %}">
         {% csrf_token %}
+        {% if event %}
+        <div id="slot-time" class="input-group input-timerange">
+            {% with event.timeslot.start_time as start %}
+            <input id="id_start" name="start_time" type="text" class="form-control" value={{start|date:"H:i"}}>
+            {% endwith %}
+            <span class="input-group-addon">to</span>
+            {% with event.timeslot.end_time as end %}
+            <input id="id_end" name="end_time" type="text" class="form-control" value={{end|date:"H:i"}}>
+            {% endwith %}
+        </div>
+        {% endif %}
         <input type="hidden" name="event_id" value={{ event_id }} />
         {{ form.topic }}
         {{ form.description }}

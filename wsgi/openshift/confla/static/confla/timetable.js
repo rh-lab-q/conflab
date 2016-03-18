@@ -439,7 +439,7 @@ function appendEvent(e) {
     if ($(this).hasClass("empty")) {
         $(this).removeClass("empty");
         var newevent = createEvent();
-        $(wrap).droppable("destroy");
+        $(this).droppable("destroy");
         itemInit(this);
         $(this).append(newevent);
         $(this).closest("td").off("click");
@@ -750,13 +750,15 @@ function popoverInit(selector) {
                 var item = $(this).closest(".item");
                 $(item).addClass("empty");
                 $(item).resizable("destroy");
-                $(item).parent().droppable("destroy");
+                $(item).droppable("destroy");
                 emptyItemInit(item);
                 $(this).parent().remove();
                 return;
         }
 
         // Copy edited content into original html
+        $(original).find("#slot-time #id_start").attr("value", ($(content).find("#slot-time #id_start").val()));
+        $(original).find("#slot-time #id_end").attr("value", ($(content).find("#slot-time #id_end").val()));
         $(original).find("#id_topic").attr("value", ($(content).find("#id_topic").val()));
         $(original).find("#id_description").text($(content).find("#id_description").val());
         $(visible).find(".topic").text(($(content).find("#id_topic").val()));

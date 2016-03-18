@@ -335,10 +335,12 @@ class EventView(generic.TemplateView):
             event = Event.objects.get(id=int(request.POST['data']))
             form = EventCreateForm(instance=event)
         else:
+            event = None
             form = EventCreateForm()
 
         return render(request, template_name,
-                        {'event_id': event_id,
+                        {'event' : event,
+                         'event_id': event_id,
                          'form'  : form,
                          'url_id' : url_id,
                         })
@@ -802,14 +804,28 @@ class TimetableView(generic.TemplateView):
                 event = Event.objects.get(id=request.POST['event_id'])
                 form = EventCreateForm(data=request.POST, instance=event)
                 if form.is_valid():
+                    result = {}
                     event = form.save(commit=False)
-                    if "tags" in request.POST:
+                    if 'tags' in request.POST:
                         event.prim_tag = EventTag(id=request.POST.getlist('tags')[0])
                     else:
                         event.prim_tag = None
                     event.save()
                     form.save_m2m()
-                    return HttpResponseRedirect(reverse('confla:thanks'))
+                    # Check if the event needs to be moved into a different slot
+                    start = event.timeslot.get_start_datetime.time()
+                    end = event.timeslot.get_end_datetime.time()
+                    new_start = datetime.strptime(request.POST['start_time'], '%H:%M').time()
+                    new_end = datetime.strptime(request.POST['end_time'], '%H:%M').time()
+                    if (not (new_start == start and new_end == end)):
+                        delta = timedelta(minutes=conf.timedelta)
+                        dt = datetime.now()
+                        start_list = conf.get_datetime_time_list()
+                        for start_time in start_list:
+                            start_time_dt = (datetime.combine(dt, start_time) + delta).time()
+                            if start_time <= new_start < start_time_dt:
+                                result['start'] = start_time.strftime('%H:%M')
+                    return HttpResponse(json.dumps(result), content_type="application/json")
                 else:
                     return HttpResponseBadRequest(form.errors.as_ul())
 

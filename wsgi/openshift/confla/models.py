@@ -252,7 +252,7 @@ class Timeslot(models.Model):
 
     @property
     def get_end_datetime(self):
-        return self.end_time.astimezone(timezone.get_default_timezone()).strftime("%x %H:%M")
+        return self.end_time.astimezone(timezone.get_default_timezone())
 
     # event length in minutes
     @property
