@@ -97,9 +97,11 @@ class ConferenceView(generic.TemplateView):
     def edit_conf(request, url_id):
         template_name = 'confla/admin/create_conf.html'
         conf = get_conf_or_404(url_id)
+        form = ConfCreateForm(instance=conf)
+        form.base_fields['rooms'].queryset = conf.rooms.all().order_by('hasroom__order')
         return render(request, template_name,
                      {
-                        'form' : ConfCreateForm(instance=conf),
+                        'form' : form,
                         'conf_list' : Conference.objects.all().order_by('start_date'),
                         'url_id' : url_id,
                         'conf' : conf,
