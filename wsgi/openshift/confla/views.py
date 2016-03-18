@@ -805,7 +805,8 @@ class TimetableView(generic.TemplateView):
                 form = EventCreateForm(data=request.POST, instance=event)
                 if form.is_valid():
                     result = {  'start_pos' : '',
-                                'end' : '',
+                                'start_time' : '',
+                                'end_time' : '',
                                 'error' : '',
                                 'style' : '',
                                 }
@@ -828,6 +829,8 @@ class TimetableView(generic.TemplateView):
                         start_time_dt = (datetime.combine(dt, start_time) + delta).time()
                         if start_time <= new_start < start_time_dt:
                             result['start_pos'] = i+1
+                            result['start_time'] = request.POST['start_time']
+                            result['end_time'] = request.POST['end_time']
                             # Get grid offset for the event
                             time_offset = (datetime.combine(dt, new_start) - datetime.combine(dt, start_time)).seconds/60
                             offset = (time_offset * 31)/conf.timedelta

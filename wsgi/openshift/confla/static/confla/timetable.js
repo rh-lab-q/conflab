@@ -817,7 +817,7 @@ function popoverInit(selector) {
                     visible.closest(".event").find(".pop-move-right").show();
                 }
                 // Otherwise check for slot information
-                else if (response.start_pos) {
+                else {
                     console.log(response);
                     var item = original.closest(".item");
                     var evnt = original.closest(".event");
@@ -835,6 +835,10 @@ function popoverInit(selector) {
                     }
                     // Setup offset and height
                     item2.attr("style", response.style);
+                    $(".start", item2).text("Starts at: " + response.start_time);
+                    $(".end", item2).text("Ends at: " + response.end_time);
+                    // Notify the user that something might have changed
+                    setChanges();
                 }
             },
             error: function(response) {
