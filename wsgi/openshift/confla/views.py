@@ -361,6 +361,7 @@ class ScheduleView(generic.TemplateView):
         time_list = []
         start_list = conf.get_datetime_time_list()
         for date in conf.get_datetime_date_list():
+            last_end = None
             time_dict = {}
             time_dict["day"] = date.strftime("%A, %d.%m.")
             time_dict["list"] = []
@@ -379,16 +380,25 @@ class ScheduleView(generic.TemplateView):
                         if slot_dt <= slot.get_start_datetime < slot_dt+delta:
                             time['slots'][i].append(slot)
                             time['empty'] = False
+                            if not last_end or last_end < slot.end_time:
+                                last_end = slot.end_time
                 time_dict["list"].append(time)
 
-            # Remove empty events at the start
+            # Remove empty slots from the start
             for i, time in enumerate(time_dict['list']):
                 if not time['empty']:
-                    # Split the list
+                    # Slice the list
                     time_dict['list'] = time_dict['list'][i:]
-                    break;
+                    break
 
-        time_list.append(time_dict)
+            # Remove empty slots from the end
+            for i, time in enumerate(time_dict['list'][::-1]):
+                if not (time['empty'] and last_end < time['dt']+delta):
+                    if i is not 0:
+                        # Slice only when there is something to slice
+                        time_dict['list'] = time_dict['list'][:-i]
+                    break
+            time_list.append(time_dict)
 
 
 
