@@ -371,14 +371,26 @@ class ScheduleView(generic.TemplateView):
                 time['short'] = start_time.strftime("%H:%M") 
                 time['full'] = slot_dt.strftime("%x %H:%M")
                 time['dt'] = slot_dt
+                time['empty'] = True
                 time['slots'] = []
                 for i, room in enumerate(rooms):
                     time['slots'].append([])
                     for slot in slot_list[room.shortname]:
                         if slot_dt <= slot.get_start_datetime < slot_dt+delta:
                             time['slots'][i].append(slot)
+                            time['empty'] = False
                 time_dict["list"].append(time)
-            time_list.append(time_dict)
+
+            # Remove empty events at the start
+            for i, time in enumerate(time_dict['list']):
+                if not time['empty']:
+                    # Split the list
+                    time_dict['list'] = time_dict['list'][i:]
+                    break;
+
+        time_list.append(time_dict)
+
+
 
         return render(request, ScheduleView.template_name,
                     {    'time_list' : time_list,
