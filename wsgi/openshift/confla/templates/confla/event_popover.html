@@ -1,6 +1,7 @@
 {% load i18n %}
 
 <h2>{{ event.topic }}</h2>
+<span class="event-time">{{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}</span>
 <h3>{% trans "Description:" %}</h3>
 <div class="event-desc">{{ event.description }}</div>
 <div class="speakers"><h3>{% trans "Speaker(s):" %}</h3>
