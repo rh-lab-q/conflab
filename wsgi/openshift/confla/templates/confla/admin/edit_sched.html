@@ -1,5 +1,6 @@
 {% extends "confla/admin/admin_base.html" %}
 {% load i18n %}
+{% load l10n %}
 {% load staticfiles %}
 {% load confla_filters %}
 {% block title %}Timetable{% endblock %}
@@ -105,7 +106,7 @@
                         <div class="wrap">
                         {% if slot %}
                         {% for s in slot %}
-                        <div class="item" style="top: {{ s|event_offset:t.dt}}" deltalen={{s.length}} data-toggle="popover">
+                        <div class="item" style="top: {{ s|event_offset:t.dt}}" deltalen={{s.length|unlocalize}} data-toggle="popover">
                             <span class="start" style=" display:none">Starts at: {{t.short}}</span>
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}

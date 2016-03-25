@@ -295,20 +295,25 @@ class EventView(generic.TemplateView):
     def event_list(request, url_id):
         template_name = 'confla/event_list.html'
         conf = get_conf_or_404(url_id)
-        days = {}
+        days = []
         events = Event.objects.filter(conf_id=conf, timeslot__isnull=False).order_by('timeslot__start_time')
         if events:
             current_date = events[0].timeslot.start_time.date()
             current_date_output = current_date.strftime("%A, %d.%m.")
+            day = { 'date' : current_date_output,
+                    'events' : [], }
             for event in events:
                 if event.timeslot.start_time.date() > current_date:
+                    # New day
                     current_date = event.timeslot.start_time.date()
                     current_date_output = current_date.strftime("%A, %d.%m.")
-                if current_date_output in days:
-                    days[current_date_output].append(event)
-                else:
-                    days[current_date_output] = [event]
+                    days.append(day)
+                    day = { 'date' : current_date_output,
+                            'events' : [], }
+                day['events'].append(event)
 
+        # Append last day
+        days.append(day)
         return render(request, template_name, {
                     'days': days,
                     'tag_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
