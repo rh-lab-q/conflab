@@ -107,7 +107,7 @@
                         {% if slot %}
                         {% for s in slot %}
                         <div class="item" style="top: {{ s|event_offset:t.dt}}" deltalen={{s.length|unlocalize}} data-toggle="popover">
-                            <span class="start" style=" display:none">Starts at: {{t.short}}</span>
+                            <span class="start" style=" display:none">Starts at: {{s.get_start_time}}</span>
                             <span class="end" style=" display:none">Ends at: {{s.get_end_time}}</span>
                             {% if s.event_id %}
                             {% with e=s.event_id %}
