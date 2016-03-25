@@ -170,6 +170,7 @@
 <script src="{% static 'confla/edit_conf.js' %}"></script>
 <script class="js-setup">
 var room_link = "{% url 'confla:create_room' %}"
+var rooms = {{ rooms|safe }}
 </script>
 
 {% endblock %}

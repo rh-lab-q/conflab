@@ -99,12 +99,16 @@ class ConferenceView(generic.TemplateView):
         conf = get_conf_or_404(url_id)
         form = ConfCreateForm(instance=conf)
         form.base_fields['rooms'].queryset = conf.rooms.all().order_by('hasroom__order')
+        rooms = Room.objects.all()
         return render(request, template_name,
                      {
                         'form' : form,
                         'conf_list' : Conference.objects.all().order_by('start_date'),
                         'url_id' : url_id,
                         'conf' : conf,
+                        'rooms' : [{'id' : r.id,
+                                    'name' : r.shortname} for r in rooms],
+
                      })
 
     @transaction.atomic

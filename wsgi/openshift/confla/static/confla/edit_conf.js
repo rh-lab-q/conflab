@@ -22,6 +22,10 @@ function setup_form(form){
         persist: true,
         plugins: ['drag_drop'],
         maxItems: null,
+        options: rooms,
+        valueField: 'id',
+        labelField: 'name',
+        searchField: ['name'],
     });
 
     $('.input-daterange').each(function() {
