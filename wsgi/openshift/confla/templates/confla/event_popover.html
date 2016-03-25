@@ -2,8 +2,11 @@
 
 <h2>{{ event.topic }}</h2>
 <span class="event-time">{{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}</span>
+{% if event.description %}
 <h3>{% trans "Description:" %}</h3>
 <div class="event-desc">{{ event.description }}</div>
+{% endif %}
+{% if event.speaker.all|length %}
 <div class="speakers"><h3>{% trans "Speaker(s):" %}</h3>
     {% for speaker in event.speaker.all %}
     <div class="speaker">
@@ -12,6 +15,7 @@
     {% endfor%}
     <div class="clearer"></div>
 </div>
+{% endif %}
 {% if event.tags.all|length %}
 <div class="tags"><h3>{% trans "Tags:" %}</h3>
     {% for tag in event.tags.all %}
