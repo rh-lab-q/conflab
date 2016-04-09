@@ -29,6 +29,11 @@ class Conference(models.Model):
                                 blank=True, null=True)
     icon = models.ImageField(upload_to=icon_rename_and_return_path,
                                 blank=True, null=True)
+    web = models.CharField(max_length=256, blank=True)
+    facebook = models.CharField(max_length=256, blank=True)
+    twitter = models.CharField(max_length=256, blank=True)
+    google_plus = models.CharField(max_length=256, blank=True)
+    linkedin = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
         return self.name

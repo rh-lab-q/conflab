@@ -22,7 +22,7 @@ class ConfCreateForm(forms.ModelForm):
         choices = (('5', '5'),('10', '10'),('15', '15'),('30', '30'),('60', '60'),)
         fields = ['name', 'start_date', 'end_date', 'cfp_start', 'cfp_end', 'start_time',
             'end_time', 'rooms', 'url_id', 'timedelta', 'active',
-            'about', 'venue', 'gps', 'splash', 'icon', 'timezone', ]
+            'about', 'venue', 'gps', 'web', 'facebook', 'twitter', 'google_plus', 'linkedin', 'splash', 'icon', 'timezone', ]
         timezones = [(x,x) for x in tzs]
         timezones.insert(0, ('',''))
 

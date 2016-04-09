@@ -68,5 +68,29 @@
         </script>
         {% endif %}
     </div>
+
+    <div class="conf-links">
+
+{% if conf.web %}
+<a href="{{ conf.web }}" class="btn btn-lg btn-default"><i class="fa fa-globe fa-3x"></i></a> &nbsp;
+{% endif %}
+
+{% if conf.facebook %}
+<a href="{{ conf.facebook }}" class="btn btn-lg btn-default"><i class="fa fa-facebook fa-3x"></i></a> &nbsp;
+{% endif %}
+
+{% if conf.twitter %}
+<a href="{{ conf.twitter }}" class="btn btn-lg btn-default"><i class="fa fa-twitter fa-3x"></i></a> &nbsp;
+{% endif %}
+
+{% if conf.google_plus %}
+<a href="{{ conf.google_plus }}" class="btn btn-lg btn-default"><i class="fa fa-google-plus fa-3x"></i></a> &nbsp;
+{% endif %}
+
+{% if conf.linkedin %}
+<a href="{{ conf.linkedin }}" class="btn btn-lg btn-default"><i class="fa fa-linkedin fa-3x"></i></a> &nbsp;
+{% endif %}
+
+    </div>
 </div>
 {% endblock %}
