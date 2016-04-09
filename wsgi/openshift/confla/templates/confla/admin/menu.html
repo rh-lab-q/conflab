@@ -1,7 +1,7 @@
 {% load i18n %}
 <ul class="nav nav-sidebar">
     {% if url_id %}
-    <li {% if active == "confla_admin" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>{% trans "Overview" %}</a></li>
+    <li {% if active == "conf_list" %} class="cf-active" {% endif %}><a href={% url 'confla:org_conf_list' %}>{% trans "Conferences" %}</a></li>
     <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:dashboard' url_id %}>{% trans "Dashboard" %}</a></li>
     <li {% if active == "edit" %} class="cf-active" {% endif %}><a href={% url 'confla:edit_conf' url_id %}>{% trans "Configuration" %}</a></li>
     <li {% if active == "users" %} class="cf-active" {% endif %}><a href={% url 'confla:speakers' url_id %}>{% trans "Speakers" %}</a></li>
@@ -9,9 +9,9 @@
     <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>{% trans "Import" %}</a></li>
     <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">{% trans "Export" %}</a></li>
     {% else %}
-    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>{% trans "Overview" %}</a></li>
     <li {% if active == "conf_list" %} class="cf-active" {% endif %}><a href={% url 'confla:org_conf_list' %}>{% trans "Conferences" %}</a></li>
     <li {% if active == "users" %} class="cf-active" {% endif %}><a href={% url 'confla:org_users' %}>{% trans "Users" %}</a></li>
+    <li {% if active == "overview" %} class="cf-active" {% endif %}><a href={% url 'confla:org_dashboard' %}>{% trans "Overview" %}</a></li>
 
     {% endif %}
 </ul>

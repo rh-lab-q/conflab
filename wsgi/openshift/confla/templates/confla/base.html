@@ -95,7 +95,7 @@
                         {% if url_id %}
                         <li><a href={% url 'confla:dashboard' url_id %}>{% trans "Administration" %}</a></li>
                         {% else %}
-                        <li><a href={% url 'confla:org_dashboard' %}>{% trans "Administration" %}</a></li>
+                        <li><a href={% url 'confla:org_conf_list' %}>{% trans "Administration" %}</a></li>
                         {% endif %}
                         <li role="separator" class="divider"></li>
                         {% endif %}
