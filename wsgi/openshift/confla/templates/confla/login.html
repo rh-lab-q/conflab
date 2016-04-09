@@ -1,7 +1,7 @@
 {% extends "confla/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
-{% block title %}Login to !!CONFERENCE_NAME!!{% endblock %}
+{% block title %} {% trans "Login" %} {% endblock %}
 {% block extrastyles %}<link rel="stylesheet" type="text/css" href="{% static 'confla/login.css' %}" />
 {% endblock %}
 {% block content %}
