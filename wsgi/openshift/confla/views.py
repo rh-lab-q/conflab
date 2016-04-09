@@ -476,11 +476,6 @@ class LoginView(generic.TemplateView):
         if not(request.method == "POST"):
             return HttpResponseRedirect(reverse('confla:login'))
 
-        if request.POST['next'] is not "":
-            redirect = request.POST['next']
-        else:
-            redirect = reverse('confla:users')
-
         try:
             user = authenticate(username=request.POST['username'],
                                 password=request.POST['password'])
@@ -502,6 +497,15 @@ class LoginView(generic.TemplateView):
                          'form' : AuthForm()})
 
         else:
+            if request.POST['next'] is not "":
+                redirect = request.POST['next']
+            else:
+                print(user)
+                if user.has_perm('confla.can_organize'):
+                    redirect = reverse('confla:org_conf_list')
+                else:
+                    redirect = reverse('confla:users')
+
             # all is OK, redirect the logged in user to the user site
             return HttpResponseRedirect(redirect)
 
