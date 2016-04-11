@@ -437,25 +437,26 @@ class ScheduleView(generic.TemplateView):
             slot_list = Timeslot.objects.filter(conf_id=conf, event_id__tags__id=id)
         else:
             slot_list = Timeslot.objects.filter(conf_id=conf)
-        start_list = slot_list.order_by("start_time").values_list("start_time", flat=True).distinct()
+        start_list = slot_list.order_by('start_time').values_list('start_time', flat=True).distinct()
         for date in conf.get_date_list():
             time_dict = {}
-            time_dict["day"] = date
-            time_dict["list"] = []
+            time_dict['day'] = date
+            time_dict['list'] = []
             for start_time in start_list:
                 start_time = start_time.astimezone(timezone.get_default_timezone())
-                if start_time.strftime("%A, %d.%m.") == date:
+                if start_time.strftime('%A, %d.%m.') == date:
                     time = {}
-                    time['short'] = start_time.strftime("%H:%M") 
-                    time['full'] = start_time.strftime("%x %H:%M") 
+                    time['short'] = start_time.strftime('%H:%M') 
+                    time['full'] = start_time.strftime('%x %H:%M') 
                     time['slots'] = []
                     for slot in slot_list:
-                        if slot.get_start_datetime.strftime("%x %H:%M") == time['full']:
+                        if slot.get_start_datetime.strftime('%x %H:%M') == time['full']:
                             time['slots'].append(slot)
-                    time_dict["list"].append(time)
-            time_list.append(time_dict)
+                    time_dict['list'].append(time)
+            if time_dict['list']:
+                time_list.append(time_dict)
 
-        return render(request, "confla/schedlist.html",
+        return render(request, 'confla/schedlist.html',
                       {  'time_list' : time_list, 
                          'tag_list' : EventTag.objects.all(),
                          'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
