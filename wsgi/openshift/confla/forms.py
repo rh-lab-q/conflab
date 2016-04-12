@@ -19,7 +19,7 @@ class ConfCreateForm(forms.ModelForm):
 
     class Meta:
         model = Conference
-        choices = (('5', '5'),('10', '10'),('15', '15'),('30', '30'),('60', '60'),)
+        choices = (('5', '5'),('10', '10'),('15', '15'),('20', '20'), ('30', '30'),('45', '45'),('60', '60'),)
         fields = ['name', 'start_date', 'end_date', 'cfp_start', 'cfp_end', 'start_time',
             'end_time', 'rooms', 'url_id', 'timedelta', 'active',
             'about', 'venue', 'gps', 'web', 'facebook', 'twitter', 'google_plus', 'linkedin', 'splash', 'icon', 'timezone', ]
