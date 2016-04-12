@@ -47,6 +47,9 @@
                     {% if conf.cfp_open %}
                     <a href={% url 'confla:cfp' conf.url_id %} class="btn btn-default">{% trans "Submit talk" %}</a>
                     {% endif %}
+                    {% if conf.web %}
+                    <a href="{{ conf.web }}" class="btn btn-default">{% trans "Website" %}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

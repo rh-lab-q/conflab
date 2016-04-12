@@ -101,3 +101,15 @@
 .icon-link {
   color: #000000;
 }
+
+.btn-circle {
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  padding: 17px 0;
+  border-radius: 40px;
+}
+
+.conf-social {
+  padding: 20px 0;
+}
