@@ -63,14 +63,15 @@
                 {% if conf.timeslot_set.all %}
                 <li>
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans "Schedule" %}
+                        <i class="fa fa-calendar" aria-hidden="true"></i> {% trans "Schedule" %}
                         <i class="fa fa-caret-down"></i>
                     </a>
                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
                     <li><a href={% url 'confla:schedule' conf.url_id %} class="{% if not events or not conf.start_date %}disabled{% endif %}">{% trans "Grid" %}</a></li>
                     <li><a href={% url 'confla:listsched' conf.url_id %} class="{% if not events or not conf.start_date %}disabled{% endif %}">{% trans "List" %}</a></li>
                     <li><a href={% url 'confla:event_list' conf.url_id %} class="{% if not events %}disabled{% endif %}" >Topics</a></li>
-                    <li><a href={% url 'confla:speaker_grid' conf.url_id %} class="{% if not speakers %}disabled{% endif %}">Speakers</a></li>
+                    <li><a href={% url 'confla:speaker_grid' conf.url_id %} class="{% if not speakers %}disabled{% endif %}">{% trans "Speakers grid" %}</a></li>
+                    <li><a href={% url 'confla:speaker_list' conf.url_id %} class="{% if not speakers %}disabled{% endif %}">{% trans "Speakers list" %}</a></li>
                 </ul>
                 </li>
                 {% endif %}
