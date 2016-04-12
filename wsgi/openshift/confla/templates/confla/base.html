@@ -60,6 +60,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if url_id %}
 
+                {% if conf.timeslot_set.all %}
                 <li>
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% trans "Schedule" %}
@@ -72,6 +73,7 @@
                     <li><a href={% url 'confla:speaker_grid' conf.url_id %} class="{% if not speakers %}disabled{% endif %}">Speakers</a></li>
                 </ul>
                 </li>
+                {% endif %}
 
 
                 {% endif %}
