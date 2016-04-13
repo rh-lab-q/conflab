@@ -34,6 +34,8 @@ class Conference(models.Model):
     twitter = models.CharField(max_length=256, blank=True)
     google_plus = models.CharField(max_length=256, blank=True)
     linkedin = models.CharField(max_length=256, blank=True)
+    youtube = models.CharField(max_length=256, blank=True)
+    slideshare = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
         return self.name
