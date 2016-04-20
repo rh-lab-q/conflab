@@ -27,9 +27,8 @@
 
 {% for conf in conf_list %}
   <h3>{{ conf.name }}</h3>
-  {% for event in events %}
+  {% for event in speaker_events %}
     {% if event.conf_id == conf %}
-
       <a href="#">{{ event.topic }}</a>
       {% if event.timeslot.start_time %}
         {{ event.timeslot.start_time }}
@@ -41,10 +40,22 @@
   {% endfor %}
 {% endfor %}
 
-<h3> {% trans "Personal schedules" %} </h3>
+<h2> {% trans "Personal schedules" %} </h2>
 
+{% for conf in confs %}
+  {{ conf.name }}  <br/>
 
+  {% for favorite in favorites %}
+    {% if favorite.event.conf_id == conf %}
+      {{ favorite.event.timeslot.room_id.shortname }}
+      {{ favorite.event.timeslot.get_start_time }} - {{ favorite.event.timeslot.get_end_time }}
+      {{ favorite.event }} <br/>
+    {% endif %}
+   {% endfor %}
 
+   <hr/>
+
+{% endfor %}
 
 
 <h2></h2>
