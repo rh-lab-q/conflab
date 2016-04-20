@@ -37,6 +37,8 @@ class Conference(models.Model):
     youtube = models.CharField(max_length=256, blank=True)
     slideshare = models.CharField(max_length=256, blank=True)
 
+    geopoints = models.ManyToManyField('GeoPoint', related_name='geopoints', blank=True)
+
     def __str__(self):
         return self.name
 
@@ -125,6 +127,10 @@ class Conference(models.Model):
     @property
     def get_tags(self):
         return EventTag.objects.filter(event__conf_id=self, event__timeslot__isnull=False).distinct()
+
+    @property
+    def get_pages(self):
+        return Page.objects.filter(conf_id=self);
 
 class Room(models.Model):
     shortname = models.CharField(max_length=16)
@@ -283,10 +289,49 @@ class Paper(models.Model):
 
 class Photo(models.Model):
     conf_id = models.ForeignKey(Conference)
-    author = models.CharField(max_length=256)
+    title = models.CharField(max_length=256)
     picture = models.ImageField(upload_to='photos/')
 
 class Page(models.Model):
     conf_id = models.ForeignKey(Conference)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+class Rating(models.Model):
+    rating_choices = (
+        (1, 'Poor'),
+        (2, 'Fair'),
+        (3, 'Average'),
+        (4, 'Good'),
+        (5, 'Excellent'),
+    )
+    event = models.ForeignKey(Event)
+    user = models.ForeignKey(ConflaUser)
+    score = models.IntegerField(choices=rating_choices, default=3)
+    summary = models.TextField()
+
+class Favorite(models.Model):
+    event = models.ForeignKey(Event)
+    user = models.ForeignKey(ConflaUser)
+
+class GeoIcon(models.Model):
+    title = models.CharField(max_length=256)
+    icon = models.ImageField(upload_to='geoicons/')
+    xAnchor = models.IntegerField(default=0)
+    yAnchor = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+class GeoPoint(models.Model):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+    icon = models.ForeignKey(GeoIcon)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return self.name

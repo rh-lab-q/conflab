@@ -60,6 +60,27 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if url_id %}
 
+                {% if conf.get_pages %}
+                <li>
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans "About" %}
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        {% for page in conf.get_pages %}
+                            <li><a href={% url 'confla:pages' conf.url_id page.id %} > {{ page.title }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if conf.geopoints.count %}
+                <li>
+                  <a href={%url 'confla:places' conf.url_id %}>{% trans "Places" %} </a>
+                </li>
+                {% endif %}
+
                 {% if conf.timeslot_set.all %}
                 <li>
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

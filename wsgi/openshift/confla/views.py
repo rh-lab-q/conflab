@@ -300,6 +300,24 @@ class VolunteerView(generic.TemplateView):
     def my_view(request):
         return render(request, VolunteerView.template_name)
 
+class PlacesView(generic.TemplateView):
+    def osm(request, url_id):
+        conf = get_conf_or_404(url_id)
+        return render(request, 'confla/map.html', {
+            'url_id' : url_id,
+            'conf' : conf,
+        })
+class PagesView(generic.TemplateView):
+    def content(request, url_id, page):
+        conf = get_conf_or_404(url_id)
+        pageObject = Page.objects.get(id=page);
+
+        return render(request, 'confla/page.html', {
+            'url_id' : url_id,
+            'conf' : conf,
+            'page' : pageObject,
+        })
+
 class EventView(generic.TemplateView):
 
     def event_list(request, url_id):

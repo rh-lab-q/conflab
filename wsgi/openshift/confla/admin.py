@@ -22,6 +22,19 @@ class ConfAdmin(admin.ModelAdmin):
 class TimeslotAdmin(admin.ModelAdmin):
     list_display = ('id', 'start_time', 'end_time')
 
+class FavoritesAdmin(admin.ModelAdmin):
+    list_display = ('user', 'event')
+
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'event', 'score', 'summary')
+
+class GeoIconAdmin(admin.ModelAdmin):
+    list_display = ('title', 'icon')
+
+class GeoPointAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+
+
 admin.site.register(Room, RoomAdmin)
 admin.site.register(ConflaUser, UserAdmin)
 admin.site.register(Event, EventAdmin)
@@ -33,3 +46,9 @@ admin.site.register(VolunteerBlock)
 admin.site.register(EmailAdress)
 admin.site.register(Timeslot, TimeslotAdmin)
 admin.site.register(HasRoom)
+admin.site.register(Photo)
+admin.site.register(Page)
+admin.site.register(GeoPoint, GeoPointAdmin)
+admin.site.register(GeoIcon, GeoIconAdmin)
+admin.site.register(Rating, RatingAdmin)
+admin.site.register(Favorite, FavoritesAdmin)
