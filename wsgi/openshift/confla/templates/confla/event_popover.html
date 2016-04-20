@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load confla_filters %}
 
 <h2>{{ event.topic }}</h2>
 <span class="event-time">{{ event.timeslot.get_start_time }} - {{ event.timeslot.get_end_time }}</span>
@@ -26,4 +27,10 @@
 {% if event.reqs %}
 <h3>{% trans "Prerequisites:" %}</h3>
 <div class="reqs">{{ event.reqs }}</div>
+{% endif %}
+
+{% if event|is_favorite:user %}
+<i class="fa fa-bookmark" aria-hidden="true"></i>
+{% else %}
+<i class="fa fa-bookmark-o" aria-hidden="true"></i>
 {% endif %}

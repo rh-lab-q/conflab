@@ -5,7 +5,7 @@ from django import template
 from PIL import Image
 from PIL import ImageOps
 
-from confla.models import Event, Timeslot, Conference
+from confla.models import Event, Timeslot, Conference, Favorite
 from confla.forms import EventCreateForm, EventEditForm
 
 
@@ -101,3 +101,7 @@ def is_free(value, arg):
             return False
     return True
 """
+
+@register.filter
+def is_favorite(event, user):
+    return len(Favorite.objects.filter(event=event, user=user)) != 0

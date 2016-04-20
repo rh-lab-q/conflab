@@ -244,6 +244,8 @@ class Event(models.Model):
         except ObjectDoesNotExist:
             return False
 
+
+
 class Timeslot(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
