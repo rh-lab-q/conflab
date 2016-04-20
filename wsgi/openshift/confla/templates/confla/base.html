@@ -23,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'selectize/selectize.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'selectize/selectize.bootstrap3.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bootsidemenu/BootSideMenu.css' %}" />
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'confla/base.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'datepicker/css/bootstrap-datepicker3.css' %}" />
     {% block extrastyles %}
@@ -63,7 +63,7 @@
                 {% if conf.get_pages %}
                 <li>
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans "About" %}
+                        <i class="fa fa-info-circle" aria-hidden="true"></i> {% trans "About" %}
                         <i class="fa fa-caret-down"></i>
                     </a>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
@@ -77,7 +77,7 @@
 
                 {% if conf.geopoints.count %}
                 <li>
-                  <a href={%url 'confla:places' conf.url_id %}>{% trans "Places" %} </a>
+                  <a href={%url 'confla:places' conf.url_id %}> <i class="fa fa-map-o" aria-hidden="true"></i> {% trans "Places" %} </a>
                 </li>
                 {% endif %}
 
