@@ -417,23 +417,25 @@ class ScheduleView(generic.TemplateView):
                                 last_end = slot.end_time
                 time_dict["list"].append(time)
 
-            # Remove empty slots from the start
-            for i, time in enumerate(time_dict['list']):
-                if not time['empty']:
-                    # Slice the list
-                    time_dict['list'] = time_dict['list'][i:]
-                    break
+            # Edit starting slots only when there are events scheduled
+            if last_end:
+                # Remove empty slots from the start
+                for i, time in enumerate(time_dict['list']):
+                    if not time['empty']:
+                        # Slice the list
+                        time_dict['list'] = time_dict['list'][i:]
+                        break
 
-            # Remove empty slots from the end
-            for i, time in enumerate(time_dict['list'][::-1]):
-                if not (time['empty'] and last_end < time['dt']+delta):
-                    if i is not 0:
-                        # Slice only when there is something to slice
-                        time_dict['list'] = time_dict['list'][:-i]
-                    break
-            time_list.append(time_dict)
+                # Remove empty slots from the end
+                for i, time in enumerate(time_dict['list'][::-1]):
+                    if not (time['empty'] and last_end < time['dt']+delta):
+                        if i is not 0:
+                            # Slice only when there is something to slice
+                            time_dict['list'] = time_dict['list'][:-i]
+                        break
 
-
+                # Show day only when there are events scheduled
+                time_list.append(time_dict)
 
         return render(request, ScheduleView.template_name,
                     {    'time_list' : time_list,
