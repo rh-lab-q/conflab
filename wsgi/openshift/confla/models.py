@@ -328,6 +328,7 @@ class GeoIcon(models.Model):
 
 class GeoPoint(models.Model):
     name = models.CharField(max_length=256)
+    note = models.CharField(max_length=256)
     description = models.TextField()
     icon = models.ForeignKey(GeoIcon)
     latitude = models.FloatField()

@@ -32,7 +32,7 @@ class GeoIconAdmin(admin.ModelAdmin):
     list_display = ('title', 'icon')
 
 class GeoPointAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'note', 'description')
 
 
 admin.site.register(Room, RoomAdmin)
