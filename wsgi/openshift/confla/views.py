@@ -92,7 +92,9 @@ class ConferenceView(generic.TemplateView):
                      {
                         'form' : ConfCreateForm(),
                         'conf_list' : Conference.objects.all().order_by('start_date'),
-                     })
+                        'rooms' : [{'id' : r.id,
+                                    'name' : r.shortname} for r in Room.objects.all()],
+                        })
 
     def edit_conf(request, url_id):
         template_name = 'confla/admin/create_conf.html'
