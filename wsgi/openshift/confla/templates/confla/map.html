@@ -37,11 +37,14 @@
               {
                 icon: L.icon({
                   iconUrl: "{{ place.icon.icon.url }}",
-                  iconAnchor: [{{ place.icon.xAnchor }}, {{ place.icon.yAnchor }}]
+                  iconAnchor: [0 , -1.0*{{ place.icon.yAnchor }}],
                 })
               }
             ).addTo(map).bindPopup(
-              "<b> {{ place.name }}</b> <br/>{{ place.description }}"
+              "<b> {{ place.name }}</b> <br/>{{ place.description }}",
+              {
+                offset: [{{ place.icon.xAnchor }}, {{ place.icon.yAnchor }}],
+              }
             );
 {% endfor %}
 
