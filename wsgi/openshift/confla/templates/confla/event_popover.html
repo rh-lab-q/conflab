@@ -29,8 +29,12 @@
 <div class="reqs">{{ event.reqs }}</div>
 {% endif %}
 
+{% if user.is_authenticated %}
+
 {% if event|is_favorite:user %}
 <i class="fa fa-bookmark" aria-hidden="true"></i>
 {% else %}
 <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+{% endif %}
+
 {% endif %}
