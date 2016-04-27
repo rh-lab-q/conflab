@@ -309,6 +309,17 @@ class PlacesView(generic.TemplateView):
             'url_id' : url_id,
             'conf' : conf,
         })
+    def table(request):
+        return render(request, 'confla/admin/places.html', {
+            'places' : GeoPoint.objects.all()
+        })
+
+class IconsView(generic.TemplateView):
+    def table(request):
+        return render(request, 'confla/admin/geo_icons.html', {
+            'icons' : GeoIcon.objects.all()
+        })
+
 class PagesView(generic.TemplateView):
     def content(request, url_id, page):
         conf = get_conf_or_404(url_id)

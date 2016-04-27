@@ -1,4 +1,4 @@
-{% extends "confla/base.html" %}
+{% extends "confla/admin/admin_base.html" %}
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
@@ -20,8 +20,12 @@
 </style>
 {% endblock %}
 
+    {% block admin_menu %}
+        {% include "confla/admin/menu.html" with active="geo_places" %}
+    {% endblock %}
 
-{% block content %}
+
+{% block admin_page %}
 
 <script>
   function choosePlace(lat, lon, name, description, icon) {
@@ -42,18 +46,14 @@
             var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>; contributors';
             var osm = new L.TileLayer(osmUrl, {minZoom:4, maxZoom: 18, attribution: osmAttrib});
 
-        {% if conf.gps %}
-            map.setView([{{ conf.gps }}], 15);
-        {% else %}
-            {% if conf.geopoints %}
-                map.setView([{{ conf.geopoints.first.latitude }}, {{ conf.geopoints.first.longitude }}], 12);
+            {% if places %}
+                map.setView([{{ places.first.latitude }}, {{ places.first.longitude }}], 12);
             {% else %}
                 map.setView([0,0], 12);
             {% endif %}
-        {% endif %}
             map.addLayer(osm);
 
-{% for place in conf.geopoints.all %}
+{% for place in places %}
             L.marker(
               [{{ place.latitude }},{{ place.longitude}}],
               {
@@ -77,12 +77,12 @@
 
 <div class="col-md-6">
 <ul>
-{% for place in conf.geopoints.all %}
+{% for place in places %}
   <li> <a href="#" onclick="choosePlace({{ place.latitude }},{{ place.longitude }}, '{{ place.name }}', '{{ place.description|linebreaksbr }}', '{{place.icon.icon.url}}');"> {{ place.name }}</a> </li>
 {% endfor %}
 </ul>
 </div>
-<div class="col-md-6 place-detail">
+<div class="col-md-6">
   <img id="place_icon" src="/static/leaflet/images/marker-icon.png" />
   <h3 id="place_name"> {% trans "Place" %}</h3>
   <p id="place_description"> {% trans "Choose place from list or from map" %}</p>
