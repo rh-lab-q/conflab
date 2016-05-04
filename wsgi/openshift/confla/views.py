@@ -1737,7 +1737,9 @@ class ExportView(generic.TemplateView):
                 'title' : 'About',
                 'text'  : conf.about
             },
-            ]
+        ];
+        for page in Page.objects.filter(conf_id=conf):
+            result['about'].append({'title': page.title, 'text': page.abstract});
 
         # RSS
         result['rss'] = []
