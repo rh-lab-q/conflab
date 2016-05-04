@@ -1739,7 +1739,12 @@ class ExportView(generic.TemplateView):
             },
         ];
         for page in Page.objects.filter(conf_id=conf):
-            result['about'].append({'title': page.title, 'text': page.abstract});
+            result['about'].append(
+                {
+                    'title': page.title,
+                    'text': page.abstract,
+                }
+            );
 
         # RSS
         result['rss'] = []
@@ -1758,6 +1763,17 @@ class ExportView(generic.TemplateView):
                 ]
         else:
             result['places'] = []
+
+        for point in conf.geopoints.all():
+            result['places'].append(
+                {
+                    'name' : point.name,
+                    'description' : point.description,
+                    'icon' : request.build_absolute_uri(point.icon.icon.url),
+                    'lat' : point.latitude,
+                    'lon' : point.longitude
+                }
+            )
 
         result['timestamp'] = int(datetime.now().strftime("%s"))
 
