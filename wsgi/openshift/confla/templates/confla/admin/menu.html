@@ -6,6 +6,7 @@
     <li {% if active == "edit" %} class="cf-active" {% endif %}><a href={% url 'confla:edit_conf' url_id %}>{% trans "Configuration" %}</a></li>
     <li {% if active == "users" %} class="cf-active" {% endif %}><a href={% url 'confla:speakers' url_id %}>{% trans "Speakers" %}</a></li>
     <li {% if active == "editschedule" %} class="cf-active" {% endif %}><a href={% url 'confla:adminsched' url_id %}>{% trans "Schedule" %}</a></li>
+    <li {% if active == "admin_pages" %} class="cf-active" {% endif %}><a href={% url 'confla:admin_pages' url_id %}>{% trans "Pages" %}</a></li>
     <li {% if active == "import" %} class="cf-active" {% endif %}><a href={% url 'confla:import' url_id %}>{% trans "Import" %}</a></li>
     <li {% if active == "export" %} class="cf-active" {% endif %}><a href="{% url 'confla:export' url_id %}">{% trans "Export" %}</a></li>
     {% else %}

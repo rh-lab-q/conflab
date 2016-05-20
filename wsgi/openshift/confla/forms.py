@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
 
-from confla.models import Event, Conference, Room, ConflaUser, Paper, EmailAdress
+from confla.models import Event, Conference, Room, ConflaUser, Paper, EmailAdress, Page
 
 
 class ImportFileForm(forms.Form):
@@ -190,3 +190,15 @@ class AuthForm(AuthenticationForm):
                                                      'class' : 'form-control',
                                                      'required' : 'required',
         })
+
+class PageForm(forms.ModelForm):
+    class Meta:
+        model = Page
+        fields = ['title', 'abstract']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({
+                            'class' : 'form-control input-sm'
+            })

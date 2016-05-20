@@ -321,6 +321,7 @@ class IconsView(generic.TemplateView):
         })
 
 class PagesView(generic.TemplateView):
+
     def content(request, url_id, page):
         conf = get_conf_or_404(url_id)
         pageObject = Page.objects.get(id=page);
@@ -330,6 +331,39 @@ class PagesView(generic.TemplateView):
             'conf' : conf,
             'page' : pageObject,
         })
+
+    def pages_list(request, url_id):
+        conf = get_conf_or_404(url_id)
+#        pageObject = Page.objects.get(id=page);
+
+
+        return render(request, 'confla/admin/pages.html', {
+            'url_id' : url_id,
+            'conf' : conf,
+            'pages' : Page.objects.filter(conf_id=conf),
+        })
+
+    def edit_page(request, url_id, page):
+        conf = get_conf_or_404(url_id)
+        pageObject = Page.objects.get(id=page);
+
+        return render(request, 'confla/admin/page.html', {
+            'url_id' : url_id,
+            'conf' : conf,
+            'page' : pageObject,
+            'form': PageForm(instance=pageObject),
+        })
+
+    def save_page(request, url_id, page):
+        print(request);
+        pageObject = Page.objects.get(id=page);
+        form = PageForm(request.POST, request.FILES, instance=pageObject)
+        if form.is_valid():
+            page = form.save(commit=False)
+            page.save()
+
+        return HttpResponseRedirect(reverse('confla:admin_pages',kwargs={'url_id' : url_id}))
+
 
 class EventView(generic.TemplateView):
 

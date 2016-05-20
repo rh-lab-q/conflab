@@ -1,0 +1,53 @@
+{% extends "confla/admin/admin_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load confla_filters %}
+{% block title %}{% trans "Edit page" %}{% endblock %}
+
+{% if conf %}
+{% block admin_menu %}
+    {% include "confla/admin/menu.html" with active="" %}
+{% endblock %}
+{% endif %}
+
+{% block admin_page %}
+<div class="container">
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <div class="alert-header">
+            <i class="fa fa-exclamation-triangle fa-lg"></i>
+            <b>{% trans "Error while creating page:" %}</b>
+        </div>
+        {{form.errors}}
+    </div>
+{% endif %}
+<form class="conf-form" action=
+    {% if page %}
+    {% url 'confla:save_page' url_id page.id %}
+    {% else %}
+     url 'confla:insert_page' url_id 
+    {% endif %}
+     method="post" enctype="multipart/form-data">
+{% csrf_token %}
+
+{{ form.title }}
+{{ form.abstract }}
+
+
+<div class="row col-md-12">
+    <button class="btn btn-default" type="submit">
+    {% if page %}
+        {% trans "Save Changes" %}
+    {% else %}
+        {% trans "Create Conference" %}
+    {% endif %}
+    </button>
+</div>
+</form>
+
+</div>
+
+{% endblock %}
+{% block extrascripts %}
+
+{% endblock %}

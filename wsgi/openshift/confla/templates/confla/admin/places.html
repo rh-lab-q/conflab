@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load confla_filters %}
-{% block title %}Places{% endblock %}
+{% block title %}{% trans "Places" %}{% endblock %}
 
 {% block extrastyles %}
 <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}" />
@@ -21,7 +21,7 @@
 {% endblock %}
 
     {% block admin_menu %}
-        {% include "confla/admin/menu.html" with active="geo_places" %}
+        {% include "confla/admin/menu.html" with active="geo_points" %}
     {% endblock %}
 
 
