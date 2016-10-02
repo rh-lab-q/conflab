@@ -1215,9 +1215,7 @@ class ImportView(generic.TemplateView):
 
             tags = []
             # Create tags
-            if event['tags']:
-                tags = event['tags'][0].split(",")
-            for tag in tags:
+            for tag in event['tags']:
                 tag = tag.strip()
                 newtag, created = EventTag.objects.get_or_create(name=tag)
                 newevent.tags.add(newtag)
