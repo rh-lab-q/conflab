@@ -1285,8 +1285,9 @@ class ImportView(generic.TemplateView):
                 max_end = slot.end_time.time()
         conf.start_time = max_start
         conf.end_time = max_end
-        conf.start_date = slots[0].start_time.date()
-        conf.end_date = slots.reverse()[0].start_time.date()
+        if len(slots) > 0:
+            conf.start_date = slots[0].start_time.date()
+            conf.end_date = slots.reverse()[0].start_time.date()
         conf.save()
 
         return render(request, 'confla/admin/import_response.html',
