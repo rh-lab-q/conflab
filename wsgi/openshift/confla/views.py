@@ -1188,7 +1188,7 @@ class ImportView(generic.TemplateView):
                 # New slot, we need to set it up properly
                 setup_slot = True
 
-            if 'event_start' in event.keys() and (setup_slot or setup_event or overwrite):
+            if 'event_start' in event and (setup_slot or setup_event or overwrite):
                 newslot.room_id = room
                 start = datetime.fromtimestamp(int(event['event_start']))
                 end = datetime.fromtimestamp(int(event['event_end']))
