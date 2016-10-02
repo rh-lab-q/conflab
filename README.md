@@ -1,5 +1,7 @@
 # conflab
 
+![Confla](logo/confla_icon_BLUE.png?raw=true "Confla")
+
 Conflab aims to be full featured solution for conference management. 
 
 Features:
