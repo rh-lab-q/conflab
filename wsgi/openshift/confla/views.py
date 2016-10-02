@@ -1245,8 +1245,21 @@ class ImportView(generic.TemplateView):
                 # TODO: proper passwords
                 newuser.password = "blank"
                 newuser.first_name = user['name'][:30]
+                if 'f_name' in user:
+                    newuser.first_name = user['f_name'][:30]
+                if 'l_name' in user:
+                    newuser.last_name = user['l_name'][:30]
                 newuser.company = user['company']
                 newuser.position = user['position']
+                newuser.phone = user['phone']
+                newuser.web = user['web']
+                newuser.github = user['github']
+                newuser.facebook = user['facebook']
+                newuser.twitter = user['twitter']
+                newuser.google_plus = user['google_plus']
+                newuser.linkedin = user['linkedin']
+                newuser.bio = user['bio']
+
                 if user['avatar']:
                     try:
                         content = urllib.request.urlretrieve(user['avatar'])
