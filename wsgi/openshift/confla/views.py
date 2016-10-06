@@ -1133,6 +1133,7 @@ class ImportView(generic.TemplateView):
                 newevent.topic = event['topic']
                 newevent.description = event['description']
                 newevent.lang = event['lang']
+                newevent.notes = event['notes']
                 newevent.full_clean()
                 newevent.save()
                 events_created += 1
@@ -1167,6 +1168,7 @@ class ImportView(generic.TemplateView):
                     newevent.topic = event['topic']
                     newevent.description = event['description']
                     newevent.lang = event['lang']
+                    newevent.notes = event['notes']
                     newevent.full_clean()
                     newevent.save()
                     if overwrite:
