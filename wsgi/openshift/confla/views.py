@@ -1299,8 +1299,10 @@ class ImportView(generic.TemplateView):
                 max_end = slot.end_time.time()
             elif max_end < slot.end_time.time():
                 max_end = slot.end_time.time()
-        conf.start_time = max_start
-        conf.end_time = max_end
+        if max_start != None:
+            conf.start_time = max_start
+        if max_end != None:
+            conf.end_time = max_end
         if len(slots) > 0:
             conf.start_date = slots[0].start_time.date()
             conf.end_date = slots.reverse()[0].start_time.date()
