@@ -1243,6 +1243,10 @@ class ImportView(generic.TemplateView):
                 username = user['username'][:30]
             username = re.sub('[\W_]+', '', username)
             username = unidecode(username)
+#            newemail = EmailAdress.objects.get_or_create(address=user['mail'])
+#            if 'user' in newemail:
+#                username = newemail.user.username
+
             newuser, created = ConflaUser.objects.get_or_create(username=username)
             if created or overwrite:
                 # TODO: proper passwords
@@ -1262,9 +1266,9 @@ class ImportView(generic.TemplateView):
                 newuser.google_plus = user['google_plus']
                 newuser.linkedin = user['linkedin']
                 newuser.bio = user['bio']
+#                newemail.user = newuser
+#                newuser.email = newemail[0].address
 
-                newemail = EmailAdress.objects.get_or_create(user=newuser,address=user['mail'])
-                newuser.email = newemail[0].address
 
                 if user['avatar']:
                     try:
