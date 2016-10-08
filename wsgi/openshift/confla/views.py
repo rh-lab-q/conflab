@@ -1263,6 +1263,9 @@ class ImportView(generic.TemplateView):
                 newuser.linkedin = user['linkedin']
                 newuser.bio = user['bio']
 
+                newemail = EmailAdress.objects.get_or_create(user=newuser,address=user['mail'])
+                newuser.email = newemail[0].address
+
                 if user['avatar']:
                     try:
                         content = urllib.request.urlretrieve(user['avatar'])
