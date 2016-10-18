@@ -1786,6 +1786,7 @@ class ExportView(generic.TemplateView):
             user['twitter'] = usr.twitter
             user['google_plus'] = usr.google_plus
             user['linkedin'] = usr.linkedin
+            user['github'] = usr.github
             result['users'].append(user)
 
         # Export about
