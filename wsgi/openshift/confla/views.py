@@ -1132,6 +1132,7 @@ class ImportView(generic.TemplateView):
                 newevent.conf_id = conf
                 newevent.topic = event['topic']
                 newevent.description = event['description']
+                newevent.reqs = event['reqs'];
                 newevent.lang = event['lang']
                 newevent.notes = event['notes']
                 newevent.full_clean()
