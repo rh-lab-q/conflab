@@ -223,6 +223,7 @@ class Event(models.Model):
     conf_id = models.ForeignKey(Conference)
     topic = models.CharField(max_length=256)
     description = models.TextField(blank=True)
+    event_type = models.CharField(max_length=32, blank=True, null=True)
     lang = models.CharField(max_length=6)
     slides = models.URLField(max_length=512, blank=True)
     video = models.URLField(max_length=512, blank=True)
