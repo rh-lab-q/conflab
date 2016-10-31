@@ -1300,19 +1300,21 @@ class ImportView(generic.TemplateView):
         max_start = None
         max_end = None
         slots = Timeslot.objects.filter(conf_id=conf).order_by('start_time')
-        for slot in slots:
-            if not max_start:
-                max_start = slot.start_time.time()
-            elif max_start > slot.start_time.time():
-                max_start = slot.start_time.time()
-            if not max_end:
-                max_end = slot.end_time.time()
-            elif max_end < slot.end_time.time():
-                max_end = slot.end_time.time()
-        if max_start != None:
-            conf.start_time = max_start
-        if max_end != None:
-            conf.end_time = max_end
+
+### FIXME find correct solution for issue #37
+#        for slot in slots:
+#            if not max_start:
+#                max_start = slot.start_time.time()
+#            elif max_start > slot.start_time.time():
+#                max_start = slot.start_time.time()
+#            if not max_end:
+#                max_end = slot.end_time.time()
+#            elif max_end < slot.end_time.time():
+#                max_end = slot.end_time.time()
+#        if max_start != None:
+#            conf.start_time = max_start
+#        if max_end != None:
+#            conf.end_time = max_end
         if len(slots) > 0:
             conf.start_date = slots[0].start_time.date()
             conf.end_date = slots.reverse()[0].start_time.date()
