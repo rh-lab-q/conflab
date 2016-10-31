@@ -1134,6 +1134,7 @@ class ImportView(generic.TemplateView):
                 newevent.description = event['description']
                 newevent.reqs = event['reqs'];
                 newevent.lang = event['lang']
+                newevent.event_type = event['type']
                 newevent.notes = event['notes']
                 newevent.full_clean()
                 newevent.save()
@@ -1169,6 +1170,7 @@ class ImportView(generic.TemplateView):
                     newevent.topic = event['topic']
                     newevent.description = event['description']
                     newevent.lang = event['lang']
+                    newevent.event_type = event['type']
                     newevent.notes = event['notes']
                     newevent.full_clean()
                     newevent.save()
@@ -1737,6 +1739,7 @@ class ExportView(generic.TemplateView):
                 session = {}
                 session['session_id'] = event.pk
                 session['lang'] = event.lang
+                session['type'] = event.event_type
                 # Primary tag color
                 if event.prim_tag:
                     session['room_color'] = event.prim_tag.color 
