@@ -216,8 +216,23 @@ class EventTag(models.Model):
     name = models.CharField(max_length=256)
     color = models.CharField(max_length=8, blank=True)
 
+    def hex_to_rgb(self):
+        value = self.color.lstrip('#')
+        lv = len(value)
+        return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+    def fg_color(self):
+        t = self.hex_to_rgb()
+        sum = t[0] + t[1] + t[2]
+        if sum < 128:
+            return '#ffffff'
+        else:
+            return '#000000'
+
     def __str__(self):
         return self.name
+
+
 
 class Event(models.Model):
     conf_id = models.ForeignKey(Conference)

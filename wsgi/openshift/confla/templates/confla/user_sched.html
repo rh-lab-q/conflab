@@ -9,6 +9,7 @@
     {% for tag in legend_list %}
     .tag{{tag.id}} {
         background : {{tag.color}};
+        color: {{tag.fg_color}};
     }
     {% endfor %}
     {% if tag_id %}
