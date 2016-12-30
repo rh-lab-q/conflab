@@ -270,6 +270,11 @@ class Timeslot(models.Model):
     conf_id = models.ForeignKey(Conference)
 
     @property
+    def get_start_day(self):
+        return self.start_time.astimezone(timezone.get_default_timezone()).strftime("%A")
+
+
+    @property
     def get_start_time(self):
         return self.start_time.astimezone(timezone.get_default_timezone()).time().strftime("%H:%M")
 

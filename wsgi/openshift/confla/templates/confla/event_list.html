@@ -31,7 +31,13 @@
                 </div>
                 <div class="event-body">
                     <div class="location">
-                        {{event.timeslot.get_start_time}} - {{event.timeslot.room_id.shortname}}
+                        {{event.timeslot.room_id.shortname}} | {{event.timeslot.get_start_day}}  {{event.timeslot.get_start_time}} - {{event.timeslot.get_end_time}} 
+                        {% if event.slides %}
+                        <a href={{event.slides}}><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                        {% endif %}
+                        {% if event.video %}
+                        <a href={{event.video}}><i class="fa fa-file-video-o" aria-hidden="true"></i></a>
+                        {% endif %}
                     </div>
                     {% if event.tags.all %}
                     <div class="tags">
