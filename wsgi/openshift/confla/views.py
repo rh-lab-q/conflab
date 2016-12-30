@@ -1131,11 +1131,16 @@ class ImportView(generic.TemplateView):
                 newevent = Event()
                 newevent.conf_id = conf
                 newevent.topic = event['topic']
-                newevent.description = event['description']
-                newevent.reqs = event['reqs'];
-                newevent.lang = event['lang']
-                newevent.event_type = event['type']
-                newevent.notes = event['notes']
+                if 'description' in event:
+                    newevent.description = event['description']
+                if 'reqs' in event:
+                    newevent.reqs = event['reqs'];
+                if 'lang' in event:
+                    newevent.lang = event['lang']
+                if 'type' in event:
+                    newevent.event_type = event['type']
+                if 'notes' in event:
+                    newevent.notes = event['notes']
                 newevent.full_clean()
                 newevent.save()
                 events_created += 1
@@ -1168,10 +1173,14 @@ class ImportView(generic.TemplateView):
 
                 if setup_event or overwrite:
                     newevent.topic = event['topic']
-                    newevent.description = event['description']
-                    newevent.lang = event['lang']
-                    newevent.event_type = event['type']
-                    newevent.notes = event['notes']
+                    if 'description' in event:
+                        newevent.description = event['description']
+                    if 'lang' in event:
+                        newevent.lang = event['lang']
+                    if 'type' in event:
+                        newevent.event_type = event['type']
+                    if 'notes' in event:
+                        newevent.notes = event['notes']
                     newevent.full_clean()
                     newevent.save()
                     if overwrite:
@@ -1259,16 +1268,26 @@ class ImportView(generic.TemplateView):
                     newuser.first_name = user['f_name'][:30]
                 if 'l_name' in user:
                     newuser.last_name = user['l_name'][:30]
-                newuser.company = user['company']
-                newuser.position = user['position']
-                newuser.phone = user['phone']
-                newuser.web = user['web']
-                newuser.github = user['github']
-                newuser.facebook = user['facebook']
-                newuser.twitter = user['twitter']
-                newuser.google_plus = user['google_plus']
-                newuser.linkedin = user['linkedin']
-                newuser.bio = user['bio']
+                if 'company' in user:
+                    newuser.company = user['company']
+                if 'position' in user:
+                    newuser.position = user['position']
+                if 'phone' in user:
+                    newuser.phone = user['phone']
+                if 'web' in user:
+                    newuser.web = user['web']
+                if 'github' in user:
+                    newuser.github = user['github']
+                if 'facebook' in user:
+                    newuser.facebook = user['facebook']
+                if 'twitter' in user:
+                    newuser.twitter = user['twitter']
+                if 'google_plus' in user:
+                    newuser.google_plus = user['google_plus']
+                if 'linkedin' in user:
+                    newuser.linkedin = user['linkedin']
+                if 'bio' in user:
+                    newuser.bio = user['bio']
 #                newemail.user = newuser
 #                newuser.email = newemail[0].address
 
