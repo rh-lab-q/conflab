@@ -12,7 +12,7 @@
     {% if speaker.picture %}
     <div class="speaker-wrap">
         <a href="{% url 'confla:speaker_list' url_id %}#speaker_{{speaker.pk}}">
-            <img src={{speaker.picture|crop:"150x150"}}>
+            <img src={{speaker.picture|crop:"150x150"}} alt="{{speaker.first_name}} {{speaker.last_name}}" title="{{speaker.first_name}} {{speaker.last_name}}">
         </a>
     </div>
     {% endif %}
