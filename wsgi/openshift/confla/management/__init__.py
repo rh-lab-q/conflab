@@ -1,4 +1,4 @@
-from django.db.models.signals import post_syncdb
+from django.db.models.signals import post_migrate
 from django.contrib.auth.models import Permission, Group
 from django.db.utils import IntegrityError
 
@@ -49,4 +49,4 @@ def add_groups(sender, verbosity, **kwargs):
     organizers.permissions.add(Permission.objects.get(codename="can_organize"))
 
 # check for all our view permissions after a syncdb
-post_syncdb.connect(add_groups, sender=confla.models)
+post_migrate.connect(add_groups, sender=confla.models)

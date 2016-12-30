@@ -41,8 +41,6 @@ if ON_OPENSHIFT:
 else:
     DEBUG = True
 
-TEMPLATE_DEBUG = DEBUG
-
 if DEBUG:
     ALLOWED_HOSTS = []
 else:
@@ -93,19 +91,27 @@ ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'wsgi.application'
 
-TEMPLATE_DIRS = (
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
      os.path.join(BASE_DIR,'templates'),
-)
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.core.context_processors.request',
+                "django.core.context_processors.i18n",
+                "django.core.context_processors.media",
+                "django.core.context_processors.static",
+                "django.core.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
+                "django.contrib.auth.context_processors.auth"
+            ],
+        },
+    },
+]
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    "django.contrib.auth.context_processors.auth"
-    )
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

@@ -5,7 +5,7 @@ from django.contrib import admin
 
 from confla import views
 
-urlpatterns = patterns('',
+urlpatterns = [
         url(r'^$', views.IndexView.my_view, name='index'),
         url(r'add_rooms/$', views.AddRoomsView.view_form, name='add_rooms'),
         url(r'^events/popover/$', views.EventView.get_popover, name='eventPop'),
@@ -70,5 +70,5 @@ urlpatterns = patterns('',
         url(r'^(?P<url_id>\w+)/admin/import/import_event/$', views.ImportView.import_event, name='import_event'),
         url(r'^(?P<url_id>\w+)/admin/export/$', views.ExportView.export_view, name='export'),
         url(r'^activate/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',views.RegisterView.activate_email , name='activate_email'),
-    )
+    ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

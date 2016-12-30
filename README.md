@@ -25,7 +25,7 @@ Other software for conference planning:
 ```bash
 python3 setup.py install
 cd ./wsgi/openshift/
-python3 manage.py syncdb
+python3 manage.py migrate
 python3 manage.py runserver
 ```
 
