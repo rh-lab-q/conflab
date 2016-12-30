@@ -27,6 +27,7 @@ python3 setup.py install
 cd ./wsgi/openshift/
 python3 manage.py migrate
 python3 manage.py migrate --run-syncdb
+python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 
