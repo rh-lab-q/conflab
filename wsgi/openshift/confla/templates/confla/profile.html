@@ -59,9 +59,9 @@
                     {{ form.picture }}
                     <br/>
                     {% if url_user.picture %}
-                    <img src={{url_user.picture|crop:"100x100"}}>
+                    <img src={{url_user.picture|crop:"100x100"}} alt="user picture">
                     {% else %}
-                    <img style="width: 100px;" src={% static "confla/images/avatar_default.png" %}>
+                    <img style="width: 100px;" src={% static "confla/images/avatar_default.png" %} alt="user picture">
                     {% endif %}
                 </div>
             </div>

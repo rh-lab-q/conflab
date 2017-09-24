@@ -22,6 +22,7 @@ class Conference(models.Model):
     rooms = models.ManyToManyField('Room', through='HasRoom', related_name='room+', blank=True)
     timedelta = models.IntegerField(default=10)
     active = models.BooleanField(default=False)
+    active_schedule = models.BooleanField(default=False)
     about = models.TextField(blank=True)
     venue = models.TextField(blank=True)
     gps = models.CharField(max_length=256, blank=True)

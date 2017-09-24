@@ -14,7 +14,7 @@
 <div>
     <h1>{{conf.name}}</h1>
 </div>
-{% if conf.start_date = conf.end_date %}
+{% if conf.start_date == conf.end_date %}
 <h2>{{conf.end_date|date:"j. E Y"}}</h2>
 {% else %}
   {% if conf.start_date|date:"y-m" == conf.end_date|date:"y-m" %}
@@ -32,7 +32,7 @@
 </h3>
 <div class="conf-splash">
     {% if conf.splash %}
-    <img class="conf-splash" src={{conf.splash.url}}>
+    <img class="conf-splash" src={{conf.splash.url}} alt="splash">
     {% endif %}
 </div>
 <div class="container">

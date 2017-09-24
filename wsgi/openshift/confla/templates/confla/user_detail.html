@@ -4,9 +4,9 @@
                         <div class="speaker">
                             <div class="avatar">
                                     {% if user.picture %}
-                                    <img src={{user.picture|crop:"70x70"}}>
+                                    <img src={{user.picture|crop:"70x70"}} alt="user picture"">
                                     {% else %}
-                                    <img style="width: 70px;" src={% static "confla/images/avatar_default.png" %}>
+                                    <img style="width: 70px;" src={% static "confla/images/avatar_default.png" %} alt="user picture">
                                     {% endif %}
                             </div>
                             <div class="speaker-info">

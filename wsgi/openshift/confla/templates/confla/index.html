@@ -15,13 +15,13 @@
             <h2 class="conf-name">{{conf.name}}</h2>
             <div class="conf-splash col-xs-6 col-md-4">
                 {% if conf.splash %}
-                <img src={{conf.splash.url}}>
+                <img src={{conf.splash.url}} alt="splash">
                 {% endif %}
             </div>
             <div class="col-xs-12 col-md-8">
                 <div class="conf-date">
 
-{% if conf.start_date = conf.end_date %}
+{% if conf.start_date == conf.end_date %}
 <h3>{{conf.end_date|date:"j. E Y"}}</h3>
 {% else %}
   {% if conf.start_date|date:"y-m" == conf.end_date|date:"y-m" %}
@@ -41,7 +41,7 @@
                 </div>
                 <div class="btn-group">
                     <a href={% url 'confla:splash' conf.url_id %} class="btn btn-default">{% trans "Details" %}</a>
-                    {% if conf.timeslot_set.all %}
+                    {% if conf.timeslot_set.all  %} FIXME && conf.active_schedule
                     <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-default">{% trans "Schedule" %}</a>
                     {% endif %}
                     {% if conf.cfp_open %}

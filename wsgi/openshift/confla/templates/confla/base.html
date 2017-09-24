@@ -44,7 +44,7 @@
             {% if url_id %}
             <a id="{% if conf.icon %}image-brand{% endif %}"class="navbar-brand" href="{% url 'confla:splash' url_id %}">
                 {% if conf.icon %}
-                    <img class="conf-icon" src={{conf.icon.url}}>
+                    <img class="conf-icon" src={{conf.icon.url}} alt="conference">
                 {% else %}
                     {{conf.name}}
                 {% endif %}
@@ -81,7 +81,7 @@
                 </li>
                 {% endif %}
 
-                {% if conf.timeslot_set.all %}
+                {% if conf.timeslot_set.all %} # FIXME && conf.active_schedule
                 <li>
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-calendar" aria-hidden="true"></i> {% trans "Schedule" %}
@@ -104,9 +104,9 @@
                 <li class="dropdown" id="user">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% if user.picture %}
-                        <img id="home-avatar"  src={{user.picture|crop:"30x30"}}>
+                        <img id="home-avatar"  src={{user.picture|crop:"30x30"}} alt="user picture">
                         {% else %}
-                        <img id="home-avatar" src={% static "confla/images/avatar_default.png" %}>
+                        <img id="home-avatar" src={% static "confla/images/avatar_default.png" %} alt="user picture">
                         {% endif %}
                         {% if not user.first_name and not user.last_name %}
                         {{ user.username }}
