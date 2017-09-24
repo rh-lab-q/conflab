@@ -81,7 +81,7 @@
                 </li>
                 {% endif %}
 
-                {% if conf.timeslot_set.all %} # FIXME && conf.active_schedule
+                {% if conf.timeslot_set.all and conf.active_schedule %}
                 <li>
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-calendar" aria-hidden="true"></i> {% trans "Schedule" %}

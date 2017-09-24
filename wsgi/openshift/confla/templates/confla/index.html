@@ -41,7 +41,7 @@
                 </div>
                 <div class="btn-group">
                     <a href={% url 'confla:splash' conf.url_id %} class="btn btn-default">{% trans "Details" %}</a>
-                    {% if conf.timeslot_set.all  %} FIXME && conf.active_schedule
+                    {% if conf.timeslot_set.all and conf.active_schedule %}
                     <a href={% url 'confla:schedule' conf.url_id %} class="btn btn-default">{% trans "Schedule" %}</a>
                     {% endif %}
                     {% if conf.cfp_open %}

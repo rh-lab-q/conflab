@@ -36,7 +36,7 @@ class ConfCreateForm(forms.ModelForm):
 
         classes = 'form-control input-sm'
         for key in self.fields.keys():
-            if key not in ['splash', 'icon', 'active']:
+            if key not in ['splash', 'icon', 'active', 'active_schedule']:
                 self.fields[key].widget.attrs.update({'class' : classes})
 
         for key in ['name', 'url_id']:
