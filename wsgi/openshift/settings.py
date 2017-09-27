@@ -15,7 +15,7 @@ import imp
 from django.utils.translation import ugettext_lazy as _
 
 ON_OPENSHIFT = False
-if 'OPENSHIFT_REPO_DIR' in os.environ:
+if 'OPENSHIFT_BUILD_SOURCE' in os.environ:
     ON_OPENSHIFT = True
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
