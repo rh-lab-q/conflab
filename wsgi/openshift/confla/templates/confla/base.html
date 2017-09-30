@@ -106,7 +106,7 @@
                         {% if user.picture %}
                         <img id="home-avatar"  src={{user.picture|crop:"30x30"}} alt="user picture">
                         {% else %}
-                        <img id="home-avatar" src={% static "confla/images/avatar_default.png" %} alt="user picture">
+                        <img id="home-avatar" src={% static "confla/images/avatar_default.png" %} alt="user picture" />
                         {% endif %}
                         {% if not user.first_name and not user.last_name %}
                         {{ user.username }}
@@ -135,7 +135,7 @@
 
                 <li>
                     <a id="home-brand" class="navbar-brand" href="{% url 'confla:index' %}">
-                        <i class="fa fa-2x fa-home" style="vertical-align: middle;"></i>
+                        <img id="confla" src={% static "confla/images/confla30x30.png" %} alt="confla"  style="vertical-align: middle;" />
                     </a>
                 </li>
             </ul>
