@@ -1770,7 +1770,7 @@ class ExportView(generic.TemplateView):
                     session['track'] = ''
                 session['room'] = slot.room_id.shortname
                 session['room_short'] = slot.room_id.shortname
-                session['speakers'] = [x.first_name + ' ' + x.last_name for x in event.speaker.all()]
+                session['speakers'] = [x.username for x in event.speaker.all()]
                 session['description'] = event.description
                 session['tags'] = [x.name for x in event.tags.all()]
                 session['topic'] = event.topic
