@@ -1255,9 +1255,14 @@ class ImportView(generic.TemplateView):
                 username = user['username'][:30]
             username = re.sub('[\W_]+', '', username)
             username = unidecode(username)
-#            newemail = EmailAdress.objects.get_or_create(address=user['mail'])
-#            if 'user' in newemail:
-#                username = newemail.user.username
+
+            # if email exists in database
+            newemailfilter = EmailAdress.objects.filter(address=user['mail'])
+            if (newemailfilter.count() > 0):
+                username = newemailfilter[0].user.username
+                newemail = newemailfilter[0]
+            else:
+                newemail = None
 
             newuser, created = ConflaUser.objects.get_or_create(username=username)
             if created or overwrite:
@@ -1288,8 +1293,18 @@ class ImportView(generic.TemplateView):
                     newuser.linkedin = user['linkedin']
                 if 'bio' in user:
                     newuser.bio = user['bio']
-#                newemail.user = newuser
-#                newuser.email = newemail[0].address
+
+                # not in query set and not empty # FIXME should be valid email
+                if (newemailfilter.count() == 0) and (user['mail']):
+                    newemail = EmailAdress(user=newuser,address=user['mail'],is_active=False)
+                    newemail.save()
+
+# FIXME nastaveni primarniho emailu
+#
+#                if newemail:
+#                    print(user['mail'])
+#                    print(newemail)
+#                    newuser.email = newemail.address;
 
 
                 if user['avatar']:
@@ -1719,10 +1734,12 @@ class ExportView(generic.TemplateView):
         conf = get_conf_or_404(url_id)
         fn = conf.url_id + '.json'
 
+        # FIXME file exists is not enough, it should be regenerated when user detail changes
         # Check if the export exists
-        if not StaticFilesStorage().exists('exports/' + fn):
-            # Need to generate the export
-            ExportView.generate_json(request, url_id)
+#        if not StaticFilesStorage().exists('exports/' + fn):
+
+        # Need to generate the export
+        ExportView.generate_json(request, url_id)
 
         f = StaticFilesStorage().open('exports/' + fn, 'r')
         content = f.read()

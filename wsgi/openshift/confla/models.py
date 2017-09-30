@@ -172,6 +172,9 @@ class ConflaUser(AbstractUser):
     def is_Reviewer(self):
         return len(Paper.objects.filter(reviewer=self.username)) != 0
 
+    def get_emails(self):
+        return EmailAdress.objects.filter(user=self)
+
     @property
     def get_fullname(self):
         return (self.first_name + ' ' + self.last_name).strip()
