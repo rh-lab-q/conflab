@@ -26,18 +26,16 @@ AUTH_USER_MODEL = 'confla.ConflaUser'
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-default_keys = { 'SECRET_KEY': 'tjy&7h%c=q01+c5i@_-t)&n2c+y*tn7v_)vbdksnlv@s5qh%e_' }
-use_keys = default_keys
-if ON_OPENSHIFT:
-    imp.find_module('openshiftlibs')
-    import openshiftlibs
-    use_keys = openshiftlibs.openshift_secure(default_keys)
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    # safe value used for development when DJANGO_SECRET_KEY might not be set
+    '9e4@&tw46$l31)zrqe3wi+-slqm(ruvz&se0^%9#6(_w3ui!c0'
+)
 
-SECRET_KEY = use_keys['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if ON_OPENSHIFT:
-    DEBUG = True
+    DEBUG = False
 else:
     DEBUG = True
 
@@ -120,10 +118,10 @@ if ON_OPENSHIFT:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'python',
-            'USER': 'adminsuqsgwl',
-            'PASSWORD': '1akaKP6YsQlp',
-            'HOST': '127.4.28.2',
+            'NAME': os.environ['DATABASE_NAME'],
+            'USER': os.environ['DATABASE_USER'],
+            'PASSWORD': os.environ['DATABASE_PASSWORD'],
+            'HOST': os.environ['DATABASE_SERVICE_NAME'],
             'PORT': '5432',
         }
     }
