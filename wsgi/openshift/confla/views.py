@@ -1795,6 +1795,8 @@ class ExportView(generic.TemplateView):
             user = {}
             user['username'] = usr.username
             user['name'] = usr.first_name + ' ' + usr.last_name
+            user['f_name'] = usr.first_name
+            user['l_name'] = usr.last_name
             user['position'] = usr.position
             user['company'] = usr.company
             user['joined'] = usr.date_joined.astimezone(tz).isoformat()[:19].replace('T', ' ')
