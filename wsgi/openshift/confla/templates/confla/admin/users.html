@@ -33,7 +33,7 @@
       <td> <a href={% url 'confla:profile' user.username %}>{{ user.first_name }} {{ user.last_name }}</a> </td>
     {% endif %}
       <td> {{ user.phone }} </td>
-      <td> {{ user.email }} ( {% for emails in user.get_emails %} {{ emails.address }}  {% empty %} - {% endfor  %} ) </td>
+      <td> {{ user.email }} {% if not user.email %} ( {% for emails in user.get_emails %} {{ emails.address }}  {% empty %} - {% endfor  %} ) {% endif %} </td>
     </tr>
     {% empty %}
     <tr>

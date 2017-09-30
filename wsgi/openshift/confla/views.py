@@ -660,8 +660,8 @@ class UserView(generic.TemplateView):
             raise PermissionDenied
 
         # If the email is inactive, don't make it primary
-        if not email.is_active:
-            user.email = email[0].address
+        if email.first().is_active:
+            user.email = email.first().address
             user.save()
         return HttpResponseRedirect(reverse('confla:profile', kwargs={'url_username' : url_username}))
 
@@ -1259,8 +1259,8 @@ class ImportView(generic.TemplateView):
             # if email exists in database
             newemailfilter = EmailAdress.objects.filter(address=user['mail'])
             if (newemailfilter.count() > 0):
-                username = newemailfilter[0].user.username
-                newemail = newemailfilter[0]
+                username = newemailfilter.first().user.username
+                newemail = newemailfilter.first()
             else:
                 newemail = None
 
@@ -1299,13 +1299,8 @@ class ImportView(generic.TemplateView):
                     newemail = EmailAdress(user=newuser,address=user['mail'],is_active=False)
                     newemail.save()
 
-# FIXME nastaveni primarniho emailu
-#
-#                if newemail:
-#                    print(user['mail'])
-#                    print(newemail)
-#                    newuser.email = newemail.address;
-
+                if newemail:
+                    newuser.email = newemail.address;
 
                 if user['avatar']:
                     try:
