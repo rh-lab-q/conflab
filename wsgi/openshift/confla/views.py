@@ -574,7 +574,6 @@ class LoginView(generic.TemplateView):
             if request.POST['next'] is not "":
                 redirect = request.POST['next']
             else:
-                print(user)
                 if user.has_perm('confla.can_organize'):
                     redirect = reverse('confla:org_conf_list')
                 else:
@@ -1264,7 +1263,7 @@ class ImportView(generic.TemplateView):
             else:
                 newemail = None
 
-            newuser, created = ConflaUser.objects.get_or_create(username=username)
+            newuser, created = ConflaUser.objects.get_or_create(username=username, email=user['mail'])
             if created or overwrite:
                 # TODO: proper passwords
                 newuser.password = "blank"
