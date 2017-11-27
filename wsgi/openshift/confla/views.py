@@ -1118,8 +1118,83 @@ class ImportView(generic.TemplateView):
 
         conf = Conference.objects.get(url_id=url_id)
 
-        # Generate sessions
+
+
+        # Generate users
         user_list = []
+        users_list = json_obj['users']
+        for user in users_list:
+            username = user['name'].replace(" ", "")[:30]
+            if not username:
+                username = user['username'][:30]
+            username = re.sub('[\W_]+', '', username)
+            username = unidecode(username)
+
+            # if email exists in database
+            newemailfilter = EmailAdress.objects.filter(address=user['mail'])
+            if (newemailfilter.count() > 0):
+                username = newemailfilter.first().user.username
+                newemail = newemailfilter.first()
+            else:
+                newemail = None
+
+            newuser, created = ConflaUser.objects.get_or_create(username=username)
+
+            if created or overwrite:
+                # TODO: proper passwords
+                newuser.password = "blank"
+                newuser.first_name = user['name'][:30]
+                if 'f_name' in user:
+                    newuser.first_name = user['f_name'][:30]
+                if 'l_name' in user:
+                    newuser.last_name = user['l_name'][:30]
+                if 'company' in user:
+                    newuser.company = user['company']
+                if 'position' in user:
+                    newuser.position = user['position']
+                if 'phone' in user:
+                    newuser.phone = user['phone']
+                if 'web' in user:
+                    newuser.web = user['web']
+                if 'github' in user:
+                    newuser.github = user['github']
+                if 'facebook' in user:
+                    newuser.facebook = user['facebook']
+                if 'twitter' in user:
+                    newuser.twitter = user['twitter']
+                if 'google_plus' in user:
+                    newuser.google_plus = user['google_plus']
+                if 'linkedin' in user:
+                    newuser.linkedin = user['linkedin']
+                if 'bio' in user:
+                    newuser.bio = user['bio']
+
+                # not in query set and not empty # FIXME should be valid email
+                if (newemailfilter.count() == 0) and (user['mail']):
+                    newemail = EmailAdress(user=newuser,address=user['mail'],is_active=False)
+                    newemail.save()
+
+                if newemail:
+                    newuser.email = newemail.address;
+
+                if user['avatar']:
+                    try:
+                        content = urllib.request.urlretrieve(user['avatar'])
+                        ext = 'jpg'
+                        newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
+                    except (urllib.error.HTTPError, urllib.error.URLError):
+                        pass
+                if overwrite and newuser.username in user_list:
+                    users_modified += 1
+                elif created:
+                    user_list.append(newuser.username)
+                    users_created += 1
+
+                newuser.full_clean()
+                newuser.save()
+
+
+        # Generate sessions
         event_list = []
         collision_log = {}
         for event in json_obj['sessions']:
@@ -1247,77 +1322,6 @@ class ImportView(generic.TemplateView):
                 newevent.prim_tag = tag
 
             newevent.save()   
-
-        # Generate users
-        users_list = json_obj['users']
-        for user in users_list:
-            username = user['name'].replace(" ", "")[:30]
-            if not username:
-                username = user['username'][:30]
-            username = re.sub('[\W_]+', '', username)
-            username = unidecode(username)
-
-            # if email exists in database
-            newemailfilter = EmailAdress.objects.filter(address=user['mail'])
-            if (newemailfilter.count() > 0):
-                username = newemailfilter.first().user.username
-                newemail = newemailfilter.first()
-            else:
-                newemail = None
-
-            newuser, created = ConflaUser.objects.get_or_create(username=username, email=user['mail'])
-            if created or overwrite:
-                # TODO: proper passwords
-                newuser.password = "blank"
-                newuser.first_name = user['name'][:30]
-                if 'f_name' in user:
-                    newuser.first_name = user['f_name'][:30]
-                if 'l_name' in user:
-                    newuser.last_name = user['l_name'][:30]
-                if 'company' in user:
-                    newuser.company = user['company']
-                if 'position' in user:
-                    newuser.position = user['position']
-                if 'phone' in user:
-                    newuser.phone = user['phone']
-                if 'web' in user:
-                    newuser.web = user['web']
-                if 'github' in user:
-                    newuser.github = user['github']
-                if 'facebook' in user:
-                    newuser.facebook = user['facebook']
-                if 'twitter' in user:
-                    newuser.twitter = user['twitter']
-                if 'google_plus' in user:
-                    newuser.google_plus = user['google_plus']
-                if 'linkedin' in user:
-                    newuser.linkedin = user['linkedin']
-                if 'bio' in user:
-                    newuser.bio = user['bio']
-
-                # not in query set and not empty # FIXME should be valid email
-                if (newemailfilter.count() == 0) and (user['mail']):
-                    newemail = EmailAdress(user=newuser,address=user['mail'],is_active=False)
-                    newemail.save()
-
-                if newemail:
-                    newuser.email = newemail.address;
-
-                if user['avatar']:
-                    try:
-                        content = urllib.request.urlretrieve(user['avatar'])
-                        ext = 'jpg'
-                        newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
-                    except (urllib.error.HTTPError, urllib.error.URLError):
-                        pass
-                if overwrite and newuser.username in user_list:
-                    users_modified += 1
-                elif created:
-                    user_list.append(newuser.username)
-                    users_created += 1
-
-                newuser.full_clean()
-                newuser.save()
 
         # Randomly color uncolored tags
         tags = EventTag.objects.filter(events__conf_id=conf, color__exact='').distinct()
