@@ -1214,7 +1214,9 @@ class ImportView(generic.TemplateView):
                 if 'type' in event:
                     newevent.event_type = event['type']
                 if 'notes' in event:
-                    newevent.slides = event['notes']
+                    newevent.notes = event['notes']
+                if 'slides' in event:
+                    newevent.slides = event['slides']
                 newevent.full_clean()
                 newevent.save()
                 events_created += 1
