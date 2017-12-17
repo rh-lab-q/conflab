@@ -1132,7 +1132,7 @@ class ImportView(generic.TemplateView):
 
             # if email exists in database
             newemailfilter = EmailAdress.objects.filter(address=user['mail'])
-            if (newemailfilter.count() > 0):
+            if (newemailfilter.count() == 1):
                 username = newemailfilter.first().user.username
                 newemail = newemailfilter.first()
             else:
