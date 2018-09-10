@@ -1195,7 +1195,13 @@ class ImportView(generic.TemplateView):
                 try:
                     newuser.full_clean()
                 except ValidationError as e:
-                    print(str(e))
+                    string = "ValidationError: " + username + " : " + str(e) + "<br/>\n"
+                    for key in e.message_dict:
+                        string = string + " " + user[key]
+
+                    return '<div class="alert alert-warning import-alerts">'+ string + '</div>'
+
+
                 newuser.save()
 
 
