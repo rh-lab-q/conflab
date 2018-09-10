@@ -1184,6 +1184,7 @@ class ImportView(generic.TemplateView):
                         content = urllib.request.urlretrieve(user['avatar'])
                         ext = 'jpg'
                         newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
+                        print("downloading " + user['avatar'])
                     except (urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
                         pass
                 if overwrite and newuser.username in user_list:
@@ -1322,16 +1323,18 @@ class ImportView(generic.TemplateView):
 
             tags = []
             # Create tags
+            tag_idx = 0;
             for tag in event['tags']:
                 tag = tag.strip()
                 newtag, created = EventTag.objects.get_or_create(name=tag)
                 newevent.tags.add(newtag)
-                newevent.prim_tag = newtag
+                if tag_idx == 0:
+                    newevent.prim_tag = newtag
+                tag_idx = tag_idx + 1
 
             if 'track' in event:
                 if event['track'] and event['room_color']:
                     tag, created = EventTag.objects.get_or_create(name=event['track'])
-                    tag.color = event['room_color']
                     tag.save()
                     newevent.prim_tag = EventTag.objects.get(name=event['track'])
             else:
@@ -1341,7 +1344,7 @@ class ImportView(generic.TemplateView):
             newevent.save()   
 
         # Randomly color uncolored tags
-        tags = EventTag.objects.filter(events__conf_id=conf, color__exact='').distinct()
+        tags = EventTag.objects.filter(color__exact='').distinct()
         for tag in tags:
             r = lambda: (random.randint(0,255)+255) // 2
             tag.color = '#%02x%02x%02x' % (r(),r(),r())
