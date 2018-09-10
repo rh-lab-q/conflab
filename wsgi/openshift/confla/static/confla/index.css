@@ -18,3 +18,7 @@ body > #page-container, .conference {
 .conference:nth-of-type(2n+1) .btn {
     background-color: #eee;
 }
+
+.conf-splash img {
+  max-width: 100%;
+}

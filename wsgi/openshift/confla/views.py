@@ -5,6 +5,8 @@ import hashlib
 import csv
 import io
 import urllib
+import http.client
+
 from datetime import datetime, date, time
 
 from django.db.models import Count
@@ -1182,7 +1184,7 @@ class ImportView(generic.TemplateView):
                         content = urllib.request.urlretrieve(user['avatar'])
                         ext = 'jpg'
                         newuser.picture.save(username + '.' + ext, File(open(content[0], 'rb')))
-                    except (urllib.error.HTTPError, urllib.error.URLError):
+                    except (urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
                         pass
                 if overwrite and newuser.username in user_list:
                     users_modified += 1
@@ -1190,7 +1192,10 @@ class ImportView(generic.TemplateView):
                     user_list.append(newuser.username)
                     users_created += 1
 
-                newuser.full_clean()
+                try:
+                    newuser.full_clean()
+                except ValidationError as e:
+                    print(str(e))
                 newuser.save()
 
 
@@ -1217,6 +1222,8 @@ class ImportView(generic.TemplateView):
                     newevent.notes = event['notes']
                 if 'slides' in event:
                     newevent.slides = event['slides']
+                if 'video' in event:
+                    newevent.video = event['video']
                 newevent.full_clean()
                 newevent.save()
                 events_created += 1
@@ -1259,6 +1266,8 @@ class ImportView(generic.TemplateView):
                         newevent.notes = event['notes']
                     if 'slides' in event:
                         newevent.slides = event['slides']
+                    if 'video' in event:
+                        newevent.video = event['video']
                     newevent.full_clean()
                     newevent.save()
                     if overwrite:

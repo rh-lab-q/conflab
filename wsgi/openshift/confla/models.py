@@ -143,8 +143,8 @@ class Room(models.Model):
         return self.shortname
 
 class HasRoom(models.Model):
-    room = models.ForeignKey(Room)
-    conference = models.ForeignKey(Conference)
+    room = models.ForeignKey(Room, on_delete=models.PROTECT)
+    conference = models.ForeignKey(Conference, on_delete=models.PROTECT)
     slot_length = models.IntegerField(default=10)
     order = models.IntegerField(null=True)
 
@@ -190,7 +190,7 @@ class VolunteerBlock(models.Model):
     description = models.TextField(blank=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    room_id = models.ForeignKey(Room, blank=True, null=True)
+    room_id = models.ForeignKey(Room, blank=True, null=True, on_delete=models.PROTECT)
     max_volunteers = models.IntegerField()
 
     def __str__(self):
@@ -204,7 +204,7 @@ class Volunteer(models.Model):
         return self.user.username
 
 class EmailAdress(models.Model):
-    user = models.ForeignKey(ConflaUser)
+    user = models.ForeignKey(ConflaUser, on_delete=models.PROTECT)
     address = models.EmailField(max_length=256, unique=True)
     is_active = models.BooleanField(default=False)
     activation_token = models.CharField(max_length=256, blank=True, null=True)
@@ -239,7 +239,7 @@ class EventTag(models.Model):
 
 
 class Event(models.Model):
-    conf_id = models.ForeignKey(Conference)
+    conf_id = models.ForeignKey(Conference, on_delete=models.PROTECT)
     topic = models.CharField(max_length=256)
     description = models.TextField(blank=True)
     event_type = models.CharField(max_length=32, blank=True, null=True)
@@ -249,7 +249,7 @@ class Event(models.Model):
     google_doc_url = models.URLField(max_length=512, blank=True)
     speaker = models.ManyToManyField(ConflaUser, blank=True, related_name='events')
     tags = models.ManyToManyField(EventTag, related_name='events', blank=True)
-    prim_tag = models.ForeignKey(EventTag, null=True, blank=True)
+    prim_tag = models.ForeignKey(EventTag, null=True, blank=True, on_delete=models.PROTECT)
     notes = models.TextField(blank=True)
     reqs = models.TextField(blank=True)
 
@@ -269,9 +269,9 @@ class Event(models.Model):
 class Timeslot(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    room_id = models.ForeignKey(Room, blank=True, null=True)
+    room_id = models.ForeignKey(Room, blank=True, null=True, on_delete=models.PROTECT)
     event_id = models.OneToOneField(Event, blank=True, null=True)
-    conf_id = models.ForeignKey(Conference)
+    conf_id = models.ForeignKey(Conference, on_delete=models.PROTECT)
 
     @property
     def get_start_day(self):
@@ -301,8 +301,8 @@ class Timeslot(models.Model):
             return ((self.end_time - self.start_time).seconds / 60) / self.conf_id.timedelta
 
 class Paper(models.Model):
-    conf_id = models.ForeignKey(Conference)
-    user = models.ForeignKey(ConflaUser)
+    conf_id = models.ForeignKey(Conference, on_delete=models.PROTECT)
+    user = models.ForeignKey(ConflaUser, on_delete=models.PROTECT)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
     source = models.FileField(upload_to=paper_rename_and_return_path,
@@ -315,12 +315,12 @@ class Paper(models.Model):
         return self.title
 
 class Photo(models.Model):
-    conf_id = models.ForeignKey(Conference)
+    conf_id = models.ForeignKey(Conference, on_delete=models.PROTECT)
     title = models.CharField(max_length=256)
     picture = models.ImageField(upload_to='photos/')
 
 class Page(models.Model):
-    conf_id = models.ForeignKey(Conference)
+    conf_id = models.ForeignKey(Conference, on_delete=models.PROTECT)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
 
@@ -335,14 +335,14 @@ class Rating(models.Model):
         (4, 'Good'),
         (5, 'Excellent'),
     )
-    event = models.ForeignKey(Event)
-    user = models.ForeignKey(ConflaUser)
+    event = models.ForeignKey(Event, on_delete=models.PROTECT)
+    user = models.ForeignKey(ConflaUser, on_delete=models.PROTECT)
     score = models.IntegerField(choices=rating_choices, default=3)
     summary = models.TextField()
 
 class Favorite(models.Model):
-    event = models.ForeignKey(Event)
-    user = models.ForeignKey(ConflaUser)
+    event = models.ForeignKey(Event, on_delete=models.PROTECT)
+    user = models.ForeignKey(ConflaUser, on_delete=models.PROTECT)
 
 class GeoIcon(models.Model):
     title = models.CharField(max_length=256)
@@ -357,7 +357,7 @@ class GeoPoint(models.Model):
     name = models.CharField(max_length=256)
     note = models.CharField(max_length=256)
     description = models.TextField()
-    icon = models.ForeignKey(GeoIcon)
+    icon = models.ForeignKey(GeoIcon, on_delete=models.PROTECT)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
