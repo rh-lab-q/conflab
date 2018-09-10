@@ -13,6 +13,7 @@ packages = ['Django<=1.8',
              'pillow',
              'pytz',
              'unidecode',
+             'django-simple-captcha',
              ]
 
 if 'REDISCLOUD_URL' in os.environ and 'REDISCLOUD_PORT' in os.environ and 'REDISCLOUD_PASSWORD' in os.environ:

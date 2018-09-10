@@ -15,6 +15,7 @@
         {{ form.password }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Log in" %}</button>
         <div class="register_prompt"><a href="{% url 'confla:register' %}">{%trans "Not registered yet?" %}</a></div>
+        <div class="register_prompt"><a href="{% url 'confla:reset_password' %}">{%trans "Reset password" %}</a></div>
         {% if error_message %}<div class="error">{{ error_message }}</div>{% endif %}
         {% if request.GET.next %}<div class="error">{% trans "You must be logged in!" %}</div>{% endif %}
     </form>

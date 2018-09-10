@@ -3,9 +3,9 @@ from pytz import common_timezones as tzs
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
+from captcha.fields import CaptchaField
 
 from confla.models import Event, Conference, Room, ConflaUser, Paper, EmailAdress, Page
-
 
 class ImportFileForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -91,13 +91,23 @@ class EventEditForm(forms.ModelForm):
                             'class' : 'form-control input-sm'
             })
 
+class ResetPasswordForm(forms.ModelForm):
+    class Meta:
+        model = ConflaUser
+        fields = ['email']
+
+
+
 class RegisterForm(forms.ModelForm):
     confirm_password = forms.CharField(max_length = 200,
                             widget = forms.PasswordInput())
+    captcha = CaptchaField()
+    error_css_class = 'has-error'
+    success_css_class = 'has-success'
 
     class Meta:
         model = ConflaUser
-        fields = ['username','password', 'confirm_password',
+        fields = ['username','password', 'confirm_password', 'captcha',
             'email', 'first_name', 'last_name',
             ]
         widgets = {

@@ -42,7 +42,8 @@
                 <span class="icon-bar"></span>
             </button>
             {% if url_id %}
-            <a id="{% if conf.icon %}image-brand{% endif %}"class="navbar-brand" href="{% url 'confla:splash' url_id %}">
+            <a {% if conf.icon %}id="image-brand"{% endif %} class="navbar-brand" href="{% url 'confla:splash' url_id %}">
+
                 {% if conf.icon %}
                     <img class="conf-icon" src={{conf.icon.url}} alt="conference">
                 {% else %}

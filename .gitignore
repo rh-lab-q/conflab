@@ -12,3 +12,4 @@ venv/
 virtenv/
 dist/
 build/
+wsgi/static/

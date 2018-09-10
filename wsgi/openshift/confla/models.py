@@ -8,6 +8,7 @@ from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
 from confla.utils import user_rename_and_return_path, paper_rename_and_return_path
 from confla.utils import icon_rename_and_return_path, splash_rename_and_return_path
+from captcha.fields import CaptchaField
 
 class Conference(models.Model):
     name = models.CharField(max_length=256)
@@ -161,6 +162,7 @@ class ConflaUser(AbstractUser):
     google_plus = models.URLField(max_length=512, blank=True)
     linkedin = models.URLField(max_length=512, blank=True)
     bio = models.TextField (blank=True)
+    gen_username = models.CharField(max_length=32, blank=True)
     schedule = models.ManyToManyField('Event', related_name='sched+', blank=True)
 
     def __str__(self):

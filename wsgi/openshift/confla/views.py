@@ -34,11 +34,6 @@ from confla.forms import *
 from confla.models import *
 from confla.view_utils import get_conf_or_404
 
-class TestingView(generic.TemplateView):
-    @permission_required('confla.can_organize', raise_exception=True)
-    def test(request, url_id):
-        return ExportView.csv(request, url_id)
-
 class AdminView(generic.TemplateView):
 
     @permission_required('confla.can_organize', raise_exception=True)
@@ -248,8 +243,11 @@ class AboutView(generic.TemplateView):
 class IndexView(generic.TemplateView):
     template_name = 'confla/index.html'
     def my_view(request):
-        conf_list = Conference.objects.all().order_by("-start_date")
-        return render(request, IndexView.template_name, {'conf_list' : conf_list})
+        conf_list = Conference.objects.filter(active=True).order_by("-start_date")
+        if len(conf_list) == 1:
+            return HttpResponseRedirect(reverse('confla:splash',kwargs={'url_id' : conf_list[0].url_id}))
+        else:
+            return render(request, IndexView.template_name, {'conf_list' : conf_list})
 
 class CfpView(generic.TemplateView):
     # TODO: Combine these two methods
@@ -265,7 +263,7 @@ class CfpView(generic.TemplateView):
                 paper = paper_form.save(commit=False)
                 paper.user_id = user.id;
                 paper.save()
-                return HttpResponseRedirect(reverse('confla:thanks'))
+                return HttpResponseRedirect(reverse('confla:index'))
         else:
             user_form = RegisterForm()
             paper_form = PaperForm()
@@ -287,7 +285,7 @@ class CfpView(generic.TemplateView):
                 paper = paper_form.save(commit=False)
                 paper.user_id = request.user.id
                 paper.save()
-                return HttpResponseRedirect(reverse('confla:thanks'))
+                return HttpResponseRedirect(reverse('confla:splash', kwargs={'url_id': url_id}))
         else:
             paper_form = PaperForm()
 
@@ -681,7 +679,7 @@ class UserView(generic.TemplateView):
                     user = form.save(commit=False)
                     user.save()
             # TODO: make own "Your changes have been saved." page
-            return HttpResponseRedirect(reverse('confla:thanks'))
+            return HttpResponseRedirect(reverse('confla:profile', kwargs={'url_username': url_username}))
         else:
                 form = ProfileForm(instance=user)
                 email_form = EmailForm()
@@ -718,7 +716,62 @@ class UserView(generic.TemplateView):
                         })
 
 class RegisterView(generic.TemplateView):
-    template_name = 'confla/thanks.html'
+
+    @transaction.atomic
+
+    def reset_password2(request, email_address, token):
+        email = get_object_or_404(EmailAdress, address=email_address, activation_token=token)
+        if default_token_generator.check_token(email.user, token):
+            password = ConflaUser.objects.make_random_password()
+            email.user.is_active = True
+            email.user.last_login = datetime.now()
+            email.user.set_password(password)
+            email.user.save();
+            email.is_active = True
+            email.save()
+            user = authenticate(username=email.user,password=password)
+            login(request, user)
+            return render(request, 'confla/message.html', {
+                'message': _('Your new password is ') + password,
+            })
+        else:
+            return render(request, 'confla/message.html', {
+                'type': 'error',
+                'message': _('Invalid token'),
+            })
+
+    def reset_password(request):
+        if request.method == 'POST': # the form was submitted
+            emails = EmailAdress.objects.filter(address=request.POST['email'])
+            if (len(emails) == 1):
+                emails[0].is_active = False
+                emails[0].activation_token = default_token_generator.make_token(emails[0].user)
+                emails[0].save()
+                url = request.build_absolute_uri(reverse('confla:reset_password2', kwargs={'email_address': emails[0].address, 'token': emails[0].activation_token}))
+                html_message = 'Someone requested reset of your password. Here is a link to <a href="%s">password reset</a>' % url
+                message = 'Someone requested reset of your password. Here is a link to password reset: %s' % url
+                try:
+                    send_mail(
+                        subject='Conflab reset of password',
+                        message=message,
+                        html_message=html_message,
+                        from_email=settings.EMAIL_HOST_EMAIL,
+                        recipient_list=[emails[0].address],
+                        fail_silently=False,
+                    )
+                    return render(request, 'confla/message.html', {
+                        'message': _('Reset email was sent')
+                    })
+                except ConnectionRefusedError:
+                    print(url)
+                    return render(request, 'confla/message.html', {
+                        'type': 'error',
+                        'message': _('Connection refused')
+                    })
+
+        return render(request, 'confla/reset_password.html', {
+            'form' : ResetPasswordForm(request.POST),
+        })
 
     @transaction.atomic
     def user_register(request):
@@ -726,7 +779,7 @@ class RegisterView(generic.TemplateView):
             form = RegisterForm(request.POST)
             if form.is_valid():
                 user = form.save()
-                user.is_active = False
+                user.is_active = True
                 user.save()
                 try:
                     UserView.add_email(request, user, user.email)
@@ -739,7 +792,11 @@ class RegisterView(generic.TemplateView):
                     return render(request, 'confla/register.html', {
                          'form' : form})
 
-                return HttpResponseRedirect(reverse('confla:thanks'))
+                user = authenticate(username=request.POST['username'],
+                    password=request.POST['password'])
+                login(request, user)
+
+                return HttpResponseRedirect(reverse('confla:index'))
         else:
             form = RegisterForm()
 
@@ -761,7 +818,7 @@ class RegisterView(generic.TemplateView):
         else:
             raise Http404
 
-        return HttpResponseRedirect(reverse('confla:thanks'))
+        return HttpResponseRedirect(reverse('confla:users'))
 
 class AddRoomsView(generic.TemplateView):
     template_name="confla/add_rooms.html"
@@ -890,7 +947,7 @@ class TimetableView(generic.TemplateView):
             TimetableView.json_to_timeslots(request.POST['data'], url_id)
             # Update JSON export
             ExportView.generate_json(request, url_id)
-            return HttpResponseRedirect(reverse('confla:thanks'))
+            return HttpResponseRedirect(reverse('confla:splash', kwargs={'url_id': url_id}))
 
     @permission_required('confla.can_organize', raise_exception=True)
     def save_event(request, url_id):
@@ -1079,17 +1136,6 @@ class ImportView(generic.TemplateView):
                             })
 
     @permission_required('confla.can_organize', raise_exception=True)
-    def oa_upload(request):
-        if request.method == 'POST':
-            form = ImportFileForm(request.POST, request.FILES)
-            if form.is_valid():
-                alerts = ImportView.oa2015(request.FILES['file'], overwrite=form.cleaned_data['overwrite'])
-                return HttpResponse(alerts)
-            else:
-                # TODO: error checking
-                return HttpResponseRedirect(reverse('confla:thanks'))
-
-    @permission_required('confla.can_organize', raise_exception=True)
     def json_upload(request, url_id=None):
         if request.method == 'POST':
             form = ImportFileForm(request.POST, request.FILES)
@@ -1101,7 +1147,7 @@ class ImportView(generic.TemplateView):
                 return HttpResponse(alerts)
             else:
                 # TODO: error checking
-                return HttpResponseRedirect(reverse('confla:thanks'))
+                return HttpResponseRedirect(reverse('confla:index'))
 
     @transaction.atomic
     def json(request, json_file, overwrite, url_id):
@@ -1131,6 +1177,7 @@ class ImportView(generic.TemplateView):
                 username = user['username'][:30]
             username = re.sub('[\W_]+', '', username)
             username = unidecode(username)
+            gen_username = username[:30]
 
             # if email exists in database
             newemailfilter = EmailAdress.objects.filter(address=user['mail'])
@@ -1143,8 +1190,10 @@ class ImportView(generic.TemplateView):
             newuser, created = ConflaUser.objects.get_or_create(username=username)
 
             if created or overwrite:
-                # TODO: proper passwords
-                newuser.password = "blank"
+                if created:
+                    newuser.password = "blank"
+
+                newuser.gen_username = gen_username;
                 newuser.first_name = user['name'][:30]
                 if 'f_name' in user:
                     newuser.first_name = user['f_name'][:30]
@@ -1311,14 +1360,19 @@ class ImportView(generic.TemplateView):
                 username = speaker.replace(" ", "")[:30]
                 username = re.sub('[\W_]+', '', username)
                 username = unidecode(username)
-                newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
-                if created_speaker:
-                    newuser.password = "blank"
-                    newuser.first_name = speaker
-                    newuser.full_clean()
-                    newuser.save()
-                    users_created += 1
-                    user_list.append(newuser.username)
+                gen_users = ConflaUser.objects.filter(gen_username=username)
+
+                if len(gen_users) == 1:
+                    newuser = gen_users[0]
+                else:
+                    newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
+                    if created_speaker:
+                        newuser.password = "blank"
+                        newuser.first_name = speaker
+                        newuser.full_clean()
+                        newuser.save()
+                        users_created += 1
+                        user_list.append(newuser.username)
                 newevent.speaker.add(newuser)
 
             tags = []
@@ -1387,288 +1441,6 @@ class ImportView(generic.TemplateView):
                        'collision_log' : collision_log
                        })
 
-    @transaction.atomic
-    def oa2015(csv_file, overwrite=False):
-        # Setup a Conference if there is none
-        try:
-            conf = Conference.objects.get(url_id='oa2015')
-        except ObjectDoesNotExist:
-            newconf = Conference()
-            newconf.start_date = date(2015, 11, 7)
-            newconf.end_date = date(2015, 11, 8)
-            newconf.start_time = time(8, 0, 0)
-            newconf.end_time = time(20, 0, 0)
-            newconf.url_id = 'oa2015'
-            newconf.active = True
-            newconf.name = "Openalt 2015"
-            newconf.save()
-            conf = newconf
-            # Setup rooms
-            room_list = ['D0206', 'D0207', 'A113', 'E105', 'D105', 'A112', 'E104', 'E112']
-            for i in room_list:
-                room, created = Room.objects.get_or_create(shortname=i)
-                hr = HasRoom(room=room, conference=conf, slot_length=3)
-                hr.save()
-
-        events_created = 0
-        events_modified = 0
-        events_skipped = 0
-        users_created = 0
-        users_modified = 0
-        users_skipped = 0
-
-        f = io.TextIOWrapper(csv_file.file, encoding="utf-8")
-        # Skip the headers
-        next(f)
-        next(f)
-        next(f)
-        reader = csv.reader(f, delimiter=';')
-        for row in reader:
-            # Loop through each row of the csv file
-            # Generate sessions
-
-            # Create the speakers if not already in the db
-            # First speaker
-            username1 = row[9].replace(" ", "")[:30]
-            username1 = re.sub('[\W_]+', '', username1)
-            username2 = ''
-            try:
-                newuser = ConflaUser.objects.get(username=username1)
-                if not overwrite:
-                    users_skipped += 1
-                    continue
-            except ObjectDoesNotExist:
-                newuser = ConflaUser()
-                newuser.username = username1
-                newuser.password = "blank"
-                users_created += 1
-            else:
-                users_modified += 1
-
-            username1 = unidecode(username1)
-            username2 = unidecode(username2)
-            newuser.first_name = row[9][:30]
-            newuser.company = row[15]
-            newuser.position = row[16]
-            newuser.email = row[10]
-            newuser.web = row[17].strip()
-            if newuser.web and not newuser.web.startswith('http'):
-                newuser.web = 'http://' + newuser.web
-            newuser.facebook = row[18].strip()
-            if newuser.facebook:
-                if newuser.facebook.startswith('www.facebook'):
-                    newuser.facebook = 'https://' + newuser.facebook
-                elif not newuser.facebook.startswith('http'):
-                    newuser.facebook = 'https://www.facebook.com/' + newuser.facebook
-            newuser.twitter = row[19].strip()
-            if newuser.twitter:
-                if newuser.twitter.startswith('twitter'):
-                    newuser.twitter = 'https://' + newuser.twitter
-                elif not newuser.twitter.startswith('http'):
-                    newuser.twitter = 'https://twitter.com/' + newuser.twitter
-            newuser.linkedin= row[20].strip()
-            if newuser.linkedin and not newuser.linkedin.startswith('http'):
-                newuser.linkedin = 'https://' + newuser.linkedin
-            newuser.google_plus= row[21].strip()
-            if newuser.google_plus:
-                if newuser.google_plus.startswith('plus.google'):
-                    newuser.google_plus = 'https://' + newuser.google_plus
-                elif not newuser.google_plus.startswith('http'):
-                    newuser.google_plus = 'https://plus.google.com/' + newuser.google_plus
-            if row[23]:
-                # FIXME: Own avatar field
-                newuser.github = row[23].strip()
-            newuser.full_clean()
-            newuser.save()
-            # Second speaker
-            if row[26]:
-                username2 = row[26].replace(" ", "")[:30]
-                username2 = re.sub('[\W_]+', '', username2)
-                try:
-                    newuser = ConflaUser.objects.get(username=username2)
-                    if not overwrite:
-                        users_skipped += 1
-                        continue
-                except ObjectDoesNotExist:
-                    newuser = ConflaUser()
-                    newuser.username = username2
-                    newuser.password = "blank"
-                    users_created += 1
-                else:
-                    users_modified += 1
-                newuser.first_name = row[26][:30]
-                newuser.company = row[31]
-                newuser.position = row[32]
-                newuser.email = row[27]
-                newuser.web = row[33].strip()
-                if row[33] and not newuser.web.startswith('http'):
-                    newuser.web = 'http://' + newuser.web
-                newuser.facebook = row[34].strip()
-                if newuser.facebook:
-                    if newuser.facebook.startswith('www.facebook'):
-                        newuser.facebook = 'https://' + newuser.facebook
-                    elif not newuser.facebook.startswith('http'):
-                        newuser.facebook = 'https://www.facebook.com/' + newuser.facebook
-                newuser.twitter = row[35].strip()
-                if newuser.twitter:
-                    if newuser.twitter.startswith('twitter'):
-                        newuser.twitter = 'https://' + newuser.twitter
-                    elif not newuser.twitter.startswith('http'):
-                        newuser.twitter = 'https://twitter.com/' + newuser.twitter
-                newuser.linkedin= row[36].strip()
-                if newuser.linkedin and not newuser.linkedin.startswith('http'):
-                    newuser.linkedin = 'https://' + newuser.linkedin
-                newuser.google_plus= row[37].strip()
-                if newuser.google_plus:
-                    if newuser.google_plus.startswith('plus.google'):
-                        newuser.google_plus = 'https://' + newuser.google_plus
-                    elif not newuser.google_plus.startswith('http'):
-                        newuser.google_plus = 'https://plus.google.com/' + newuser.google_plus
-                if row[39]:
-                    # FIXME: Own avatar field
-                    newuser.github = row[39].strip()
-                newuser.full_clean()
-                newuser.save()
-
-            # length of each event section
-            event_len = 8
-            # number of events
-            event_num = 3
-            # index of the first event
-            sp = 42
-            for i in range(0,event_len*event_num,event_len):
-                # Loop through all events in the row
-                if not row[sp+i+1]:
-                    # There are no more events left
-                    break;
-                # If an event with the same topic already exists in the conference
-                try:
-                    newevent = Event.objects.get(topic=row[sp+2+i], conf_id=conf)
-                    # and if overwrite argument is not set, skip event
-                    if not overwrite:
-                        events_skipped += 1
-                        continue
-                except ObjectDoesNotExist:
-                    newevent = Event()
-                    events_created += 1
-                else:
-                    events_modified += 1
-                newevent.conf_id = conf
-                newevent.topic = row[sp+2+i]
-                newevent.description = row[sp+3+i]
-                newevent.lang = 'CZ'
-                newevent.reqs = row[sp+6+i]
-                notes = 'Delka prednasky: ' + row[sp+5+i] + '\n'
-                # Get preferred day from both speakers if possible
-                notes = notes + 'Preferovany den: ' + row[14]
-                if row[32]:
-                    notes = notes + '; ' + row[32]
-                notes = notes + '\n'
-                notes = notes + 'Poznamky: ' + row[sp+7+i] + '\n'
-                newevent.notes = notes
-                newevent.full_clean()
-                newevent.save()
-
-                # Add speakers
-                newevent.speaker.add(ConflaUser.objects.get(username=username1))
-                if username2:
-                    newevent.speaker.add(ConflaUser.objects.get(username=username2))
-                newevent.save()
-
-                # Add tag
-                if row[sp+i]:
-                    etag, created = EventTag.objects.get_or_create(name=row[sp+i])
-                    if created:
-                        # Create a nice random colour
-                        r = lambda: (random.randint(0,255)+255) // 2
-                        etag.color = '#%02x%02x%02x' % (r(),r(),r())
-                        etag.save()
-                    # Remove any existing tags from the event
-                    newevent.tags.clear()
-                    newevent.tags.add(etag)
-                    newevent.prim_tag = etag
-                    newevent.save()
-
-        check = '<i class="fa fa-check-circle fa-lg"></i>'
-        warning = '<i class="fa fa-exclamation-triangle fa-lg"></i>'
-        created = '<div class="alert alert-success">' + check + ' Events created: ' + str(events_created)
-        created += ', Users created: ' + str(users_created) + '</div>'
-        modified ='<div class="alert alert-success">' + check + ' Events modified: ' + str(events_modified)
-        modified += ', Users modified: ' + str(users_modified) + '</div>'
-        skipped = '<div class="alert alert-warning">' + warning + ' Events skipped: ' + str(events_skipped)
-        skipped += ', Users skipped: ' + str(users_skipped) + '</div>'
-        if overwrite:
-            return '<div class="import-alerts">'+ created + modified + '</div>'
-        else:
-            return '<div class="import-alerts">'+ created + skipped + '</div>'
-
-    @transaction.atomic
-    def import_event(request, url_id):
-        conf = Conference.objects.get(url_id=url_id)
-        json_string = request.POST['data'].strip().replace("'", '"')
-        event = json.loads(json_string)
-
-        # Create event
-        newevent = Event()
-        newevent.conf_id = conf
-        newevent.topic = event['topic']
-        newevent.description = event['description']
-        newevent.lang = event['lang']
-        newevent.full_clean()
-        newevent.save()
-
-        room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
-        created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
-
-        # Setup timeslot
-        newslot = Timeslot()
-        newslot.conf_id = conf
-        newslot.room_id = room
-        start = datetime.fromtimestamp(int(event['event_start']))
-        end = datetime.fromtimestamp(int(event['event_end']))
-        newslot.start_time = timezone.get_default_timezone().localize(start)
-        newslot.end_time = timezone.get_default_timezone().localize(end)
-        newslot.event_id = newevent
-        newslot.full_clean()
-        newslot.save()
-
-        # Create speakers
-        for speaker in event['speakers']:
-            username = speaker.replace(" ", "")[:30]
-            username = re.sub('[\W_]+', '', username)
-            username = unidecode(username)
-            newuser, created_speaker = ConflaUser.objects.get_or_create(username=username)
-            if created_speaker:
-                newuser.password = "blank"
-                newuser.first_name = speaker
-                newuser.full_clean()
-                newuser.save()
-                users_created += 1
-                user_list.append(newuser.username)
-            newevent.speaker.add(newuser)
-
-        tags = []
-        # Create tags
-        if event['tags']:
-            tags = event['tags'][0].split(",")
-        for tag in tags:
-            tag = tag.strip()
-            newtag, created = EventTag.objects.get_or_create(name=tag)
-            newevent.tags.add(newtag)
-
-        if 'track' in event:
-            if event['track'] and event['room_color']:
-                tag, created = EventTag.objects.get_or_create(name=event['track'])
-                tag.color = event['room_color']
-                tag.save()
-                newevent.prim_tag = EventTag.objects.get(name=event['track'])
-        else:
-            tag = EventTag.objects.get(name=tags[0].strip())
-            newevent.prim_tag = tag
-
-        newevent.save()
-
-        return HttpResponseRedirect(reverse('confla:thanks'))
 
 class ExportView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)

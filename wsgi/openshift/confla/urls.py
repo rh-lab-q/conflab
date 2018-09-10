@@ -19,10 +19,10 @@ urlpatterns = [
         url(r'^user/(?P<url_username>\w+)/set_primary_mail/(?P<id>\d+)/', views.UserView.set_email_primary, name='set_primary_email'),
         url(r'^user/volunteer/$', views.VolunteerView.my_view, name='volunteer'),
         url(r'^register/$', views.RegisterView.user_register, name='register'),
-        url(r'^thanks/$', views.RegisterView.as_view(), name='thanks'),
+        url(r'^reset_password/$', views.RegisterView.reset_password, name='reset_password'),
+        url(r'^reset_password2/(?P<email_address>[^/]+)/(?P<token>[^/]+)$', views.RegisterView.reset_password2, name='reset_password2'),
         #url(r'^reg_talk/$', views.RegisterView.save_form_and_register, name='reg_talk'),
         #url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
-        url(r'^(?P<url_id>\w+)/test/$', views.TestingView.test, name='test'),
         url(r'^i18n/', include('django.conf.urls.i18n'), name='set_language'),
         url(r'^admin/', include(admin.site.urls)),
         url(r'^(?P<url_id>\w+)/$', views.AboutView.splash_view, name='splash'),
@@ -66,9 +66,10 @@ urlpatterns = [
         url(r'^(?P<url_id>\w+)/admin/eventlist/editEvent/(?P<id>\d+)/$', views.EventEditView.event_save, name='editEvent2'),
         url(r'^(?P<url_id>\w+)/admin/import/$', views.ImportView.import_view, name='import'),
         url(r'^(?P<url_id>\w+)/admin/import/json/$', views.ImportView.json_upload, name='json_import'),
-        url(r'^(?P<url_id>\w+)/admin/import/oa2015/$', views.ImportView.oa_upload, name='oa_import'),
-        url(r'^(?P<url_id>\w+)/admin/import/import_event/$', views.ImportView.import_event, name='import_event'),
         url(r'^(?P<url_id>\w+)/admin/export/$', views.ExportView.export_view, name='export'),
         url(r'^activate/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',views.RegisterView.activate_email , name='activate_email'),
+
     ]
+
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

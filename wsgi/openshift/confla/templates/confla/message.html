@@ -1,0 +1,30 @@
+{% extends "confla/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrastyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'confla/index.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container" id="page-container">
+{% if type == 'error' %}
+
+<div class="alert alert-danger" role="alert">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="sr-only">Chyba:</span>
+  {% trans "Error:" %} {{message}}
+</div>
+
+{% else %}
+
+<div class="alert alert-info" role="alert">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="sr-only">Chyba:</span>
+  {{message}}
+</div>
+
+
+{% endif %}
+</div> <!-- .container -->
+{% endblock %}
