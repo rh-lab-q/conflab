@@ -91,6 +91,18 @@ class EventEditForm(forms.ModelForm):
                             'class' : 'form-control input-sm'
             })
 
+class EventFullEditForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = [ 'topic', 'description', 'event_type', 'lang', 'slides', 'video', 'google_doc_url', 'speaker', 'tags', 'prim_tag', 'notes', 'reqs' ]
+
+    def __init__(self, *args, **kwargs):
+        super(EventFullEditForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({
+                            'class' : 'form-control input-sm'
+            })
+
 class ResetPasswordForm(forms.ModelForm):
     class Meta:
         model = ConflaUser
@@ -159,7 +171,7 @@ class EmailForm(forms.ModelForm):
 class PaperForm(forms.ModelForm):
     class Meta:
         model = Paper
-        fields = ['title', 'abstract', 'source']
+        fields = ['title', 'abstract']
 
     def __init__(self, *args, **kwargs):
         super(PaperForm, self).__init__(*args, **kwargs)

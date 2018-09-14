@@ -6,6 +6,7 @@ import csv
 import io
 import urllib
 import http.client
+import pprint
 
 from datetime import datetime, date, time
 
@@ -207,7 +208,7 @@ class EventEditView(generic.TemplateView):
 
             return HttpResponseRedirect(reverse('confla:editEvent', kwargs={'url_id' : url_id}))
         else:
-            raise Http404
+                raise Http404
 
     @permission_required('confla.can_organize', raise_exception=True)
     def event_modal(request):
@@ -256,21 +257,29 @@ class CfpView(generic.TemplateView):
         conf = get_conf_or_404(url_id)
 
         if request.method == 'POST':
-            user_form = RegisterForm(request.POST)
-            paper_form = PaperForm(request.POST)
-            if user_form.is_valid() and paper_form.is_valid():
-                user = user_form.save()
-                paper = paper_form.save(commit=False)
-                paper.user_id = user.id;
-                paper.save()
+            event_form = EventFullEditForm(data=request.POST, instance=conf)
+#            user_form = RegisterForm(request.POST)
+#            paper_form = PaperForm(request.POST)
+            if event_form.is_valid():
+                pp = pprint.PrettyPrinter(indent=4)
+                pp.pprint(event_form);
+                e = event_form.save();
+                pp.pprint(e)
+#            if user_form.is_valid() and paper_form.is_valid():
+#                user = user_form.save()
+#                paper = paper_form.save(commit=False)
+#                paper.user_id = user.id;
+#                paper.save()
                 return HttpResponseRedirect(reverse('confla:index'))
         else:
-            user_form = RegisterForm()
-            paper_form = PaperForm()
+            event_form = EventFullEditForm(data=request.POST, instance=conf)
+#            user_form = RegisterForm()
+#            paper_form = PaperForm()
 
         return render(request, 'confla/reg_talk.html', {
-            'user_form': user_form,
-            'paper_form': paper_form,
+#            'user_form': user_form,
+#            'paper_form': paper_form,
+            'event_form': event_form,
             'url_id' : url_id,
             'conf' : conf,
         })
