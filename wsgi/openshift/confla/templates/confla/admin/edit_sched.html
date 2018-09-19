@@ -20,8 +20,9 @@
 {% endblock %}
 {% block bott_menu %}
     <div class="extra-buttons">
-        <button class="btn btn-default btn-submit" type="buton" onclick="timetableSubmit('.table')" style="width:100%;">Save changes</button>
-        <button class="btn btn-default" type="buton" onclick="timetableClear()" style="width:100%;">Clear schedule</button>
+        <button class="btn btn-default btn-submit" type="buton" onclick="timetableSubmit('.table')" style="width:100%;">{% trans "Save" %}</button>
+        <button class="btn btn-default" type="buton" onclick="timetableClear()" style="width:100%;">{% trans "Clear" %}</button>
+        <button class="btn btn-default" type="buton" onclick="timetableAddAll()" style="width:100%;">{% trans "Add all" %}</button>
     </div>
     {% include "confla/sched_legend.html" %}
 {% endblock %}

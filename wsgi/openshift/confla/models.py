@@ -254,6 +254,7 @@ class Event(models.Model):
     prim_tag = models.ForeignKey(EventTag, null=True, blank=True, on_delete=models.PROTECT)
     notes = models.TextField(blank=True)
     reqs = models.TextField(blank=True)
+    length = models.IntegerField(default=3600) # 1 hour
 
     def __str__(self):
         return self.topic

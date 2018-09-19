@@ -1289,6 +1289,8 @@ class ImportView(generic.TemplateView):
                     newevent.slides = event['slides']
                 if 'video' in event:
                     newevent.video = event['video']
+                if 'length' in event:
+                    newevent.length = event['length']
                 newevent.full_clean()
                 newevent.save()
                 events_created += 1

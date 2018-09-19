@@ -524,26 +524,45 @@ function timetableSubmit(selector) {
     });
 }
 
+function timetableAddAll() {
+    var eventList = $("#event-list").children();
+    eventList.each(function(index, divobject) {
+        var element = $(divobject)
+//        console.log("#event-list["+index+"] = " +element +"/" + element.html() + "/" + element.text())
+        console.log("#event-list["+index+"] = " +divobject.getAttribute('event-id'))
+        
+    })
+//    console.log("fooo");
+}
+
 function timetableClear() {
     var items = $(".item .event");
+    items.each(function (it, item) {
+//        console.log(it+ " " +item);
+        $("#event-list").append(item);
+//        item.parent().droppable("destroy");
+//        item.resizable("destroy");
+    })
+/*
     if (items.length) {
-        bootbox.confirm("Are you sure you want to clear the schedule? <br /> (Scheduled events will be moved to the sidebar.)", function(result) {
-            if (result) {
+//        bootbox.confirm("Are you sure you want to clear the schedule? <br /> (Scheduled events will be moved to the sidebar.)", function(result) {
+//            if (result) {
                 // Move scheduled events to event bar and close all popovers
-                $(".drag-help").remove();
-                $("[aria-describedby]").popover("hide");
-                items.each(function () {
-                    var item = $(this).closest(".item");
+//                $(".drag-help").remove();
+//                $("[aria-describedby]").popover("hide");
+                items.each(function (it, item) {
+//                    var item = $(this).closest(".item");
                     $("#event-list").append($(this).show());
                     item.addClass("empty");
                     item.parent().droppable("destroy");
                     item.resizable("destroy");
-                    emptyItemInit(item);
+//                    emptyItemInit(item);
                 });
-                setChanges();
-            }
-        });
+//                setChanges();
+//            }
+//        });
     }
+    */
 }
 
 function selectizePopover(selector) {
