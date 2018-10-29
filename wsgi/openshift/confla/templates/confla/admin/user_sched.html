@@ -8,6 +8,7 @@
 <style type='text/css'>
     {% for tag in legend_list %}
     .tag{{tag.id}} {
+        color: {{tag.fg_color}};
         background : {{tag.color}};
     }
     {% endfor %}
