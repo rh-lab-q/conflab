@@ -1199,7 +1199,7 @@ class ImportView(generic.TemplateView):
             newuser, created = ConflaUser.objects.get_or_create(username=username)
 
             if created or overwrite:
-                if not created:
+                if created:
                     newuser.password = "blank"
 
                 newuser.gen_username = gen_username;
