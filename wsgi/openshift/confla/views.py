@@ -936,6 +936,7 @@ class TimetableView(generic.TemplateView):
                          'tag_list' : [{ 'id' : x.id,
                                          'name' : x.name,
                                          'color': x.color,
+                                         'fg_color': x.fg_color,
                                         } for x in EventTag.objects.all()],
                          'legend_list' : EventTag.objects.filter(event__conf_id=conf).distinct(),
                          'event_list' : Event.objects.filter(timeslot__isnull=True).filter(conf_id=conf),
