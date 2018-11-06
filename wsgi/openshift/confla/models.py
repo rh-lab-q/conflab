@@ -199,7 +199,7 @@ class VolunteerBlock(models.Model):
         return self.name
 
 class Volunteer(models.Model):
-    user = models.OneToOneField(ConflaUser, primary_key=True)
+    user = models.OneToOneField(ConflaUser, on_delete=models.CASCADE, primary_key=True)
     volunteer_block_id = models.ManyToManyField(VolunteerBlock, related_name='block+')
 
     def __str__(self):
@@ -273,7 +273,7 @@ class Timeslot(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     room_id = models.ForeignKey(Room, blank=True, null=True, on_delete=models.PROTECT)
-    event_id = models.OneToOneField(Event, blank=True, null=True)
+    event_id = models.OneToOneField(Event, on_delete=models.CASCADE, blank=True, null=True)
     conf_id = models.ForeignKey(Conference, on_delete=models.PROTECT)
 
     @property
