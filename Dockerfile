@@ -10,7 +10,8 @@ RUN cd /code && pip3 install -r requirements.txt
 RUN cd /code && python3 setup.py install
 
 RUN cd /code/wsgi/openshift/ && \
-    python3 manage.py migrate
+    python3 manage.py migrate --noinput && \
+    python3 manage.py migrate --noinput --run-syncdb
 #    python3 manage.py createsuperuser
 
 EXPOSE 8000
