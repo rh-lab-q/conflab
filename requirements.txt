@@ -1,0 +1,7 @@
+Django>=2.2
+static3
+pillow
+pytz
+unidecode
+django-simple-captcha
+twitter-oauth-ios-django

@@ -8,12 +8,15 @@ from django.contrib.auth import views as auth_views
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^', include('confla.urls', namespace='confla')),
+    url(r'^', include('confla.urls')),
+#    url(r'^', include('confla.urls', namespace='confla')),
+
+
 #    url(r'^$', core_views.home, name='home'),
-    url(r'^login/$', auth_views.login, name='login'),
-    url(r'^logout/$', auth_views.logout, name='logout'),
-    url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
-    url(r'^admin/', admin.site.urls),
+    url(r'^login/$', auth_views.LoginView, name='login'),
+    url(r'^logout/$', auth_views.LogoutView, name='logout'),
+#    url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+#    url(r'^admin/', include('admin.site.urls')),
 ]
 
 urlpatterns += [

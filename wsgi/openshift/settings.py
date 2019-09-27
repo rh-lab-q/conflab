@@ -58,13 +58,13 @@ INSTALLED_APPS = (
     'confla',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',  
 )
@@ -95,9 +95,7 @@ WSGI_APPLICATION = 'wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-     os.path.join(BASE_DIR,'templates'),
-        ],
+        'DIRS': [ os.path.join(BASE_DIR,'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

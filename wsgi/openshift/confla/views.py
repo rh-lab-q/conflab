@@ -20,7 +20,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.staticfiles.storage import StaticFilesStorage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, PermissionDenied
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -547,7 +547,7 @@ class LoginView(generic.TemplateView):
     template_name = 'confla/login.html'
 
     def my_view(request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('confla:users'))
         else:
             return render(request, 'confla/login.html', {
@@ -1255,10 +1255,11 @@ class ImportView(generic.TemplateView):
                 try:
                     newuser.full_clean()
                 except ValidationError as e:
+                    print(username)
+                    print(str(e))
                     string = "ValidationError: " + username + " : " + str(e) + "<br/>\n"
                     for key in e.message_dict:
                         string = string + " " + user[key]
-
                     return '<div class="alert alert-warning import-alerts">'+ string + '</div>'
 
 
