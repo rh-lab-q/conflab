@@ -1223,8 +1223,6 @@ class ImportView(generic.TemplateView):
                     newuser.facebook = user['facebook']
                 if 'twitter' in user:
                     newuser.twitter = user['twitter']
-                if 'google_plus' in user:
-                    newuser.google_plus = user['google_plus']
                 if 'linkedin' in user:
                     newuser.linkedin = user['linkedin']
                 if 'bio' in user:
@@ -1633,7 +1631,6 @@ class ExportView(generic.TemplateView):
             user['web'] = usr.web
             user['facebook'] = usr.facebook
             user['twitter'] = usr.twitter
-            user['google_plus'] = usr.google_plus
             user['linkedin'] = usr.linkedin
             user['github'] = usr.github
             result['users'].append(user)
