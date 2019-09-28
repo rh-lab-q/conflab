@@ -1108,9 +1108,9 @@ class ImportView(generic.TemplateView):
                         "position" : "",
                         "web" : "",
                         "github" : "",
+                        "diaspora" : "",
                         "facebook" : "",
                         "twitter" : "",
-                        "g+" : "",
                         "linkedin" : "",
                         "bio" : ""
                     }],
@@ -1219,6 +1219,8 @@ class ImportView(generic.TemplateView):
                     newuser.web = user['web']
                 if 'github' in user:
                     newuser.github = user['github']
+                if 'diaspora' in user:
+                    newuser.diaspora = user['diaspora']
                 if 'facebook' in user:
                     newuser.facebook = user['facebook']
                 if 'twitter' in user:
@@ -1633,6 +1635,12 @@ class ExportView(generic.TemplateView):
             user['twitter'] = usr.twitter
             user['linkedin'] = usr.linkedin
             user['github'] = usr.github
+            user['diaspora'] = usr.diaspora
+
+            user['phone'] = usr.phone
+            user['mail'] = usr.email
+
+
             result['users'].append(user)
 
         # Export about

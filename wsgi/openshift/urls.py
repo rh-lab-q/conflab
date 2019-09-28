@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import path
 
 from django.contrib import admin
 
@@ -9,7 +10,6 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^', include('confla.urls')),
-#    url(r'^', include('confla.urls', namespace='confla')),
 
 
 #    url(r'^$', core_views.home, name='home'),
@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView, name='logout'),
 #    url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
 #    url(r'^admin/', include('admin.site.urls')),
+    path('admin/', admin.site.urls),
 ]
 
 urlpatterns += [

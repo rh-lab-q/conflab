@@ -156,6 +156,7 @@ class ConflaUser(AbstractUser):
     position = models.CharField(max_length=256, blank=True)
     web = models.URLField(max_length=512, blank=True)
     github = models.URLField(max_length=512, blank=True)
+    diaspora = models.URLField(max_length=512, blank=True)
     facebook = models.URLField(max_length=512, blank=True)
     twitter = models.URLField(max_length=512, blank=True)
     linkedin = models.URLField(max_length=512, blank=True)

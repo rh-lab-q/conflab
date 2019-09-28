@@ -1,13 +1,16 @@
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.conf import settings
-#from django.contrib import admin
+from django.contrib import admin
+from django.urls import path
 
 from confla import views
 
 app_name = "confla"
 
 urlpatterns = [
+        path('admin/', admin.site.urls),
+
         url(r'^$', views.IndexView.my_view, name='index'),
         url(r'add_rooms/$', views.AddRoomsView.view_form, name='add_rooms'),
         url(r'^events/popover/$', views.EventView.get_popover, name='eventPop'),
@@ -26,7 +29,7 @@ urlpatterns = [
         #url(r'^reg_talk/$', views.RegisterView.save_form_and_register, name='reg_talk'),
         #url(r'^notlogged/$', views.UserView.not_logged, name='notlogged'),
         url(r'^i18n/', include('django.conf.urls.i18n'), name='set_language'),
-#        url(r'^admin/', include('admin.site.urls')),
+#        url(r'^admin/', include('admin.site.urls', namespace='admin')),
         url(r'^(?P<url_id>\w+)/$', views.AboutView.splash_view, name='splash'),
         url(r'^(?P<url_id>\w+)/cfp/$', views.CfpView.save_form_and_register, name='cfp'),
         url(r'^(?P<url_id>\w+)/about/$', views.AboutView.splash_view, name='about'),
