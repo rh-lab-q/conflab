@@ -1613,7 +1613,7 @@ class ExportView(generic.TemplateView):
 
         # Export users
         result ['users'] = []
-        for usr in ConflaUser.objects.filter(events__conf_id=conf).distinct():
+        for usr in ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct():
             user = {}
             user['username'] = usr.username
             user['name'] = usr.first_name + ' ' + usr.last_name
