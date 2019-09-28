@@ -65,6 +65,7 @@ class AdminView(generic.TemplateView):
         if url_id:
             conf = get_conf_or_404(url_id)
             users = ConflaUser.objects.filter(events__conf_id=conf).distinct().order_by('username')
+
         else:
             conf = None
             users = ConflaUser.objects.distinct().order_by('username')
@@ -705,7 +706,7 @@ class UserView(generic.TemplateView):
 
         conf = get_conf_or_404(url_id)
 
-        speakers = ConflaUser.objects.filter(events__conf_id=conf).distinct()
+        speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct().order_by('username')
         return render(request, template_name, {
                         'speakers' : speakers,
                         'url_id' : url_id,
@@ -717,7 +718,7 @@ class UserView(generic.TemplateView):
 
         conf = get_conf_or_404(url_id)
 
-        speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct()
+        speakers = ConflaUser.objects.filter(events__conf_id=conf, events__timeslot__isnull=False).distinct().order_by('username')
         return render(request, template_name, {
                         'speakers' : speakers,
                         'url_id' : url_id,
