@@ -229,7 +229,7 @@ class EventTag(models.Model):
     def fg_color(self):
         t = self.hex_to_rgb()
         sum = t[0] + t[1] + t[2]
-        if sum < 128:
+        if sum < 368:
             return '#ffffff'
         else:
             return '#000000'

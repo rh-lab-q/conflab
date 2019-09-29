@@ -45,6 +45,7 @@
                     </div>
                 </div> item-buttons -->
                 <div>
+                    {{e.notes}}
                     <div class="topic">{{e.topic}}</div>
                     <div class="speakers">
                         {% for speaker in e.speaker.all %}
@@ -132,6 +133,7 @@
                                             </span>
                                             {% endfor %}
                                         </div>
+                                        <div>{{e.notes}}<div>
                                     </div>
                                 </div>
                                 <div class="pop-title"style="display:none">
