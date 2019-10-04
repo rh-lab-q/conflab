@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-04 17:00+0200\n"
+"POT-Creation-Date: 2019-10-04 17:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr "O konferenci"
 #: confla/templates/confla/about.html:47
 #: confla/templates/confla/admin/create_conf.html:148
 msgid "Venue"
-msgstr ""
+msgstr "Místo"
 
 #: confla/templates/confla/add_rooms.html:6
 msgid "Add rooms"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: confla/templates/confla/add_rooms_success.html:7
 msgid "The rooms were added successfully."
-msgstr ""
+msgstr "Místnosti byli přidány"
 
 #: confla/templates/confla/admin/conf_list.html:18
 #: confla/templates/confla/admin/menu.html:4
@@ -102,11 +102,11 @@ msgstr "Přednášející"
 #: confla/templates/confla/admin/conf_list.html:26
 #: confla/templates/confla/event_modal.html:21
 msgid "Tags"
-msgstr ""
+msgstr "Tagy"
 
 #: confla/templates/confla/admin/conf_list.html:40
 msgid "Create conference"
-msgstr ""
+msgstr "Vytvořit konferenci"
 
 #: confla/templates/confla/admin/create_conf.html:5
 #, fuzzy
@@ -116,7 +116,7 @@ msgstr "Název konference"
 
 #: confla/templates/confla/admin/create_conf.html:20
 msgid "Error while creating conference:"
-msgstr ""
+msgstr "Chyba při vytváření konference"
 
 #: confla/templates/confla/admin/create_conf.html:37
 msgid "Basic Information"
@@ -136,7 +136,7 @@ msgstr "Místnosti"
 
 #: confla/templates/confla/admin/create_conf.html:53
 msgid "Public"
-msgstr ""
+msgstr "Veřejné"
 
 #: confla/templates/confla/admin/create_conf.html:56
 #, fuzzy
@@ -151,15 +151,15 @@ msgstr "Datum a čas"
 #: confla/templates/confla/admin/create_conf.html:68
 #: confla/templates/confla/admin/create_conf.html:111
 msgid "Start/End Date"
-msgstr ""
+msgstr "Datum začátku/konce"
 
 #: confla/templates/confla/admin/create_conf.html:81
 msgid "Start/End Time"
-msgstr ""
+msgstr "Čas začaku/konce"
 
 #: confla/templates/confla/admin/create_conf.html:94
 msgid "Minutes per slot"
-msgstr ""
+msgstr "Minut na slot"
 
 #: confla/templates/confla/admin/create_conf.html:98
 msgid "Timezone"
@@ -167,7 +167,7 @@ msgstr "Časová zóna"
 
 #: confla/templates/confla/admin/create_conf.html:107
 msgid "Submission opened"
-msgstr ""
+msgstr "Přihlašování otevřeno"
 
 #: confla/templates/confla/admin/create_conf.html:130
 msgid "Additional Information"
@@ -175,11 +175,11 @@ msgstr "Doplňující informace"
 
 #: confla/templates/confla/admin/create_conf.html:135
 msgid "Splash Logo"
-msgstr ""
+msgstr "Logo konference"
 
 #: confla/templates/confla/admin/create_conf.html:139
 msgid "Conference Icon"
-msgstr ""
+msgstr "Ikona konference"
 
 #: confla/templates/confla/admin/create_conf.html:152
 msgid "GPS Location"
@@ -189,30 +189,30 @@ msgstr "GPS souřadnice"
 #: confla/templates/confla/index.html:51
 #: confla/templates/confla/profile.html:22
 msgid "Website"
-msgstr ""
+msgstr "Webová stránka"
 
 #: confla/templates/confla/admin/create_conf.html:160
 #: confla/templates/confla/profile.html:24
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
 #: confla/templates/confla/admin/create_conf.html:164
 #: confla/templates/confla/profile.html:28
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: confla/templates/confla/admin/create_conf.html:169
 #: confla/templates/confla/profile.html:26
 msgid "Linkedin"
-msgstr ""
+msgstr "Linkedin"
 
 #: confla/templates/confla/admin/create_conf.html:174
 msgid "Youtube"
-msgstr ""
+msgstr "Youtube"
 
 #: confla/templates/confla/admin/create_conf.html:179
 msgid "Slideshare"
-msgstr ""
+msgstr "Slideshare"
 
 #: confla/templates/confla/admin/create_conf.html:190
 #: confla/templates/confla/admin/page.html:40
@@ -235,16 +235,16 @@ msgstr "Nástěnka"
 
 #: confla/templates/confla/admin/dashboard.html:18
 msgid "Tag"
-msgstr ""
+msgstr "Tag"
 
 #: confla/templates/confla/admin/dashboard.html:19
 msgid "Count"
-msgstr ""
+msgstr "Počet"
 
 #: confla/templates/confla/admin/dashboard.html:29
 #: confla/templates/confla/admin/users.html:40
 msgid "List is empty"
-msgstr ""
+msgstr "Seznam je prázdný"
 
 #: confla/templates/confla/admin/dashboard.html:38
 #, fuzzy
@@ -260,34 +260,34 @@ msgstr "Uživatelské jméno"
 
 #: confla/templates/confla/admin/dashboard.html:40
 msgid "Events:"
-msgstr ""
+msgstr "Události:"
 
 #: confla/templates/confla/admin/dashboard.html:41
 #: confla/templates/confla/event_popover.html:21
 msgid "Tags:"
-msgstr ""
+msgstr "Tagy:"
 
 #: confla/templates/confla/admin/edit_sched.html:24
 msgid "Save"
-msgstr ""
+msgstr "Uložit"
 
 #: confla/templates/confla/admin/edit_sched.html:25
 msgid "Clear"
-msgstr ""
+msgstr "Vymazat"
 
 #: confla/templates/confla/admin/edit_sched.html:26
 msgid "Add all"
-msgstr ""
+msgstr "Přidat vše"
 
 #: confla/templates/confla/admin/edit_sched.html:60
 #: confla/templates/confla/admin/edit_sched.html:140
 #: confla/templates/confla/schedlist.html:29
 msgid "Edit event"
-msgstr ""
+msgstr "Upravit událost"
 
 #: confla/templates/confla/admin/edit_sched.html:77
 msgid "Warning: check list of rooms, time of start, and time of end"
-msgstr ""
+msgstr "Varování: Zkontrolujte seznam mísností, čas začátku a čas konce"
 
 #: confla/templates/confla/admin/edit_sched.html:97
 #: confla/templates/confla/user_table.html:41
@@ -296,25 +296,25 @@ msgstr "Čas"
 
 #: confla/templates/confla/admin/geo_icons.html:5
 msgid "Geo icons"
-msgstr ""
+msgstr "Ikonky míst"
 
 #: confla/templates/confla/admin/geo_icons.html:19
 #: confla/templates/confla/admin/menu.html:16
 msgid "Icons"
-msgstr ""
+msgstr "Ikonky"
 
 #: confla/templates/confla/admin/geo_icons.html:30
 msgid "No icon available"
-msgstr ""
+msgstr "Ikona není k dispozici"
 
 #: confla/templates/confla/admin/geo_icons.html:35
 msgid "Add icon"
-msgstr ""
+msgstr "Přidat ikonu"
 
 #: confla/templates/confla/admin/import.html:24
 #: confla/templates/confla/admin/menu.html:10
 msgid "Import"
-msgstr ""
+msgstr "Importovat"
 
 #: confla/templates/confla/admin/menu.html:6
 #, fuzzy
@@ -331,11 +331,11 @@ msgstr "Program"
 #: confla/templates/confla/admin/pages.html:5
 #: confla/templates/confla/admin/pages.html:15
 msgid "Pages"
-msgstr ""
+msgstr "Stránky"
 
 #: confla/templates/confla/admin/menu.html:11
 msgid "Export"
-msgstr ""
+msgstr "Exportovat"
 
 #: confla/templates/confla/admin/menu.html:14
 #: confla/templates/confla/admin/users.html:20
@@ -346,14 +346,14 @@ msgstr "Uživatelské jméno"
 
 #: confla/templates/confla/admin/menu.html:15
 msgid "Overview"
-msgstr ""
+msgstr "Přehled"
 
 #: confla/templates/confla/admin/menu.html:17
 #: confla/templates/confla/admin/places.html:5
 #: confla/templates/confla/admin/places.html:39
 #: confla/templates/confla/base.html:83 confla/templates/confla/map.html:35
 msgid "Places"
-msgstr ""
+msgstr "Místa"
 
 #: confla/templates/confla/admin/page.html:5
 #, fuzzy
@@ -363,7 +363,7 @@ msgstr "Profil"
 
 #: confla/templates/confla/admin/page.html:19
 msgid "Error while creating page:"
-msgstr ""
+msgstr "Chyba při vytváření stránky:"
 
 #: confla/templates/confla/admin/pages.html:24
 msgid "No page available"
@@ -371,12 +371,12 @@ msgstr ""
 
 #: confla/templates/confla/admin/pages.html:29
 msgid "Add page"
-msgstr ""
+msgstr "Přidat stránku"
 
 #: confla/templates/confla/admin/places.html:87
 #: confla/templates/confla/map.html:87
 msgid "Place"
-msgstr ""
+msgstr "Místo"
 
 #: confla/templates/confla/admin/places.html:88
 #: confla/templates/confla/map.html:88
@@ -385,11 +385,11 @@ msgstr ""
 
 #: confla/templates/confla/admin/users.html:25
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 #: confla/templates/confla/admin/users.html:26
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 #: confla/templates/confla/admin/users.html:46
 #, fuzzy
@@ -463,19 +463,19 @@ msgstr "Jazyk"
 
 #: confla/templates/confla/event_modal.html:25
 msgid "Presentation"
-msgstr ""
+msgstr "Prezentace"
 
 #: confla/templates/confla/event_modal.html:27
 msgid "Google doc"
-msgstr ""
+msgstr "Dokument Google"
 
 #: confla/templates/confla/event_modal.html:29
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: confla/templates/confla/event_popover.html:7
 msgid "Description:"
-msgstr ""
+msgstr "Popis: "
 
 #: confla/templates/confla/event_popover.html:11
 msgid "Speaker(s):"
@@ -491,7 +491,7 @@ msgstr "Pokročilé"
 
 #: confla/templates/confla/index.html:43
 msgid "Details"
-msgstr ""
+msgstr "Podrobnosti"
 
 #: confla/templates/confla/index.html:48
 #, fuzzy
@@ -524,7 +524,7 @@ msgstr "Musíte se přihlásit"
 
 #: confla/templates/confla/message.html:16
 msgid "Error:"
-msgstr ""
+msgstr "Chyba: "
 
 #: confla/templates/confla/profile.html:15
 #, fuzzy
@@ -534,19 +534,19 @@ msgstr "O konferenci"
 
 #: confla/templates/confla/profile.html:18
 msgid "Company"
-msgstr ""
+msgstr "Společnost"
 
 #: confla/templates/confla/profile.html:20
 msgid "Position"
-msgstr ""
+msgstr "Pozice"
 
 #: confla/templates/confla/profile.html:30
 msgid "Diaspora"
-msgstr ""
+msgstr "Diaspora"
 
 #: confla/templates/confla/profile.html:32
 msgid "Github"
-msgstr ""
+msgstr "Github"
 
 #: confla/templates/confla/profile.html:34
 #, fuzzy
@@ -572,19 +572,19 @@ msgstr "Telefonní číslo"
 
 #: confla/templates/confla/profile.html:56
 msgid "Avatar"
-msgstr ""
+msgstr "Fotka"
 
 #: confla/templates/confla/profile.html:70
 msgid "Emails"
-msgstr ""
+msgstr "E-maily"
 
 #: confla/templates/confla/profile.html:93
 msgid "New Address"
-msgstr ""
+msgstr "Nová adresa"
 
 #: confla/templates/confla/profile.html:97
 msgid "Add email"
-msgstr ""
+msgstr "Přidat e-mail"
 
 #: confla/templates/confla/profile.html:107
 msgid "Submit changes"
@@ -598,7 +598,7 @@ msgstr "Jazyk"
 
 #: confla/templates/confla/register.html:11
 msgid "Registration"
-msgstr ""
+msgstr "Registrace"
 
 #: confla/templates/confla/user_dashboard.html:14
 #, fuzzy
@@ -614,15 +614,15 @@ msgstr "Profil"
 
 #: confla/templates/confla/user_dashboard.html:23
 msgid "My talks"
-msgstr ""
+msgstr "Moje přednášky"
 
 #: confla/templates/confla/user_dashboard.html:40
 msgid "Personal schedules"
-msgstr ""
+msgstr "Osobní programy"
 
 #: confla/templates/confla/user_table.html:20
 msgid "Display as"
-msgstr ""
+msgstr "Zobrazit jako"
 
 #: confla/views.py:572
 msgid "Your account is disabled."
@@ -634,15 +634,15 @@ msgstr "Chybné uživatelské jméno nebo heslo."
 
 #: confla/views.py:745
 msgid "Your new password is "
-msgstr ""
+msgstr "Vaše nové heslo je "
 
 #: confla/views.py:750
 msgid "Invalid token"
-msgstr ""
+msgstr "Nesprávný token"
 
 #: confla/views.py:773
 msgid "Reset email was sent"
-msgstr ""
+msgstr "E-mail pro resetování hesla byl odeslán"
 
 #: confla/views.py:779
 msgid "Connection refused"
@@ -680,7 +680,7 @@ msgstr "Přidat"
 
 #: templates/admin/index.html:39
 msgid "Change"
-msgstr ""
+msgstr "Změnit"
 
 #: templates/admin/index.html:49
 msgid "You don't have permission to edit anything."
