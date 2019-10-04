@@ -1401,7 +1401,7 @@ class ImportView(generic.TemplateView):
                 tag_idx = tag_idx + 1
 
             if 'track' in event:
-                if event['track'] and event['room_color']:
+                if event['track']: # and event['room_color']:
                     tag, created = EventTag.objects.get_or_create(name=event['track'])
                     tag.save()
                     newevent.prim_tag = EventTag.objects.get(name=event['track'])
