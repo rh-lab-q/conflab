@@ -309,7 +309,7 @@ class Paper(models.Model):
     abstract = models.TextField()
     source = models.FileField(upload_to=paper_rename_and_return_path,
                                 blank=True, null=True)
-    accepted = models.NullBooleanField()
+    accepted = models.BooleanField(null=True)
     reviewer = models.ManyToManyField(ConflaUser, related_name='rev+', blank=True)
     review_notes = models.TextField()
 

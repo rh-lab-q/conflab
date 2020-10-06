@@ -713,6 +713,7 @@ function popoverInit(selector) {
                         $(that).popover("hide");
                         showModal(eventp);
                     });
+                    console.log(response);
                     $(eventp).append(div);
 
                 }, function(response) {
@@ -785,6 +786,8 @@ function popoverInit(selector) {
         $(visible).find(".desc").text($(content).find("#id_description").val());
         // Go through all options in the original selects and mark them selected/not selected
 
+        console.log( selSpeaker );
+        console.log( selSpeaker[0].selectize.items )
         // Speaker select
         $(original).find("select.sel-speaker").children().each(function () {
             if ($.inArray($(this).text(), selSpeaker[0].selectize.items) !== -1) {
@@ -802,6 +805,8 @@ function popoverInit(selector) {
         });
         speakers = speakers.slice(0, -2);
         $(original).closest(".event").find(".speakers").text(speakers);
+
+        console.log("speakers" + speakers);
 
         var items = selTag[0].selectize.items;
         // Move the primary tag to the correct place

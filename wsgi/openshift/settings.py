@@ -54,7 +54,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'captcha',
-    'social_django', 
+#    'social_django', 
     'confla',
 )
 
@@ -66,7 +66,7 @@ MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',  
+#    'social_django.middleware.SocialAuthExceptionMiddleware',  
 )
 
 # If you want configure the REDISCLOUD
@@ -108,17 +108,17 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 #                "django.core.context_processors.tz",
 
-                'social_django.context_processors.backends',  # <--
-                'social_django.context_processors.login_redirect', # <--
+#                'social_django.context_processors.backends',  # <--
+#                'social_django.context_processors.login_redirect', # <--
             ],
         },
     },
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.facebook.FacebookOAuth2',
+#    'social_core.backends.github.GithubOAuth2',
+#    'social_core.backends.twitter.TwitterOAuth',
+#    'social_core.backends.facebook.FacebookOAuth2',
 
     'django.contrib.auth.backends.ModelBackend',
 )

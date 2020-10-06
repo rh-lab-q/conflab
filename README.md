@@ -16,6 +16,7 @@ Examples of deployment:
 - http://python-conflab.rhcloud.com/oa2015/sched/
 
 Other software for conference planning:
+- https://pretalx.com/
 - https://github.com/GetTogetherComm/GetTogether/
 - https://github.com/openSUSE/osem
 - http://indico-software.org/
