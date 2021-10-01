@@ -191,3 +191,5 @@ LOGIN_URL = '/login/'
 
 # Timeslot difference for schedules
 TIMEDELTA = 10 #minutes
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

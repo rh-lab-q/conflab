@@ -35,3 +35,9 @@ python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 
+# Podman/Docker installation
+```
+podman build . -t conflab
+podman run -p 8000:8000 conflab
+```
+and open http://localhost:8000
