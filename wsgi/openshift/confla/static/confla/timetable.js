@@ -958,8 +958,9 @@ $(document).ready(function() {
         out: function(event, ui) {
             $(".wrap .empty").droppable("enable");
             $(ui.draggable).parent().removeClass("empty");
-            if ($(".toggler").parent().attr("data-status") == "opened")
+            if ($(".toggler").parent().attr("data-status") == "opened") {
                 $(".toggler").trigger("click");
+            }
         }
     });
 
@@ -984,4 +985,9 @@ $(document).ready(function() {
     timetableEnable();
     $(".spinnerwrap").remove();
     $(".sched-wrap").show();
+
+    if ($(".toggler").parent().attr("data-status") != "opened") {
+        $(".toggler").trigger("click");
+    }
+
 })
