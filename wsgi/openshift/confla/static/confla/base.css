@@ -89,6 +89,21 @@
     content: ' *';
 }
 
+.tag {
+    border: 1px solid #b8b8b8;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
 .tag-color {
     display: inline-block;
     width: 12px;

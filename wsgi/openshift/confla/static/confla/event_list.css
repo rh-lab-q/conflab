@@ -17,12 +17,6 @@
     margin: 5px 0;
 }
 
-.tag {
-    display: inline-block;
-    border: 1px solid #b8b8b8;
-    padding: 2px;
-}
-
 .speaker {
     float: left;
     margin-bottom: 5px;

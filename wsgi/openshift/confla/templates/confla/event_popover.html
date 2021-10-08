@@ -20,7 +20,7 @@
 {% if event.tags.all|length %}
 <div class="tags"><h3>{% trans "Tags:" %}</h3>
     {% for tag in event.tags.all %}
-    <span class="etag tag{{tag.id}} ">{{tag.name}}</span>{% if not forloop.last %}, {% endif %}
+    <span class="tag tag{{tag.id}}">{{tag.name}}</span>
     {% endfor %}
 </div>
 {% endif %}
