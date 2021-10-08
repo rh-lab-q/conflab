@@ -11,7 +11,7 @@
 <div class="speakers"><h3>{% trans "Speaker(s):" %}</h3>
     {% for speaker in event.speaker.all %}
     <div class="speaker">
-        {{ speaker.first_name }} {{ speaker.last_name }}
+        {{ speaker.first_name }} {{ speaker.last_name }}{% if not forloop.last %}, {% endif %}
     </div>
     {% endfor%}
     <div class="clearer"></div>
@@ -20,7 +20,7 @@
 {% if event.tags.all|length %}
 <div class="tags"><h3>{% trans "Tags:" %}</h3>
     {% for tag in event.tags.all %}
-    <span class="etag">{{tag.name}}</span>
+    <span class="etag tag{{tag.id}} ">{{tag.name}}</span>{% if not forloop.last %}, {% endif %}
     {% endfor %}
 </div>
 {% endif %}
