@@ -39,5 +39,7 @@ python3 manage.py runserver
 ```
 podman build . -t conflab
 podman run -p 8000:8000 conflab
+# find running container and create admin account
+podman exec -it $(podman ps -qf "ancestor=localhost/conflab:latest") bash -c 'cd /code/wsgi/openshift; python ./manage.py createsuperuser'
 ```
 and open http://localhost:8000
