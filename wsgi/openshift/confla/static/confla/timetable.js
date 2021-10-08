@@ -567,11 +567,12 @@ function timetableClear() {
 
 function selectizePopover(selector) {
     // Selectize speaker init
+
     $(selector).find(".sel-speaker").each( function () {
         var select = this;
         var itemlist = [];
         // Setup list of selected users
-        $(this).find("[selected='selected']").each(function () {
+        $(this).find(":selected").each(function () {
             itemlist.push($(this).text());
         });
         $(this).selectize({
@@ -713,7 +714,7 @@ function popoverInit(selector) {
                         $(that).popover("hide");
                         showModal(eventp);
                     });
-                    console.log(response);
+//                    console.log(response);
                     $(eventp).append(div);
 
                 }, function(response) {
@@ -805,8 +806,6 @@ function popoverInit(selector) {
         });
         speakers = speakers.slice(0, -2);
         $(original).closest(".event").find(".speakers").text(speakers);
-
-        console.log("speakers" + speakers);
 
         var items = selTag[0].selectize.items;
         // Move the primary tag to the correct place
