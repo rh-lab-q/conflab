@@ -1406,8 +1406,9 @@ class ImportView(generic.TemplateView):
                     tag.save()
                     newevent.prim_tag = EventTag.objects.get(name=event['track'])
             else:
-                tag = EventTag.objects.get(name=tags[0].strip())
-                newevent.prim_tag = tag
+                if len(tags) > 0:
+                    tag = EventTag.objects.get(name=tags[0].strip())
+                    newevent.prim_tag = tag
 
             newevent.save()   
 
