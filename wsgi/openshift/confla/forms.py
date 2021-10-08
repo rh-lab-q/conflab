@@ -25,6 +25,7 @@ class ConfCreateForm(forms.ModelForm):
             'about', 'venue', 'gps', 'web', 'facebook', 'twitter', 'linkedin', 'youtube', 'slideshare', 'splash', 'icon', 'timezone', ]
         timezones = [(x,x) for x in tzs]
         timezones.insert(0, ('',''))
+        timezones = sorted(timezones)
 
         widgets = {
             'timedelta' : forms.Select(choices=choices),
