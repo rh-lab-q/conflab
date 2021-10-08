@@ -178,6 +178,11 @@ td > .ui-state-hover {
     clear: both;
 }
 
+.notes {
+    line-height: 100%;
+}
+
+
 .topic {
     font-weight: bold;
     line-height: 100%;

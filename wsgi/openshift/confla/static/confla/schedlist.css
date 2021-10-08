@@ -28,6 +28,12 @@
     line-height: 100%;
 }
 
+.schedlist-wrap .notes {
+    line-height: 100%;
+}
+
+
+
 .schedlist-wrap .item {
     position: static;
     width: auto;

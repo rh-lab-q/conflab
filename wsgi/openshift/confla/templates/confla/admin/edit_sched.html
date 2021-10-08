@@ -36,16 +36,8 @@
         {% for e in event_list %}
         <div class="event" event-id={{e.id}}>
             <div class="event-visible {{e|tag_class}}">
-                <!-- <div class="item-buttons" style="display:none">
-                    <div class="removesign">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </div>
-                    <div class="editsign">
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </div>
-                </div> item-buttons -->
                 <div>
-                    {{e.notes}}
+                    <div class="notes">{{e.notes}}</div>
                     <div class="topic">{{e.topic}}</div>
                     <div class="speakers">
                         {% for speaker in e.speaker.all %}
