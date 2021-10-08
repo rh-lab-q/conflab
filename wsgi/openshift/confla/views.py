@@ -1346,8 +1346,9 @@ class ImportView(generic.TemplateView):
                     events_skipped += 1
 
             # Create rooms
-            room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
-            created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
+            if 'room_short' in event:
+                room, created = Room.objects.get_or_create(shortname=event['room_short'][:16])
+                created, hr = HasRoom.objects.get_or_create(room=room, conference=conf, slot_length=3)
 
             setup_slot = False
             try:
