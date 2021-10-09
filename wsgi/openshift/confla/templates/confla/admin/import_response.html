@@ -1,4 +1,7 @@
 <div class="import-alerts">
+    {% if message %}
+    {{message}}
+    {% endif %}
     {% if users_created or events_created %}
     <div class="alert alert-success">
         <div class="alert-header">

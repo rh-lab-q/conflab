@@ -82,6 +82,21 @@ class AdminView(generic.TemplateView):
                     {
                          'conf_list' : Conference.objects.all().order_by('-start_date'),
                     })
+    def default_tags(request):
+        tag, created_id = EventTag.objects.get_or_create(name='Otevřený a svobodný software', color ='#10753f')
+        tag, created_id = EventTag.objects.get_or_create(name='IoT a Hnutí tvůrců', color = '#2f62ae')
+        tag, created_id = EventTag.objects.get_or_create(name='Vzdělávání', color = '#be1e2d')
+        tag, created_id = EventTag.objects.get_or_create(name='Bezpečnost a soukromí', color = '#57585a')
+        tag, created_id = EventTag.objects.get_or_create(name='Otevřená společnost, komunity a data', color = '#d37a6a')
+        tag, created_id = EventTag.objects.get_or_create(name='OpenMobility', color = '#92378b')
+        tag, created_id = EventTag.objects.get_or_create(name='Open Science', color = '#f57900')
+        tag, created_id = EventTag.objects.get_or_create(name='Otevřené mapy', color = '#000000')
+        tag, created_id = EventTag.objects.get_or_create(name='Otevřené umění a tvorba', color = '#edd400')
+
+        return render(request, "confla/admin/import_response.html",
+                    {
+                        'message': 'default tags was created'
+                    })
 
 class ConferenceView(generic.TemplateView):
     @permission_required('confla.can_organize', raise_exception=True)
@@ -1144,6 +1159,7 @@ class ImportView(generic.TemplateView):
                             'form'   : form,
                             'conf' : conf,
                             'conf_list' : Conference.objects.all().order_by('start_date'),
+                            'tag_count': len(EventTag.objects.all())
                             })
 
     @permission_required('confla.can_organize', raise_exception=True)

@@ -26,6 +26,12 @@
         </div>
     </div>
 </div>
+
+{% if tag_count == 0 %}
+<a class="btn btn-default" href="{% url 'confla:default_tags' %}">{% trans "Initialize tags" %}</a>
+{% endif %}
+
+
 {% endblock %}
 {% block extrascripts %}
 <script src="{% static 'confla/import.js' %}"></script>

@@ -52,6 +52,7 @@ urlpatterns = [
         url(r'^org/admin/createtag/$', views.EventEditView.create_event_tag, name='create_event_tag'),
         url(r'^org/admin/saveconf/$', views.ConferenceView.save_conf, name='save_conf'),
         url(r'^org/admin/users/$', views.AdminView.users, name='org_users'),
+        url(r'^org/admin/default-tags$', views.AdminView.default_tags, name='default_tags'),
         url(r'^org/admin/$', views.AdminView.conf_list, name='org_conf_list'),
         url(r'^export/conference_list/$', views.ExportView.conf_list, name='conf_list_export'),
         url(r'^(?P<url_id>\w+)/admin/$', views.AdminView.dashboard, name='dashboard'),
