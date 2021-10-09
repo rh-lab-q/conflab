@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser

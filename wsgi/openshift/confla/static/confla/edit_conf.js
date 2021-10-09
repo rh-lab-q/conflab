@@ -28,7 +28,8 @@ function setup_form(form){
         searchField: ['name'],
     });
 
-    $('.input-daterange').each(function() {
+
+    $(".input-daterange").each(function() {
         $(this).datepicker({ format : "yyyy-mm-dd"});
     });
 

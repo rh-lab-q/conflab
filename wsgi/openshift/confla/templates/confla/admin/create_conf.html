@@ -66,13 +66,13 @@
             <div class="panel-body">
                 <div class="form-group">
                     <label for="conf-date">{% trans "Start/End Date" %}</label>
-                    <div id="conf-date" class="input-group input-daterange">
+                    <div id="conf-date" class="input-daterange input-group">
                         {% with form.start_date.value|default_if_none:"" as start %}
-                        <input name="start_date" type="text" class="form-control" value={{start|date:"Y-m-d"}}>
+                        <input name="start_date" type="text" class="input-sm form-control" value={{start|date:"Y-m-d"}}>
                         {% endwith %}
                         <span class="input-group-addon">to</span>
                         {% with form.end_date.value|default_if_none:"" as end %}
-                        <input name="end_date" type="text" class="form-control" value={{end|date:"Y-m-d"}}>
+                        <input name="end_date" type="text" class="input-sm form-control" value={{end|date:"Y-m-d"}}>
                         {% endwith %}
                     </div>
 
