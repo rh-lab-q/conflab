@@ -501,7 +501,7 @@ class ScheduleView(generic.TemplateView):
                 # Remove empty slots from the end
                 for i, time in enumerate(time_dict['list'][::-1]):
                     if not (time['empty'] and last_end < time['dt']+delta):
-                        if i is not 0:
+                        if i != 0:
                             # Slice only when there is something to slice
                             time_dict['list'] = time_dict['list'][:-i]
                         break
@@ -596,7 +596,7 @@ class LoginView(generic.TemplateView):
                          'form' : AuthForm()})
 
         else:
-            if request.POST['next'] is not "":
+            if request.POST['next'] != "":
                 redirect = request.POST['next']
             else:
                 if user.has_perm('confla.can_organize'):
