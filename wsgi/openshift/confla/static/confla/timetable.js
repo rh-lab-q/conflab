@@ -521,6 +521,8 @@ function timetableSubmit(selector) {
         // Failure
         var div = '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-lg"></i> Failed to save schedule.</div>';
         $(".sched-wrap").prepend(div);
+//        $(".sched-wrap").prepend(response.responseText);
+        console.log(JSON.stringify(response, null, 2))
     });
 }
 
