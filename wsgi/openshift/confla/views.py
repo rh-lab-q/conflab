@@ -25,7 +25,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist, Permissi
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.mail import send_mail
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db import transaction
 from unidecode import unidecode

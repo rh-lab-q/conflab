@@ -1,5 +1,5 @@
-from django.conf.urls import include, url
-from django.urls import path
+from django.conf.urls import include
+from django.urls import path, re_path
 
 from django.contrib import admin
 
@@ -9,17 +9,17 @@ from django.contrib.auth import views as auth_views
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^', include('confla.urls')),
+    re_path(r'^', include('confla.urls')),
 
 
-#    url(r'^$', core_views.home, name='home'),
-    url(r'^login/$', auth_views.LoginView, name='login'),
-    url(r'^logout/$', auth_views.LogoutView, name='logout'),
-#    url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
-#    url(r'^admin/', include('admin.site.urls')),
-    path('admin/', admin.site.urls),
+#    re_path(r'^$', core_views.home, name='home'),
+    re_path(r'^login/$', auth_views.LoginView.as_view(), name='login'),
+    re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
+#    re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+#    re_path(r'^admin/', include('admin.site.urls')),
+    re_path('admin/', admin.site.urls),
 ]
 
 urlpatterns += [
-    url(r'^captcha/', include('captcha.urls')),
+    re_path(r'^captcha/', include('captcha.urls')),
 ]

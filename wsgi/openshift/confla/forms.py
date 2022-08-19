@@ -2,7 +2,7 @@ from pytz import common_timezones as tzs
 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from captcha.fields import CaptchaField
 
 from confla.models import Event, Conference, Room, ConflaUser, Paper, EmailAdress, Page

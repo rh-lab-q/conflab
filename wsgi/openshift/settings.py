@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import imp
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 ON_OPENSHIFT = False
 if 'OPENSHIFT_BUILD_SOURCE' in os.environ:
