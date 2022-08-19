@@ -473,7 +473,7 @@ class ScheduleView(generic.TemplateView):
             for start_time in start_list:
                 time = {}
                 tz = timezone.get_default_timezone()
-                slot_dt = tz.localize(datetime.combine(date, start_time))
+                slot_dt = datetime.combine(date, start_time) # tz.localize(datetime.combine(date, start_time))
                 time['short'] = start_time.strftime("%H:%M") 
                 time['full'] = slot_dt.strftime("%x %H:%M")
                 time['dt'] = slot_dt
@@ -932,7 +932,7 @@ class TimetableView(generic.TemplateView):
             for start_time in start_list:
                 time = {}
                 tz = timezone.get_default_timezone()
-                slot_dt = tz.localize(datetime.combine(date, start_time))
+                slot_dt = datetime.combine(date, start_time) #tz.localize(datetime.combine(date, start_time))
                 time['short'] = start_time.strftime("%H:%M") 
                 time['full'] = slot_dt.strftime("%x %H:%M")
                 time['dt'] = slot_dt
@@ -1064,8 +1064,8 @@ class TimetableView(generic.TemplateView):
                 end = datetime.strptime(row[key]['end'], "%H:%M")
                 date = datetime.strptime(row[key]['day'], "%A, %d.%m.")
                 date = date.replace(year=conf.start_date.year)
-                newslot.start_time = timezone.get_default_timezone().localize(datetime.combine(date, start.time()))
-                newslot.end_time = timezone.get_default_timezone().localize(datetime.combine(date, end.time()))
+                newslot.start_time = datetime.combine(date, start.time()) #timezone.get_default_timezone().localize(datetime.combine(date, start.time()))
+                newslot.end_time = datetime.combine(date, end.time()) #timezone.get_default_timezone().localize(datetime.combine(date, end.time()))
                 # Add slot to db
                 try:
                     newslot.full_clean()
@@ -1380,8 +1380,8 @@ class ImportView(generic.TemplateView):
                 newslot.room_id = room
                 start = datetime.fromtimestamp(int(event['event_start']))
                 end = datetime.fromtimestamp(int(event['event_end']))
-                newslot.start_time = timezone.get_default_timezone().localize(start)
-                newslot.end_time = timezone.get_default_timezone().localize(end)
+                newslot.start_time = start #timezone.get_default_timezone().localize(start)
+                newslot.end_time = end #timezone.get_default_timezone().localize(end)
                 newslot.event_id = newevent
                 newslot.full_clean()
                 newslot.save()
